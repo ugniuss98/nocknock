@@ -7,283 +7,258 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root{
-    --bg:#F7F6F3;--surface:#FFF;--border:#E8E5DF;--border-strong:#D0CCC3;
-    --text:#1A1916;--text-muted:#8A877E;--text-faint:#B5B2AA;
-    --accent:#2D5BE3;--accent-light:#EEF2FD;
-    --green:#1A7A4A;--green-light:#E8F5EE;
-    --orange:#C4590A;--orange-light:#FEF0E6;
-    --gray:#6B6862;--gray-light:#F2F1EE;
-    --red:#C0392B;--red-light:#FDE8ED;
-    --radius:10px;--radius-lg:16px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
-  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+:root{--bg:#F7F6F3;--surface:#FFF;--border:#E8E5DF;--border-strong:#D0CCC3;--text:#1A1916;--text-muted:#8A877E;--text-faint:#B5B2AA;--accent:#2D5BE3;--accent-light:#EEF2FD;--green:#1A7A4A;--green-light:#E8F5EE;--orange:#C4590A;--orange-light:#FEF0E6;--gray:#6B6862;--gray-light:#F2F1EE;--red:#C0392B;--red-light:#FDE8ED;--radius:10px;--radius-lg:16px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
-  /* LOGIN */
-  #loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;}
-  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px;}
-  .login-head{display:flex;align-items:center;gap:12px;}
-  .login-logo{width:38px;height:38px;background:var(--text);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .login-logo svg{width:18px;height:18px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .login-title{font-size:17px;font-weight:600;}
-  .login-sub{font-size:12px;color:var(--text-muted);}
-  .l-label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;}
-  .l-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;color:var(--text);outline:none;transition:border-color .15s;}
-  .l-input:focus{border-color:var(--accent);background:white;}
-  .l-btn{width:100%;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;}
-  .l-btn:hover{opacity:.85;}
-  .l-btn:disabled{opacity:.5;cursor:default;}
-  .l-err{font-size:13px;color:var(--red);min-height:18px;}
+#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px;}
+.login-head{display:flex;align-items:center;gap:12px;}
+.login-logo{width:38px;height:38px;background:var(--text);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.login-logo svg{width:18px;height:18px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.login-title{font-size:17px;font-weight:600;}.login-sub{font-size:12px;color:var(--text-muted);}
+.l-label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;}
+.l-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;color:var(--text);outline:none;transition:border-color .15s;}
+.l-input:focus{border-color:var(--accent);background:white;}
+.l-btn{width:100%;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;}
+.l-btn:hover{opacity:.85;}.l-btn:disabled{opacity:.5;cursor:default;}
+.l-err{font-size:13px;color:var(--red);min-height:18px;}
 
-  /* HEADER */
-  .header{background:var(--surface);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px;}
-  .h-left{display:flex;align-items:center;gap:11px;flex-shrink:0;}
-  .logo{width:33px;height:33px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;}
-  .logo svg{width:15px;height:15px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .app-title{font-size:14px;font-weight:600;}
-  .admin-badge{font-size:10px;font-weight:600;background:#1A1916;color:white;padding:2px 7px;border-radius:20px;}
-  .h-client{font-size:11px;color:var(--text-muted);margin-top:1px;}
-  .h-center{display:flex;align-items:center;gap:5px;flex:1;justify-content:center;}
-  .tab-btn{font-size:13px;font-weight:500;padding:6px 13px;border-radius:8px;border:1px solid transparent;cursor:pointer;background:none;color:var(--text-muted);transition:all .15s;display:flex;align-items:center;gap:5px;}
-  .tab-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .tab-btn:hover{background:var(--bg);color:var(--text);}
-  .tab-btn.active{background:var(--accent-light);border-color:#C5D4FA;color:var(--accent);}
-  .h-right{display:flex;align-items:center;gap:9px;flex-shrink:0;}
-  .week-nav{display:flex;align-items:center;gap:7px;}
-  .wk-btn{width:30px;height:30px;border:1px solid var(--border-strong);background:var(--surface);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;}
-  .wk-btn:hover{background:var(--bg);color:var(--text);}
-  .wk-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
-  .week-label{font-size:13px;font-weight:500;min-width:145px;text-align:center;}
-  .logout-btn{font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:7px;padding:6px 10px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;}
-  .logout-btn:hover{background:var(--red-light);border-color:#F5A8B0;color:var(--red);}
-  .logout-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px;}
+.h-left{display:flex;align-items:center;gap:11px;flex-shrink:0;}
+.logo{width:33px;height:33px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo svg{width:15px;height:15px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.app-title{font-size:14px;font-weight:600;}.admin-badge{font-size:10px;font-weight:600;background:#1A1916;color:white;padding:2px 7px;border-radius:20px;}
+.h-client{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.h-center{display:flex;align-items:center;gap:5px;flex:1;justify-content:center;}
+.tab-btn{font-size:13px;font-weight:500;padding:6px 13px;border-radius:8px;border:1px solid transparent;cursor:pointer;background:none;color:var(--text-muted);transition:all .15s;display:flex;align-items:center;gap:5px;}
+.tab-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.tab-btn:hover{background:var(--bg);color:var(--text);}.tab-btn.active{background:var(--accent-light);border-color:#C5D4FA;color:var(--accent);}
+.h-right{display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.week-nav{display:flex;align-items:center;gap:7px;}
+.wk-btn{width:30px;height:30px;border:1px solid var(--border-strong);background:var(--surface);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;}
+.wk-btn:hover{background:var(--bg);color:var(--text);}
+.wk-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.week-label{font-size:13px;font-weight:500;min-width:145px;text-align:center;}
+.logout-btn{font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:7px;padding:6px 10px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.logout-btn:hover{background:var(--red-light);border-color:#F5A8B0;color:var(--red);}
+.logout-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-  /* LAYOUT */
-  .layout{display:grid;grid-template-columns:296px 1fr;min-height:calc(100vh - 60px);}
-  .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
-  .s-main{padding:20px 24px;display:flex;flex-direction:column;gap:10px;}
+.layout{display:grid;grid-template-columns:304px 1fr;min-height:calc(100vh - 60px);}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.s-main{padding:20px 24px;display:flex;flex-direction:column;gap:10px;}
 
-  /* COMMON */
-  .sec-title{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;}
-  select,input,textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 11px;color:var(--text);outline:none;transition:border-color .15s;appearance:none;-webkit-appearance:none;}
-  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:28px;}
-  select:focus,input:focus,textarea:focus{border-color:var(--accent);background:white;}
-  textarea{resize:vertical;min-height:56px;}
-  label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;font-weight:500;}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-  .divider{height:1px;background:var(--border);flex-shrink:0;}
-  .btn-primary{background:var(--text);color:white;border:none;border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;}
-  .btn-primary:hover{opacity:.85;}
-  .btn-primary svg{width:14px;height:14px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
-  .btn-sec{background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius);padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:var(--text);transition:all .15s;display:flex;align-items:center;gap:7px;width:100%;}
-  .btn-sec:hover{background:var(--bg);}
-  .btn-sec svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
-  .icon-btn{width:32px;height:32px;border:1px solid var(--border-strong);background:var(--surface);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;flex-shrink:0;}
-  .icon-btn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
-  .icon-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.sec-title{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;}
+select,input,textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 11px;color:var(--text);outline:none;transition:border-color .15s;appearance:none;-webkit-appearance:none;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:28px;}
+select:focus,input:focus,textarea:focus{border-color:var(--accent);background:white;}
+textarea{resize:vertical;min-height:56px;}
+label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;font-weight:500;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.divider{height:1px;background:var(--border);flex-shrink:0;}
+.btn-primary{background:var(--text);color:white;border:none;border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;}
+.btn-primary:hover{opacity:.85;}
+.btn-primary svg{width:14px;height:14px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.btn-sec{background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius);padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:var(--text);transition:all .15s;display:flex;align-items:center;gap:7px;width:100%;}
+.btn-sec:hover{background:var(--bg);}
+.btn-sec svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.icon-btn{width:28px;height:28px;border:1px solid var(--border-strong);background:var(--surface);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;flex-shrink:0;}
+.icon-btn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.icon-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-  /* CLIENT SELECTOR */
-  .client-row{display:flex;gap:7px;align-items:center;}
-  .client-link-bar{background:var(--accent-light);border:1px solid #C5D4FA;border-radius:var(--radius);padding:8px 11px;display:flex;align-items:center;gap:7px;}
-  .client-link-bar.hidden{display:none;}
-  .client-link-url{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .copy-link-btn{font-size:11px;font-weight:600;color:var(--accent);background:white;border:1px solid #C5D4FA;border-radius:6px;padding:3px 8px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
-  .copy-link-btn:hover{background:var(--accent);color:white;}
+.client-row{display:flex;gap:7px;align-items:center;}
+.client-link-bar{background:var(--accent-light);border:1px solid #C5D4FA;border-radius:var(--radius);padding:8px 11px;display:flex;align-items:center;gap:7px;}
+.client-link-bar.hidden{display:none;}
+.client-link-url{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.copy-link-btn{font-size:11px;font-weight:600;color:var(--accent);background:white;border:1px solid #C5D4FA;border-radius:6px;padding:3px 8px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.copy-link-btn:hover{background:var(--accent);color:white;}
 
-  /* STATS */
-  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
-  .stat{background:var(--bg);border-radius:var(--radius);padding:10px;text-align:center;}
-  .stat-val{font-size:18px;font-weight:600;letter-spacing:-.5px;font-family:'DM Mono',monospace;}
-  .stat-label{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.stat{background:var(--bg);border-radius:var(--radius);padding:10px;text-align:center;}
+.stat-val{font-size:18px;font-weight:600;letter-spacing:-.5px;font-family:'DM Mono',monospace;}
+.stat-label{font-size:10px;color:var(--text-muted);margin-top:2px;}
 
-  /* FILE ATTACH */
-  .file-attach-zone{border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px;background:var(--bg);}
-  .file-attach-zone:hover{border-color:var(--accent);background:var(--accent-light);}
-  .file-attach-zone svg{width:16px;height:16px;stroke:var(--text-faint);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
-  .file-attach-text{font-size:12px;color:var(--text-muted);flex:1;}
-  .file-attach-preview{width:40px;height:40px;border-radius:6px;object-fit:cover;display:block;flex-shrink:0;}
-  .file-attach-clear{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:2px;display:flex;align-items:center;justify-content:center;transition:color .15s;}
-  .file-attach-clear:hover{color:var(--red);}
-  .file-attach-clear svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+/* CATEGORY PILLS */
+.cat-pills-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0;}
+.cat-pill{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap;}
+.cat-pill:hover{border-color:var(--accent);color:var(--accent);}
+.cat-pill.sel{border-color:transparent;color:white;}
+.cat-pill.sel[data-cat="ig"]{background:#4A3AAA;}
+.cat-pill.sel[data-cat="ugc"]{background:#1A5C38;}
+.cat-pill.sel[data-cat="meta"]{background:#1A4098;}
+.cat-pill.sel[data-cat="design"]{background:#9C4A10;}
+.cat-pill.sel[data-cat="extra"]{background:#9C1A36;}
+.cat-pill.sel[data-cat="other"]{background:var(--gray);}
+.cat-pill.sel[data-cat="custom"]{background:var(--accent);}
 
-  /* REQUESTS */
-  .requests-card{background:var(--surface);border:1px solid #F5C89A;border-radius:var(--radius-lg);overflow:hidden;}
-  .requests-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
-  .requests-head:hover{background:var(--orange-light);}
-  .requests-head-left{display:flex;align-items:center;gap:8px;}
-  .requests-badge{font-size:11px;font-weight:600;background:var(--orange);color:white;padding:2px 7px;border-radius:20px;}
-  .req-title-text{font-size:13px;font-weight:600;}
-  .req-body{border-top:1px solid #F5C89A;}
-  .req-row{padding:12px 16px;border-bottom:1px solid #FEF0E6;display:flex;align-items:flex-start;gap:10px;}
-  .req-row:last-child{border-bottom:none;}
-  .req-info{flex:1;min-width:0;}
-  .req-name{font-size:13px;font-weight:500;margin-bottom:2px;}
-  .req-note{font-size:12px;color:var(--text-muted);margin-bottom:4px;line-height:1.4;}
-  .req-meta{font-size:11px;color:var(--text-faint);}
-  .req-actions{display:flex;gap:6px;flex-shrink:0;}
-  .req-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:7px;border:1px solid;cursor:pointer;white-space:nowrap;transition:all .15s;}
-  .req-accept{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
-  .req-accept:hover{background:var(--green);color:white;border-color:var(--green);}
-  .req-reject{background:var(--gray-light);border-color:var(--border-strong);color:var(--gray);}
-  .req-reject:hover{background:var(--red-light);border-color:#F5A8B0;color:var(--red);}
+/* MULTI FILE */
+.files-drop-zone{border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;background:var(--bg);}
+.files-drop-zone:hover{border-color:var(--accent);background:var(--accent-light);}
+.files-drop-zone svg{width:15px;height:15px;stroke:var(--text-faint);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.files-drop-zone span{font-size:12px;color:var(--text-muted);}
+.files-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.fp-item{position:relative;width:52px;height:52px;border-radius:8px;border:1px solid var(--border);flex-shrink:0;}
+.fp-img{width:100%;height:100%;object-fit:cover;border-radius:7px;display:block;}
+.fp-icon{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:7px;}
+.fp-icon svg{width:16px;height:16px;stroke:var(--text-faint);fill:none;stroke-width:1.5;}
+.fp-rm{position:absolute;top:-5px;right:-5px;width:16px;height:16px;background:var(--red);color:white;border:none;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;line-height:1;font-weight:700;padding:0;}
 
-  /* DAY CARDS */
-  .day-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
-  .day-card.today{border-color:var(--accent);}
-  .day-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s;}
-  .day-head:hover{background:var(--bg);}
-  .day-head-left{display:flex;align-items:center;gap:8px;}
-  .day-name{font-size:14px;font-weight:600;}
-  .today-pill{font-size:10px;font-weight:600;background:var(--accent);color:white;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
-  .day-date-str{font-size:12px;color:var(--text-muted);}
-  .day-head-right{display:flex;align-items:center;gap:7px;}
-  .day-count-badge{font-size:11px;background:var(--gray-light);color:var(--gray);padding:2px 7px;border-radius:20px;font-weight:500;}
-  .day-sum{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:var(--accent);}
-  .chevron{width:14px;height:14px;stroke:var(--text-muted);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;flex-shrink:0;}
-  .collapsed .chevron{transform:rotate(-90deg);}
-  .tasks-body{border-top:1px solid var(--border);}
-  .tasks-body.hidden{display:none;}
-  .task-row{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .1s;}
-  .task-row:last-child{border-bottom:none;}
-  .task-row:hover{background:var(--bg);}
-  .task-thumb-wrap{flex-shrink:0;}
-  .task-thumb{width:44px;height:44px;border-radius:7px;object-fit:cover;display:block;border:1px solid var(--border);}
-  .task-thumb-icon{width:44px;height:44px;border-radius:7px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
-  .task-thumb-icon svg{width:18px;height:18px;stroke:var(--text-faint);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
-  .task-info{flex:1;min-width:0;}
-  .task-name{font-size:13px;font-weight:500;margin-bottom:2px;}
-  .task-note{font-size:12px;color:var(--text-muted);margin-bottom:4px;line-height:1.4;}
-  .task-tags{display:flex;flex-wrap:wrap;gap:4px;}
-  .tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
-  .tag-ig{background:#EDE8FD;color:#4A3AAA;}.tag-ugc{background:#E6F5EE;color:#1A5C38;}
-  .tag-meta{background:#E8F0FD;color:#1A4098;}.tag-design{background:#FEF3E7;color:#9C4A10;}
-  .tag-extra{background:#FDE8ED;color:#9C1A36;}.tag-other{background:var(--gray-light);color:var(--gray);}
-  .task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
-  .task-price{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;}
-  .status-btn{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;border:1px solid var(--border);background:var(--surface);cursor:pointer;white-space:nowrap;transition:all .15s;}
-  .status-done{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
-  .status-progress{background:var(--orange-light);border-color:#F5C89A;color:var(--orange);}
-  .status-wait{background:var(--gray-light);border-color:var(--border-strong);color:var(--gray);}
-  .del-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:2px;border-radius:5px;transition:color .15s,background .15s;display:flex;align-items:center;justify-content:center;}
-  .del-btn:hover{color:var(--red);background:var(--red-light);}
-  .del-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .empty-day{padding:16px;text-align:center;color:var(--text-faint);font-size:12px;}
-  .no-client-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;text-align:center;color:var(--text-muted);gap:8px;padding:32px;}
-  .no-client-msg svg{width:32px;height:32px;stroke:var(--text-faint);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
-  .no-client-msg strong{font-size:13px;color:var(--text);}
+/* TEMPLATES */
+.tpl-row{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;}
+.tpl-name{flex:1;font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tpl-price{font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace;white-space:nowrap;}
+.tpl-cats{display:flex;gap:3px;flex-wrap:wrap;}
+.tpl-cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.tpl-del{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:2px;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:color .15s;}
+.tpl-del:hover{color:var(--red);}
+.tpl-del svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.tpl-form{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;flex-direction:column;gap:7px;}
 
-  /* =====================
-     META ADS — REDESIGN
-     ===================== */
-  .meta-wrapper{padding:20px 24px;max-width:1100px;}
-  .meta-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px;}
-  .meta-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
-  .meta-subtitle{font-size:12px;color:var(--text-muted);margin-top:3px;}
-  .meta-actions{display:flex;align-items:center;gap:8px;}
+/* REQUESTS */
+.requests-card{background:var(--surface);border:1px solid #F5C89A;border-radius:var(--radius-lg);overflow:hidden;}
+.requests-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.requests-head:hover{background:var(--orange-light);}
+.requests-head-left{display:flex;align-items:center;gap:8px;}
+.requests-badge{font-size:11px;font-weight:600;background:var(--orange);color:white;padding:2px 7px;border-radius:20px;}
+.req-title-text{font-size:13px;font-weight:600;}
+.req-body{border-top:1px solid #F5C89A;}
+.req-row{padding:12px 16px;border-bottom:1px solid #FEF0E6;display:flex;align-items:flex-start;gap:10px;}
+.req-row:last-child{border-bottom:none;}
+.req-info{flex:1;min-width:0;}
+.req-name{font-size:13px;font-weight:500;margin-bottom:2px;}
+.req-note{font-size:12px;color:var(--text-muted);margin-bottom:4px;line-height:1.4;}
+.req-meta{font-size:11px;color:var(--text-faint);}
+.req-actions{display:flex;gap:6px;flex-shrink:0;}
+.req-btn{font-size:11px;font-weight:500;padding:4px 10px;border-radius:7px;border:1px solid;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.req-accept{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
+.req-accept:hover{background:var(--green);color:white;border-color:var(--green);}
+.req-reject{background:var(--gray-light);border-color:var(--border-strong);color:var(--gray);}
+.req-reject:hover{background:var(--red-light);border-color:#F5A8B0;color:var(--red);}
 
-  .btn-meta-settings{font-size:12px;font-weight:500;padding:8px 13px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;color:var(--text-muted);}
-  .btn-meta-settings:hover{background:var(--bg);color:var(--text);}
-  .btn-meta-settings svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .btn-sync{font-size:12px;font-weight:600;padding:8px 14px;border-radius:var(--radius);border:none;background:var(--accent);color:white;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
-  .btn-sync:hover{opacity:.85;}
-  .btn-sync:disabled{opacity:.45;cursor:default;}
-  .btn-sync svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+/* DAY / TASK */
+.day-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.day-card.today{border-color:var(--accent);}
+.day-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s;}
+.day-head:hover{background:var(--bg);}
+.day-head-left{display:flex;align-items:center;gap:8px;}
+.day-name{font-size:14px;font-weight:600;}
+.today-pill{font-size:10px;font-weight:600;background:var(--accent);color:white;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
+.day-date-str{font-size:12px;color:var(--text-muted);}
+.day-head-right{display:flex;align-items:center;gap:7px;}
+.day-count-badge{font-size:11px;background:var(--gray-light);color:var(--gray);padding:2px 7px;border-radius:20px;font-weight:500;}
+.day-sum{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:var(--accent);}
+.chevron{width:14px;height:14px;stroke:var(--text-muted);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;flex-shrink:0;}
+.collapsed .chevron{transform:rotate(-90deg);}
+.tasks-body{border-top:1px solid var(--border);}
+.tasks-body.hidden{display:none;}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .1s;}
+.task-row:last-child{border-bottom:none;}
+.task-row:hover{background:var(--bg);}
+.task-thumbs{display:flex;gap:4px;flex-shrink:0;}
+.task-thumb{width:40px;height:40px;border-radius:6px;object-fit:cover;display:block;border:1px solid var(--border);}
+.task-thumb-icon{width:40px;height:40px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.task-thumb-icon svg{width:16px;height:16px;stroke:var(--text-faint);fill:none;stroke-width:1.5;}
+.task-info{flex:1;min-width:0;}
+.task-name{font-size:13px;font-weight:500;margin-bottom:2px;}
+.task-note{font-size:12px;color:var(--text-muted);margin-bottom:4px;line-height:1.4;}
+.task-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.tag-ig{background:#EDE8FD;color:#4A3AAA;}.tag-ugc{background:#E6F5EE;color:#1A5C38;}
+.tag-meta{background:#E8F0FD;color:#1A4098;}.tag-design{background:#FEF3E7;color:#9C4A10;}
+.tag-extra{background:#FDE8ED;color:#9C1A36;}.tag-other{background:var(--gray-light);color:var(--gray);}
+.task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.task-price{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;}
+.status-btn{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;border:1px solid var(--border);background:var(--surface);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.status-done{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
+.status-progress{background:var(--orange-light);border-color:#F5C89A;color:var(--orange);}
+.status-wait{background:var(--gray-light);border-color:var(--border-strong);color:var(--gray);}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:2px;border-radius:5px;transition:color .15s,background .15s;display:flex;align-items:center;justify-content:center;}
+.del-btn:hover{color:var(--red);background:var(--red-light);}
+.del-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.empty-day{padding:16px;text-align:center;color:var(--text-faint);font-size:12px;}
+.no-client-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;text-align:center;color:var(--text-muted);gap:8px;padding:32px;}
+.no-client-msg svg{width:32px;height:32px;stroke:var(--text-faint);fill:none;stroke-width:1.5;}
+.no-client-msg strong{font-size:13px;color:var(--text);}
 
-  /* Period tabs */
-  .period-tabs{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:16px;width:fit-content;flex-wrap:wrap;}
-  .ptab{font-size:12px;font-weight:500;padding:6px 13px;border-radius:7px;border:none;background:none;cursor:pointer;color:var(--text-muted);transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
-  .ptab.active{background:white;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1);}
-  .ptab:hover:not(.active){color:var(--text);}
+/* META */
+.meta-wrapper{padding:20px 24px;max-width:1140px;}
+.meta-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px;}
+.meta-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+.meta-subtitle{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.meta-actions{display:flex;align-items:center;gap:8px;}
+.btn-meta-settings{font-size:12px;font-weight:500;padding:8px 13px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;color:var(--text-muted);}
+.btn-meta-settings:hover{background:var(--bg);color:var(--text);}
+.btn-meta-settings svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+.btn-sync{font-size:12px;font-weight:600;padding:8px 14px;border-radius:var(--radius);border:none;background:var(--accent);color:white;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
+.btn-sync:hover{opacity:.85;}.btn-sync:disabled{opacity:.45;cursor:default;}
+.btn-sync svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:2.5;}
+.period-tabs{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:16px;width:fit-content;flex-wrap:wrap;}
+.ptab{font-size:12px;font-weight:500;padding:6px 13px;border-radius:7px;border:none;background:none;cursor:pointer;color:var(--text-muted);transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.ptab.active{background:white;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.ptab:hover:not(.active){color:var(--text);}
+.rate-bar{background:var(--orange-light);border:1px solid #F5C89A;border-radius:var(--radius);padding:9px 13px;font-size:12px;color:var(--orange);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.rate-bar svg{width:14px;height:14px;stroke:var(--orange);fill:none;stroke-width:2;flex-shrink:0;}
+.meta-setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:14px;}
+.meta-setup-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.meta-setup-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;}
+.meta-form{display:flex;flex-direction:column;gap:10px;}
+.meta-error{background:var(--red-light);border:1px solid #F5A8B0;border-radius:var(--radius);padding:10px 13px;font-size:12px;color:var(--red);margin-bottom:12px;}
+.meta-loading{text-align:center;padding:28px;color:var(--text-muted);font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;}
+.meta-loading svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2;animation:spin 1s linear infinite;}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:15px 16px;transition:box-shadow .15s;}
+.kpi-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.kpi-card.featured{border-color:#C5D4FA;background:linear-gradient(135deg,#f0f4fd 0%,#e8eefb 100%);}
+.kpi-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;}
+.kpi-value{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:-.5px;margin-bottom:5px;line-height:1.1;}
+.kpi-card.featured .kpi-value{color:var(--accent);}
+.kpi-change{font-size:11px;font-weight:500;display:flex;align-items:center;gap:3px;}
+.kpi-change.up{color:var(--green);}.kpi-change.dn{color:var(--red);}.kpi-change.na{color:var(--text-faint);}
+.kpi-tip{font-size:10px;color:var(--text-faint);margin-top:3px;}
+.charts-grid{display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:14px;}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;}
+.chart-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.chart-card-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
+.chart-card-value{font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);}
+.chart-wrap{position:relative;height:180px;}
+.meta-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;}
+.meta-section-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.meta-section-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;}
+.page-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+/* Campaign table */
+.camp-table{width:100%;border-collapse:collapse;font-size:12px;}
+.camp-table th{text-align:left;padding:8px 10px;font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
+.camp-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.camp-table tr:last-child td{border-bottom:none;}
+.camp-table tbody tr:hover td{background:var(--bg);}
+.camp-name{font-weight:500;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;}
+.camp-mono{font-family:'DM Mono',monospace;font-size:12px;}
+.camp-roas{font-weight:700;color:var(--green);}
+.camp-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--green-light);color:var(--green);white-space:nowrap;}
+.meta-footer{font-size:11px;color:var(--text-faint);text-align:right;padding:4px 0 8px;}
 
-  /* Rate limit bar */
-  .rate-bar{background:var(--orange-light);border:1px solid #F5C89A;border-radius:var(--radius);padding:9px 13px;font-size:12px;color:var(--orange);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-  .rate-bar svg{width:14px;height:14px;stroke:var(--orange);fill:none;stroke-width:2;flex-shrink:0;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;display:flex;align-items:center;justify-content:center;}
+.modal-overlay.hidden{display:none;}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:13px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+.modal-title{font-size:15px;font-weight:600;}
+.modal-actions{display:flex;gap:7px;margin-top:3px;}
+.btn-cancel{flex:1;background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius);padding:9px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.btn-cancel:hover{background:var(--bg);}
+.btn-confirm{flex:1;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.btn-confirm:hover{opacity:.85;}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--text);color:white;padding:10px 15px;border-radius:var(--radius);font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:1000;}
+.toast.show{opacity:1;transform:translateY(0);}
 
-  /* Meta setup card */
-  .meta-setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:14px;}
-  .meta-setup-title{font-size:14px;font-weight:600;margin-bottom:4px;}
-  .meta-setup-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;}
-  .meta-form{display:flex;flex-direction:column;gap:10px;}
-  .meta-error{background:var(--red-light);border:1px solid #F5A8B0;border-radius:var(--radius);padding:10px 13px;font-size:12px;color:var(--red);margin-bottom:12px;}
-  .meta-loading{text-align:center;padding:28px;color:var(--text-muted);font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;}
-  .meta-loading svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2;animation:spin 1s linear infinite;}
-
-  /* KPI grid */
-  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
-  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:15px 16px;transition:box-shadow .15s;}
-  .kpi-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.06);}
-  .kpi-card.featured{border-color:#C5D4FA;background:linear-gradient(135deg,#f0f4fd 0%,#e8eefb 100%);}
-  .kpi-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;}
-  .kpi-value{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:-.5px;margin-bottom:5px;line-height:1.1;}
-  .kpi-card.featured .kpi-value{color:var(--accent);}
-  .kpi-change{font-size:11px;font-weight:500;display:flex;align-items:center;gap:3px;}
-  .kpi-change.up{color:var(--green);}
-  .kpi-change.dn{color:var(--red);}
-  .kpi-change.na{color:var(--text-faint);}
-  .kpi-tip{font-size:10px;color:var(--text-faint);margin-top:3px;}
-
-  /* Charts */
-  .charts-grid{display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:14px;}
-  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;}
-  .chart-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .chart-card-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
-  .chart-card-value{font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);}
-  .chart-wrap{position:relative;height:180px;}
-
-  /* Page stats */
-  .meta-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;}
-  .meta-section-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-  .meta-section-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;}
-  .page-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-
-  /* Footer */
-  .meta-footer{font-size:11px;color:var(--text-faint);text-align:right;padding:4px 0 8px;}
-
-  /* MODAL */
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;display:flex;align-items:center;justify-content:center;}
-  .modal-overlay.hidden{display:none;}
-  .modal{background:var(--surface);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:13px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
-  .modal-title{font-size:15px;font-weight:600;}
-  .modal-actions{display:flex;gap:7px;margin-top:3px;}
-  .btn-cancel{flex:1;background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius);padding:9px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
-  .btn-cancel:hover{background:var(--bg);}
-  .btn-confirm{flex:1;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
-  .btn-confirm:hover{opacity:.85;}
-
-  .toast{position:fixed;bottom:22px;right:22px;background:var(--text);color:white;padding:10px 15px;border-radius:var(--radius);font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:1000;}
-  .toast.show{opacity:1;transform:translateY(0);}
-
-  @media print{
-    #loginScreen,.header,.sidebar,.modal-overlay,.toast{display:none!important;}
-    .layout{grid-template-columns:1fr!important;}
-    .s-main{padding:0!important;}
-    .day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}
-    .del-btn,.status-btn{display:none!important;}
-    .tasks-body.hidden{display:block!important;}
-  }
-  @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
-  @media(max-width:900px){
-    .layout{grid-template-columns:1fr;}
-    .sidebar{position:static;height:auto;}
-    .header{padding:10px 14px;flex-wrap:wrap;}
-    .s-main{padding:14px;}
-    .meta-wrapper{padding:14px;}
-    .kpi-grid{grid-template-columns:repeat(2,1fr);}
-    .charts-grid{grid-template-columns:1fr;}
-    .page-kpi-grid{grid-template-columns:repeat(2,1fr);}
-  }
-  @media(max-width:600px){
-    .kpi-grid{grid-template-columns:1fr 1fr;}
-    .period-tabs{width:100%;}
-  }
+@media print{#loginScreen,.header,.sidebar,.modal-overlay,.toast{display:none!important;}.layout{grid-template-columns:1fr!important;}.s-main{padding:0!important;}.day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}.del-btn,.status-btn{display:none!important;}.tasks-body.hidden{display:block!important;}}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.header{padding:10px 14px;flex-wrap:wrap;}.s-main,.meta-wrapper{padding:14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-grid{grid-template-columns:1fr;}.page-kpi-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr;}.period-tabs{width:100%;}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-head">
@@ -297,9 +272,7 @@
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="mainApp" style="display:none">
-
   <header class="header">
     <div class="h-left">
       <div class="logo"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
@@ -309,12 +282,8 @@
       </div>
     </div>
     <div class="h-center">
-      <button class="tab-btn active" id="tab-journal" onclick="setTab('journal')">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Žurnalas
-      </button>
-      <button class="tab-btn" id="tab-meta" onclick="setTab('meta')">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Meta Ads
-      </button>
+      <button class="tab-btn active" id="tab-journal" onclick="setTab('journal')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Žurnalas</button>
+      <button class="tab-btn" id="tab-meta" onclick="setTab('meta')"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Meta Ads</button>
     </div>
     <div class="h-right">
       <div class="week-nav" id="weekNav">
@@ -322,23 +291,20 @@
         <span class="week-label" id="weekLabel"></span>
         <button class="wk-btn" onclick="changeWeek(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
-      <button class="logout-btn" onclick="doLogout()">
-        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Atsijungti
-      </button>
+      <button class="logout-btn" onclick="doLogout()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Atsijungti</button>
     </div>
   </header>
 
-  <!-- ŽURNALAS TAB -->
+  <!-- ŽURNALAS -->
   <div id="tabJournal">
     <div class="layout">
       <aside class="sidebar">
+        <!-- Client -->
         <div style="display:flex;flex-direction:column;gap:7px">
           <div class="sec-title">Klientas</div>
           <div class="client-row">
             <select id="clientSelect" onchange="onClientChange()" style="flex:1"></select>
-            <button class="icon-btn" onclick="openAddClient()" title="Pridėti klientą">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            </button>
+            <button class="icon-btn" onclick="openAddClient()" title="Pridėti klientą"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
           </div>
           <div class="client-link-bar hidden" id="clientLinkBar">
             <span class="client-link-url" id="clientLinkUrl"></span>
@@ -352,58 +318,27 @@
           <div class="stat"><div class="stat-val" id="statDays">—</div><div class="stat-label">Dienos</div></div>
         </div>
         <div class="divider"></div>
+        <!-- Task form -->
         <div style="display:flex;flex-direction:column;gap:8px">
           <div class="sec-title">Nauja užduotis</div>
           <div><label>Diena</label><select id="fDay"></select></div>
-          <div><label>Kategorija</label>
-            <select id="fCat">
-              <option value="ig">Instagram + Facebook</option>
-              <option value="ugc">UGC</option>
-              <option value="meta">Meta Ads</option>
-              <option value="design">Dizainas</option>
-              <option value="extra">Papildomi darbai</option>
-              <option value="other">Kita</option>
-            </select>
-          </div>
-          <div><label>Pasirink užduotį</label>
+
+          <!-- Template picker -->
+          <div>
+            <label style="display:flex;align-items:center;justify-content:space-between">Šablonas<span id="tplCount" style="font-weight:400;color:var(--text-faint)"></span></label>
             <select id="fTask" onchange="onTaskSelect()">
-              <option value="">— pasirink arba rašyk žemiau —</option>
-              <optgroup label="Instagram + Facebook">
-                <option data-cat="ig" data-price="40">Įrašų planavimas (mėnesio kalendorius)</option>
-                <option data-cat="ig" data-price="25">Statinis įrašas (tekstas + nuotrauka, CTA)</option>
-                <option data-cat="ig" data-price="25">Judantis įrašas (video, reelsas)</option>
-                <option data-cat="ig" data-price="15">Stories (statiniai)</option>
-                <option data-cat="ig" data-price="15">Stories (video)</option>
-                <option data-cat="ig" data-price="50">Mėnesinės ataskaitos</option>
-              </optgroup>
-              <optgroup label="UGC">
-                <option data-cat="ugc" data-price="15">Scenarijų kūrimas</option>
-                <option data-cat="ugc" data-price="70">Kūrėjų / klientų turinio atranka</option>
-                <option data-cat="ugc" data-price="20">Vaizdo įrašo montavimas</option>
-                <option data-cat="ugc" data-price="10">Turinio adaptacija reklamoms/social</option>
-                <option data-cat="ugc" data-price="70">Komunikacija su klientais</option>
-              </optgroup>
-              <optgroup label="Meta Ads">
-                <option data-cat="meta" data-price="80">Meta kampanija</option>
-                <option data-cat="meta" data-price="15">A/B Testai</option>
-                <option data-cat="meta" data-price="45">Kas savaitę optimizacija</option>
-                <option data-cat="meta" data-price="50">Mėnesinės ataskaitos</option>
-              </optgroup>
-              <optgroup label="Dizainas">
-                <option data-cat="design" data-price="65">Vizualizacijos kūrimas – karuselė</option>
-                <option data-cat="design" data-price="45">Vizualizacijos kūrimas (plakatas, baneris)</option>
-                <option data-cat="design" data-price="50">Vizualizacijos kūrimas (animacija, video)</option>
-                <option data-cat="design" data-price="15">Turinio pritaikymas kelioms platformoms</option>
-                <option data-cat="design" data-price="12">Tekstai kampanijoms, social</option>
-              </optgroup>
-              <optgroup label="Papildomi darbai">
-                <option data-cat="extra" data-price="30">Specialios užduotys – social optimizacija</option>
-                <option data-cat="extra" data-price="30">Specialios užduotys – UGC dokumentai</option>
-                <option data-cat="extra" data-price="15">Turinio pritaikymas skirtingoms rinkoms</option>
-              </optgroup>
+              <option value="">— pasirink šabloną —</option>
             </select>
           </div>
-          <div><label>Arba įrašyk pats</label><input type="text" id="fCustom" placeholder="Užduoties pavadinimas..."></div>
+
+          <div><label>Užduoties pavadinimas</label><input type="text" id="fCustom" placeholder="Arba įrašyk pats..."></div>
+
+          <!-- Multi-category pills -->
+          <div>
+            <label>Kategorijos</label>
+            <div class="cat-pills-wrap" id="taskCatPills"></div>
+          </div>
+
           <div><label>Pastabos</label><textarea id="fNote" placeholder="Ką tiksliai padarei?"></textarea></div>
           <div class="row2">
             <div><label>Kiekis</label><input type="number" id="fQty" value="1" min="0" step="0.5"></div>
@@ -416,18 +351,46 @@
               <option value="wait">⏳ Laukia</option>
             </select>
           </div>
+          <!-- Multi-file upload -->
           <div>
-            <label>Prisegti failą (nebūtina)</label>
-            <div class="file-attach-zone" id="attachZone" onclick="document.getElementById('taskFile').click()">
+            <label>Failai — iki 5 (nebūtina)</label>
+            <div class="files-drop-zone" id="filesZone" onclick="document.getElementById('taskFiles').click()">
               <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-              <span class="file-attach-text" id="attachText">PNG, JPG, MP4 — iki 30MB</span>
-              <input type="file" id="taskFile" accept="image/*,video/*" style="display:none" onchange="onTaskFileSelect(event)">
+              <span>PNG, JPG, MP4 — iki 30MB kiekvienas</span>
+              <input type="file" id="taskFiles" multiple accept="image/*,video/*" style="display:none" onchange="onFilesSelect(event)">
+            </div>
+            <div id="filesPreview" class="files-preview"></div>
+          </div>
+          <button class="btn-primary" onclick="addTask()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti užduotį</button>
+        </div>
+
+        <div class="divider"></div>
+        <!-- Template management -->
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div class="sec-title">Mano šablonai</div>
+            <button class="icon-btn" onclick="toggleTplForm()" title="Naujas šablonas"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          </div>
+          <!-- Add template form -->
+          <div id="tplFormWrap" class="tpl-form" style="display:none">
+            <div><label>Pavadinimas</label><input type="text" id="tplName" placeholder="pvz. Reelsas su tekstu..."></div>
+            <div>
+              <label>Kategorijos</label>
+              <div class="cat-pills-wrap" id="tplCatPills"></div>
+            </div>
+            <div class="row2">
+              <div><label>Kaina (€)</label><input type="number" id="tplPrice" placeholder="0" step="0.01"></div>
+              <div style="display:flex;align-items:flex-end">
+                <button class="btn-primary" onclick="saveTemplate()" style="font-size:12px;padding:8px">Išsaugoti</button>
+              </div>
             </div>
           </div>
-          <button class="btn-primary" onclick="addTask()">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti užduotį
-          </button>
+          <!-- Template list -->
+          <div id="templatesList" style="display:flex;flex-direction:column;gap:5px">
+            <div style="font-size:12px;color:var(--text-faint);text-align:center;padding:8px">Nėra šablonų — sukurk pirmą</div>
+          </div>
         </div>
+
         <div class="divider"></div>
         <div style="display:flex;flex-direction:column;gap:6px">
           <div class="sec-title">Ataskaita</div>
@@ -436,7 +399,7 @@
         </div>
       </aside>
 
-      <main class="s-main" id="mainContent">
+      <main class="s-main">
         <div class="no-client-msg" id="noClientMsg">
           <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <strong>Pasirink arba pridėk klientą</strong>
@@ -451,136 +414,88 @@
   <!-- META TAB -->
   <div id="tabMeta" style="display:none">
     <div class="meta-wrapper">
-
       <div id="metaNoClient" class="no-client-msg" style="min-height:200px">
         <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <strong>Pasirink klientą</strong>
-        <span style="font-size:12px">Viršuje pasirink klientą norėdamas peržiūrėti Meta statistiką</span>
+        <strong>Pasirink klientą</strong><span style="font-size:12px">Pasirink klientą Meta statistikai</span>
       </div>
-
       <div id="metaContent" style="display:none">
-
-        <!-- Header -->
         <div class="meta-header">
-          <div>
-            <div class="meta-title">Meta Ads Analytics</div>
-            <div class="meta-subtitle" id="metaClientTitle">—</div>
-          </div>
+          <div><div class="meta-title">Meta Ads Analytics</div><div class="meta-subtitle" id="metaClientTitle">—</div></div>
           <div class="meta-actions">
-            <button class="btn-meta-settings" onclick="openMetaSetup()">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              Nustatymai
-            </button>
-            <button class="btn-sync" id="syncBtn" onclick="fetchAndSyncMeta()">
-              <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-              Sinchronizuoti
-            </button>
+            <button class="btn-meta-settings" onclick="openMetaSetup()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Nustatymai</button>
+            <button class="btn-sync" id="syncBtn" onclick="fetchAndSyncMeta()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Sinchronizuoti</button>
           </div>
         </div>
 
-        <!-- Setup card -->
         <div id="metaSetupCard" class="meta-setup-card" style="display:none">
-          <div class="meta-setup-title">Meta Ads paskyros nustatymai</div>
-          <div class="meta-setup-sub">
-            <strong>Ad Account ID</strong> — rasi Meta Business Suite → Nustatymai → Ad Accounts.<br>
-            <strong>Access Token</strong> — Meta for Developers → Graph API Explorer → Get Token → pasirink <em>ads_read</em> + <em>read_insights</em>.<br>
-            Rekomenduojama: System User token Meta Business Suite (neišsibaigiantis).
-          </div>
+          <div class="meta-setup-title">Meta paskyros nustatymai</div>
+          <div class="meta-setup-sub">Ad Account ID — Meta Business Suite → Nustatymai → Ad Accounts.<br>Access Token — Graph API Explorer → Get Token → <em>ads_read + read_insights + pages_read_engagement</em>.</div>
           <div class="meta-form">
-            <div><label>Ad Account ID (be „act_" priešdėlio)</label><input type="text" id="metaAccountId" placeholder="123456789"></div>
+            <div><label>Ad Account ID (be „act_")</label><input type="text" id="metaAccountId" placeholder="123456789"></div>
             <div><label>Access Token</label><input type="text" id="metaToken" placeholder="EAAxxxxxx..."></div>
-            <div><label>Facebook Page ID (nebūtina — puslapio statistikai)</label><input type="text" id="metaPageId" placeholder="123456789"></div>
-            <div style="display:flex;gap:7px">
-              <button class="btn-cancel" onclick="closeMetaSetup()">Atšaukti</button>
-              <button class="btn-confirm" onclick="saveMetaSettings()">Išsaugoti</button>
-            </div>
+            <div><label>Facebook Page ID (nebūtina)</label><input type="text" id="metaPageId" placeholder="123456789"></div>
+            <div style="display:flex;gap:7px"><button class="btn-cancel" onclick="closeMetaSetup()">Atšaukti</button><button class="btn-confirm" onclick="saveMetaSettings()">Išsaugoti</button></div>
           </div>
         </div>
 
-        <!-- No settings -->
         <div id="metaNoSettings" class="no-client-msg" style="display:none;min-height:150px">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <strong>Meta paskyra neprijungta</strong>
-          <span style="font-size:12px">Spausk „Nustatymai" ir įvesk Ad Account ID bei Access Token</span>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>
+          <strong>Meta paskyra neprijungta</strong><span style="font-size:12px">Spausk „Nustatymai"</span>
         </div>
 
-        <!-- Stats panel -->
         <div id="metaStatsPanel" style="display:none">
-
-          <!-- Period tabs -->
           <div class="period-tabs">
             <button class="ptab active" data-p="this_week" onclick="setPeriod('this_week')">Ši savaitė</button>
             <button class="ptab" data-p="last_week" onclick="setPeriod('last_week')">Praėjusi savaitė</button>
             <button class="ptab" data-p="this_month" onclick="setPeriod('this_month')">Šis mėnuo</button>
             <button class="ptab" data-p="last_month" onclick="setPeriod('last_month')">Praėjęs mėnuo</button>
           </div>
-
-          <!-- Rate limit warning -->
-          <div id="rateLimitBar" class="rate-bar" style="display:none">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span id="rateLimitMsg">Palaukite prieš sinchronizuojant vėl.</span>
-          </div>
-
-          <!-- Error -->
+          <div id="rateLimitBar" class="rate-bar" style="display:none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="rateLimitMsg"></span></div>
           <div id="metaError" class="meta-error" style="display:none"></div>
+          <div id="metaLoading" class="meta-loading" style="display:none"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Kraunama iš Meta API...</div>
 
-          <!-- Loading -->
-          <div id="metaLoading" class="meta-loading" style="display:none">
-            <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-            Kraunami duomenys iš Meta Graph API...
-          </div>
-
-          <!-- KPI Grid -->
+          <!-- ADS KPIs -->
+          <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Reklamos statistika (aktyvios kampanijos)</div>
           <div class="kpi-grid" id="kpiGrid"></div>
 
-          <!-- Charts -->
           <div class="charts-grid" id="chartsGrid" style="display:none">
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <span class="chart-card-title">Dienos išlaidos</span>
-                <span class="chart-card-value" id="spendTotal"></span>
-              </div>
-              <div class="chart-wrap"><canvas id="spendChart"></canvas></div>
-            </div>
-            <div class="chart-card">
-              <div class="chart-card-header">
-                <span class="chart-card-title">Reach &amp; Impressions</span>
-              </div>
-              <div class="chart-wrap"><canvas id="reachChart"></canvas></div>
-            </div>
+            <div class="chart-card"><div class="chart-card-header"><span class="chart-card-title">Dienos išlaidos</span><span class="chart-card-value" id="spendTotal"></span></div><div class="chart-wrap"><canvas id="spendChart"></canvas></div></div>
+            <div class="chart-card"><div class="chart-card-header"><span class="chart-card-title">Reach &amp; Impressions</span></div><div class="chart-wrap"><canvas id="reachChart"></canvas></div></div>
           </div>
 
-          <!-- Page stats -->
+          <!-- Active campaigns -->
+          <div class="meta-section" id="campaignsSection" style="display:none">
+            <div class="meta-section-header">
+              <svg style="width:14px;height:14px;stroke:var(--text-muted);fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <span class="meta-section-title">Aktyvios kampanijos</span>
+              <span style="font-size:11px;color:var(--text-faint);margin-left:auto" id="campaignsCount"></span>
+            </div>
+            <div style="overflow-x:auto"><table class="camp-table" id="campaignsTable"></table></div>
+          </div>
+
+          <!-- Page stats SEPARATE -->
           <div class="meta-section" id="pageStatsSection" style="display:none">
             <div class="meta-section-header">
-              <svg style="width:14px;height:14px;stroke:var(--text-muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-              <span class="meta-section-title">Facebook puslapio statistika</span>
+              <svg style="width:14px;height:14px;stroke:var(--text-muted);fill:none;stroke-width:2" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              <span class="meta-section-title">Facebook / Instagram puslapis</span>
             </div>
             <div class="page-kpi-grid" id="pageStatsGrid"></div>
           </div>
 
-          <!-- Footer -->
           <div class="meta-footer" id="metaFooter"></div>
         </div>
-
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- Add Client Modal -->
 <div class="modal-overlay hidden" id="addClientModal">
   <div class="modal">
     <div class="modal-title">Naujas klientas</div>
     <div><label>Kliento pavadinimas</label><input type="text" id="newClientName" placeholder="pvz. UAB Pavyzdys" onkeydown="if(event.key==='Enter')confirmAddClient()"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeAddClient()">Atšaukti</button>
-      <button class="btn-confirm" onclick="confirmAddClient()">Pridėti</button>
-    </div>
+    <div class="modal-actions"><button class="btn-cancel" onclick="closeAddClient()">Atšaukti</button><button class="btn-confirm" onclick="confirmAddClient()">Pridėti</button></div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -588,25 +503,35 @@ const SB_URL='https://oslhylezbyvgesnybtlj.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zbGh5bGV6Ynl2Z2VzbnlidGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MjcwODcsImV4cCI6MjA5NDAwMzA4N30.GDrd9EFP_2gnSw_nO-W87fsKgcr4d-BjqTa9fqmoavo';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
-const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
-const CAT_NAME={ig:'Instagram + Facebook',ugc:'UGC',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi darbai',other:'Kita'};
+const CATS=[
+  {code:'ig',label:'Instagram + FB',color:'#4A3AAA'},
+  {code:'ugc',label:'UGC',color:'#1A5C38'},
+  {code:'meta',label:'Meta Ads',color:'#1A4098'},
+  {code:'design',label:'Dizainas',color:'#9C4A10'},
+  {code:'extra',label:'Papildomi',color:'#9C1A36'},
+  {code:'other',label:'Kita',color:'#6B6862'},
+];
+const CAT_MAP=Object.fromEntries(CATS.map(c=>[c.code,c]));
 const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
+const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
 const STATUS_LABELS={done:'✅ Atlikta',progress:'🔄 Vykdoma',wait:'⏳ Laukia'};
 const STATUS_CLASS={done:'status-done',progress:'status-progress',wait:'status-wait'};
 
 let weekOffset=0,tasks=[],clients=[],currentClient=null,collapsed={};
-let currentTab='journal',pendingFile=null;
+let currentTab='journal';
+let selectedCats=[]; // task form
+let tplCats=[];      // template form
+let pendingFiles=[];  // file list
+let templates=[];
 
-// ============================================================
-// AUTH
-// ============================================================
+// ─── AUTH ───
 async function initAuth(){
   const{data:{session}}=await sb.auth.getSession();
   if(session)showApp();
   else{document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
   sb.auth.onAuthStateChange((e,s)=>{if(e==='SIGNED_IN')showApp();if(e==='SIGNED_OUT')showLogin();});
 }
-function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';loadClients();}
+function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';loadClients();loadTemplates();renderCatPills();}
 function showLogin(){document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
 async function doLogin(){
   const email=document.getElementById('lEmail').value.trim(),pass=document.getElementById('lPass').value;
@@ -618,9 +543,7 @@ async function doLogin(){
 }
 async function doLogout(){await sb.auth.signOut();}
 
-// ============================================================
-// TABS
-// ============================================================
+// ─── TABS ───
 function setTab(tab){
   currentTab=tab;
   ['journal','meta'].forEach(t=>{
@@ -632,10 +555,8 @@ function setTab(tab){
   if(tab==='meta')renderMetaTab();
 }
 
-// ============================================================
-// CLIENTS
-// ============================================================
-function slugify(n){return n.toLowerCase().replace(/[ą]/g,'a').replace(/[č]/g,'c').replace(/[ę]/g,'e').replace(/[ė]/g,'e').replace(/[į]/g,'i').replace(/[š]/g,'s').replace(/[ų]/g,'u').replace(/[ū]/g,'u').replace(/[ž]/g,'z').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+// ─── CLIENTS ───
+function slugify(n){return n.toLowerCase().replace(/[ąčęėįšųūž]/g,c=>({ą:'a',č:'c',ę:'e',ė:'e',į:'i',š:'s',ų:'u',ū:'u',ž:'z'}[c]||c)).replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 async function loadClients(){const{data}=await sb.from('clients').select('*').order('name');clients=data||[];renderClientSelect();}
 function renderClientSelect(){
   const sel=document.getElementById('clientSelect');
@@ -659,7 +580,7 @@ function updateClientLinkBar(){
 }
 function copyClientLink(){
   const base=window.location.href.replace('admin.html','').replace(/\/$/,'');
-  navigator.clipboard.writeText(`${base}/index.html?c=${currentClient.slug}`).then(()=>showToast('Kliento nuoroda nukopijuota!'));
+  navigator.clipboard.writeText(`${base}/index.html?c=${currentClient.slug}`).then(()=>showToast('Nuoroda nukopijuota!'));
 }
 function openAddClient(){document.getElementById('newClientName').value='';document.getElementById('addClientModal').classList.remove('hidden');setTimeout(()=>document.getElementById('newClientName').focus(),50);}
 function closeAddClient(){document.getElementById('addClientModal').classList.add('hidden');}
@@ -675,9 +596,7 @@ async function confirmAddClient(){
   closeAddClient();showToast('Klientas pridėtas!');loadTasks();loadRequests();
 }
 
-// ============================================================
-// WEEK / DATES
-// ============================================================
+// ─── WEEK ───
 function getMonday(o){const d=new Date(),day=d.getDay()||7;d.setDate(d.getDate()-day+1+o*7);d.setHours(0,0,0,0);return d;}
 function fmt(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
 function fmtNice(d){return new Date(d+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'});}
@@ -688,77 +607,156 @@ function fillDaySelect(){
   sel.innerHTML=days.map((d,i)=>`<option value="${fmt(d)}"${fmt(d)===t?' selected':''}>${DAYS[i]}, ${fmtNice(fmt(d))}</option>`).join('');
 }
 function changeWeek(dir){weekOffset+=dir;if(currentClient)loadTasks();else{updateWeekLabel();fillDaySelect();}}
+
+// ─── CATEGORY PILLS ───
+function renderCatPills(){
+  // Task form pills
+  const tp=document.getElementById('taskCatPills');
+  if(tp)tp.innerHTML=CATS.map(c=>`<span class="cat-pill${selectedCats.includes(c.code)?' sel':''}" data-cat="${c.code}" onclick="toggleTaskCat('${c.code}')">${c.label}</span>`).join('');
+  // Template form pills
+  const tpp=document.getElementById('tplCatPills');
+  if(tpp)tpp.innerHTML=CATS.map(c=>`<span class="cat-pill${tplCats.includes(c.code)?' sel':''}" data-cat="${c.code}" onclick="toggleTplCat('${c.code}')">${c.label}</span>`).join('');
+}
+function toggleTaskCat(code){
+  if(selectedCats.includes(code))selectedCats=selectedCats.filter(c=>c!==code);
+  else if(selectedCats.length<3)selectedCats.push(code);
+  renderCatPills();
+}
+function toggleTplCat(code){
+  if(tplCats.includes(code))tplCats=tplCats.filter(c=>c!==code);
+  else if(tplCats.length<3)tplCats.push(code);
+  renderCatPills();
+}
+
+// ─── TEMPLATES ───
+async function loadTemplates(){
+  const{data}=await sb.from('task_templates').select('*').order('sort_order').order('created_at');
+  templates=data||[];
+  renderTemplateList();
+  populateTemplateSelect();
+}
+function renderTemplateList(){
+  const list=document.getElementById('templatesList');
+  if(!templates.length){list.innerHTML='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:8px">Nėra šablonų — sukurk pirmą</div>';return;}
+  list.innerHTML=templates.map(t=>{
+    const cats=(t.categories||[]).map(c=>`<span class="tpl-cat-dot" style="background:${CAT_MAP[c]?.color||'#888'}" title="${CAT_MAP[c]?.label||c}"></span>`).join('');
+    return `<div class="tpl-row">
+      <span class="tpl-cats">${cats}</span>
+      <span class="tpl-name" title="${escHtml(t.name)}">${escHtml(t.name)}</span>
+      ${t.price>0?`<span class="tpl-price">${parseFloat(t.price).toFixed(0)}€</span>`:''}
+      <button class="tpl-del" onclick="deleteTemplate('${t.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+    </div>`;
+  }).join('');
+  document.getElementById('tplCount').textContent=`(${templates.length})`;
+}
+function populateTemplateSelect(){
+  const sel=document.getElementById('fTask');
+  const customOpts=templates.map(t=>`<option value="tpl:${t.id}" data-tpl-id="${t.id}">${t.name}${t.price>0?' — '+parseFloat(t.price).toFixed(0)+'€':''}</option>`).join('');
+  sel.innerHTML=`<option value="">— pasirink šabloną —</option>${customOpts?`<optgroup label="Mano šablonai">${customOpts}</optgroup>`:''}`;
+}
 function onTaskSelect(){
-  const sel=document.getElementById('fTask'),opt=sel.options[sel.selectedIndex];
-  const cat=opt.getAttribute('data-cat'),price=opt.getAttribute('data-price');
-  if(cat)document.getElementById('fCat').value=cat;
-  if(price)document.getElementById('fPrice').value=price;
-  if(opt.value)document.getElementById('fCustom').value='';
-}
-
-// ============================================================
-// FILE ATTACH
-// ============================================================
-function onTaskFileSelect(e){
-  const f=e.target.files[0];if(!f)return;
-  pendingFile=f;
-  const zone=document.getElementById('attachZone');
-  zone.innerHTML='';
-  if(f.type.startsWith('image/')){
-    const img=document.createElement('img');img.className='file-attach-preview';
-    const reader=new FileReader();reader.onload=ev=>{img.src=ev.target.result;};reader.readAsDataURL(f);
-    zone.appendChild(img);
-  }else{
-    const icon=document.createElement('svg');icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('width','20');icon.setAttribute('height','20');
-    icon.style.cssText='stroke:var(--text-muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0';
-    icon.innerHTML='<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>';
-    zone.appendChild(icon);
+  const sel=document.getElementById('fTask');
+  const val=sel.value;
+  if(!val)return;
+  if(val.startsWith('tpl:')){
+    const id=val.replace('tpl:','');
+    const tpl=templates.find(t=>t.id===id);
+    if(!tpl)return;
+    document.getElementById('fCustom').value=tpl.name;
+    selectedCats=[...(tpl.categories||[])];
+    if(tpl.price)document.getElementById('fPrice').value=tpl.price;
+    renderCatPills();
   }
-  const sp=document.createElement('span');sp.style.cssText='font-size:12px;color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';sp.textContent=f.name;zone.appendChild(sp);
-  const clr=document.createElement('button');clr.className='file-attach-clear';clr.innerHTML='<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-  clr.onclick=e=>{e.stopPropagation();clearTaskFile();};zone.appendChild(clr);
 }
-function clearTaskFile(){
-  pendingFile=null;document.getElementById('taskFile').value='';
-  const zone=document.getElementById('attachZone');
-  zone.innerHTML=`<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-faint);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><span class="file-attach-text" id="attachText">PNG, JPG, MP4 — iki 30MB</span><input type="file" id="taskFile" accept="image/*,video/*" style="display:none" onchange="onTaskFileSelect(event)">`;
+function toggleTplForm(){
+  const w=document.getElementById('tplFormWrap');
+  const open=w.style.display!=='none';
+  w.style.display=open?'none':'flex';
+  w.style.flexDirection='column';
+  if(!open){tplCats=[];renderCatPills();document.getElementById('tplName').value='';document.getElementById('tplPrice').value='';}
+}
+async function saveTemplate(){
+  const name=document.getElementById('tplName').value.trim();
+  if(!name){showToast('Įrašyk pavadinimą!');return;}
+  const price=parseFloat(document.getElementById('tplPrice').value)||0;
+  const{data,error}=await sb.from('task_templates').insert([{name,categories:tplCats,price}]).select().single();
+  if(error){showToast('Klaida: '+error.message);return;}
+  templates.push(data);
+  renderTemplateList();populateTemplateSelect();
+  toggleTplForm();showToast('Šablonas išsaugotas!');
+}
+async function deleteTemplate(id){
+  if(!confirm('Ištrinti šį šabloną?'))return;
+  await sb.from('task_templates').delete().eq('id',id);
+  templates=templates.filter(t=>t.id!==id);
+  renderTemplateList();populateTemplateSelect();
+  showToast('Ištrinta.');
 }
 
-// ============================================================
-// TASKS
-// ============================================================
+// ─── MULTI-FILE ───
+function onFilesSelect(e){
+  const newFiles=Array.from(e.target.files);
+  for(const f of newFiles){
+    if(pendingFiles.length>=5){showToast('Maks. 5 failai!');break;}
+    if(f.size>30*1024*1024){showToast(`${f.name} per didelis (>30MB)`);continue;}
+    pendingFiles.push(f);
+  }
+  document.getElementById('taskFiles').value='';
+  renderFilesPreview();
+}
+function removeFile(idx){pendingFiles.splice(idx,1);renderFilesPreview();}
+function renderFilesPreview(){
+  const wrap=document.getElementById('filesPreview');
+  wrap.innerHTML=pendingFiles.map((f,i)=>{
+    const isImg=f.type.startsWith('image/');
+    return `<div class="fp-item" id="fp${i}">
+      ${isImg?`<img class="fp-img" src="${URL.createObjectURL(f)}">`:`<div class="fp-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>`}
+      <button class="fp-rm" onclick="removeFile(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+function clearFiles(){pendingFiles=[];document.getElementById('filesPreview').innerHTML='';document.getElementById('taskFiles').value='';}
+
+// ─── TASKS ───
 async function addTask(){
   if(!currentClient){showToast('Pirma pasirink klientą!');return;}
-  const day=document.getElementById('fDay').value,cat=document.getElementById('fCat').value;
+  const day=document.getElementById('fDay').value;
   const sel=document.getElementById('fTask'),custom=document.getElementById('fCustom').value.trim();
-  const name=custom||(sel.value?sel.options[sel.selectedIndex].text:'');
+  const name=custom||(sel.value&&!sel.value.startsWith('tpl:')?sel.options[sel.selectedIndex].text:'');
   if(!name){showToast('Įrašyk arba pasirink užduotį!');return;}
   const qty=parseFloat(document.getElementById('fQty').value)||1;
   const price=parseFloat(document.getElementById('fPrice').value)||0;
   const note=document.getElementById('fNote').value.trim();
   const status=document.getElementById('fStatus').value;
   const total=+(qty*price).toFixed(2);
-  let file_url=null,file_name=null,file_mime=null;
-  if(pendingFile){
-    const ext=pendingFile.name.split('.').pop();
-    const path=`${currentClient.id}/tasks/${Date.now()}.${ext}`;
-    const{error:upErr}=await sb.storage.from('client-files').upload(path,pendingFile);
+  const cat=selectedCats[0]||'other';
+  const categories=[...selectedCats];
+
+  // Upload files
+  let files=[];
+  for(const f of pendingFiles){
+    const ext=f.name.split('.').pop();
+    const path=`${currentClient.id}/tasks/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const{error:upErr}=await sb.storage.from('client-files').upload(path,f);
     if(!upErr){
       const{data:{publicUrl}}=sb.storage.from('client-files').getPublicUrl(path);
-      file_url=publicUrl;file_name=pendingFile.name;file_mime=pendingFile.type;
+      files.push({url:publicUrl,name:f.name,mime:f.type});
     }else{showToast('Failo klaida: '+upErr.message);}
   }
-  const{error}=await sb.from('tasks').insert([{day,cat,name,note,qty,price,total,status,client_id:currentClient.id,file_url,file_name,file_mime}]);
+  // backward compat
+  const file_url=files[0]?.url||null;
+  const file_name=files[0]?.name||null;
+  const file_mime=files[0]?.mime||null;
+
+  const{error}=await sb.from('tasks').insert([{day,cat,categories,name,note,qty,price,total,status,client_id:currentClient.id,files,file_url,file_name,file_mime}]);
   if(error){showToast('Klaida: '+error.message);return;}
   document.getElementById('fTask').value='';document.getElementById('fCustom').value='';
   document.getElementById('fNote').value='';document.getElementById('fPrice').value='';
-  document.getElementById('fQty').value='1';clearTaskFile();
+  document.getElementById('fQty').value='1';
+  selectedCats=[];renderCatPills();clearFiles();
   showToast('Užduotis pridėta!');
 }
-async function deleteTask(id){
-  if(!confirm('Ištrinti šią užduotį?'))return;
-  await sb.from('tasks').delete().eq('id',id);
-}
+async function deleteTask(id){if(!confirm('Ištrinti?'))return;await sb.from('tasks').delete().eq('id',id);}
 async function cycleStatus(id,current){
   const c=['done','progress','wait'],next=c[(c.indexOf(current)+1)%c.length];
   await sb.from('tasks').update({status:next}).eq('id',id);
@@ -774,6 +772,16 @@ function updateStats(){
   document.getElementById('statSum').textContent=tasks.length?tasks.reduce((a,t)=>a+t.total,0).toFixed(0)+'€':'—';
   document.getElementById('statDays').textContent=tasks.length?new Set(tasks.map(t=>t.day)).size+'/5':'—';
 }
+function getTaskCats(t){
+  if(t.categories&&t.categories.length)return t.categories;
+  if(t.cat)return[t.cat];
+  return['other'];
+}
+function taskFilesHtml(t){
+  const allFiles=t.files&&t.files.length?t.files:(t.file_url?[{url:t.file_url,name:t.file_name,mime:t.file_mime}]:[]);
+  if(!allFiles.length)return'';
+  return`<div class="task-thumbs">${allFiles.slice(0,4).map(f=>`<a href="${escHtml(f.url)}" target="_blank">${f.mime&&f.mime.startsWith('image/')?`<img class="task-thumb" src="${escHtml(f.url)}">`:`<div class="task-thumb-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>`}</a>`).join('')}</div>`;
+}
 function renderDays(){
   const days=getWeekDays(),todayStr=fmt(new Date()),container=document.getElementById('daysList');
   container.innerHTML='';
@@ -783,28 +791,17 @@ function renderDays(){
     const card=document.createElement('div');card.className='day-card'+(isToday?' today':'');
     card.innerHTML=`
       <div class="day-head ${isCol?'collapsed':''}" onclick="toggleDay('${key}')">
-        <div class="day-head-left">
-          <span class="day-name">${DAYS[i]}</span>
-          ${isToday?'<span class="today-pill">šiandien</span>':''}
-          <span class="day-date-str">${fmtNice(key)}</span>
-        </div>
-        <div class="day-head-right">
-          <span class="day-count-badge">${dt.length} užd.</span>
-          ${sum>0?`<span class="day-sum">${sum.toFixed(0)} €</span>`:''}
-          <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
+        <div class="day-head-left"><span class="day-name">${DAYS[i]}</span>${isToday?'<span class="today-pill">šiandien</span>':''}<span class="day-date-str">${fmtNice(key)}</span></div>
+        <div class="day-head-right"><span class="day-count-badge">${dt.length} užd.</span>${sum>0?`<span class="day-sum">${sum.toFixed(0)} €</span>`:''}<svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
       <div class="tasks-body${isCol?' hidden':''}">
-        ${!dt.length?`<div class="empty-day">Nieko dar šiai dienai</div>`:dt.map(t=>`
+        ${!dt.length?'<div class="empty-day">Nieko šiai dienai</div>':dt.map(t=>`
           <div class="task-row">
-            ${t.file_url?`<div class="task-thumb-wrap"><a href="${escHtml(t.file_url)}" target="_blank">${t.file_mime&&t.file_mime.startsWith('image/')?`<img class="task-thumb" src="${escHtml(t.file_url)}">`:`<div class="task-thumb-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>`}</a></div>`:''}
+            ${taskFilesHtml(t)}
             <div class="task-info">
               <div class="task-name">${escHtml(t.name)}</div>
               ${t.note?`<div class="task-note">${escHtml(t.note)}</div>`:''}
-              <div class="task-tags">
-                <span class="tag ${CAT_CLASS[t.cat]||'tag-other'}">${CAT_NAME[t.cat]||t.cat}</span>
-                ${t.qty!==1?`<span class="tag tag-other">${t.qty} vnt.</span>`:''}
-              </div>
+              <div class="task-tags">${getTaskCats(t).map(c=>`<span class="tag ${CAT_CLASS[c]||'tag-other'}">${CAT_MAP[c]?.label||c}</span>`).join('')}${t.qty!==1?`<span class="tag tag-other">${t.qty}×</span>`:''}</div>
             </div>
             <div class="task-right">
               ${t.price>0?`<span class="task-price">${t.total.toFixed(0)} €</span>`:''}
@@ -819,9 +816,7 @@ function renderDays(){
 }
 function toggleDay(key){collapsed[key]=!collapsed[key];renderDays();}
 
-// ============================================================
-// CLIENT REQUESTS
-// ============================================================
+// ─── REQUESTS ───
 async function loadRequests(){
   if(!currentClient)return;
   const{data}=await sb.from('client_requests').select('*').eq('client_id',currentClient.id).eq('status','pending').order('created_at',{ascending:false});
@@ -830,47 +825,26 @@ async function loadRequests(){
 function renderRequests(reqs){
   const area=document.getElementById('requestsArea');
   if(!reqs.length){area.innerHTML='';return;}
-  const CAT_LT={ig:'Instagram/Facebook',ugc:'UGC',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi darbai',other:'Kita'};
-  area.innerHTML=`
-    <div class="requests-card">
-      <div class="requests-head" onclick="this.nextElementSibling.classList.toggle('hidden')">
-        <div class="requests-head-left">
-          <span class="requests-badge">${reqs.length}</span>
-          <span class="req-title-text">Kliento užklausos</span>
-        </div>
-        <svg style="width:14px;height:14px;stroke:var(--orange);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-      </div>
-      <div class="req-body">
-        ${reqs.map(r=>`
-          <div class="req-row">
-            <div class="req-info">
-              <div class="req-name">${escHtml(r.title)}</div>
-              ${r.notes?`<div class="req-note">${escHtml(r.notes)}</div>`:''}
-              <div class="req-meta">${CAT_LT[r.category]||'Kita'} · ${new Date(r.created_at).toLocaleDateString('lt-LT')}</div>
-            </div>
-            <div class="req-actions">
-              <button class="req-btn req-accept" onclick="acceptRequest('${r.id}','${escHtml(r.title)}','${escHtml(r.notes||'')}','${r.category||'other'}')">Priimti</button>
-              <button class="req-btn req-reject" onclick="rejectRequest('${r.id}')">Atmesti</button>
-            </div>
-          </div>`).join('')}
-      </div>
-    </div>`;
+  const CAT_LT={ig:'Instagram/FB',ugc:'UGC',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi',other:'Kita'};
+  area.innerHTML=`<div class="requests-card">
+    <div class="requests-head" onclick="this.nextElementSibling.classList.toggle('hidden')">
+      <div class="requests-head-left"><span class="requests-badge">${reqs.length}</span><span class="req-title-text">Kliento užklausos</span></div>
+      <svg style="width:14px;height:14px;stroke:var(--orange);fill:none;stroke-width:2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="req-body">${reqs.map(r=>`<div class="req-row"><div class="req-info"><div class="req-name">${escHtml(r.title)}</div>${r.notes?`<div class="req-note">${escHtml(r.notes)}</div>`:''}<div class="req-meta">${CAT_LT[r.category]||'Kita'} · ${new Date(r.created_at).toLocaleDateString('lt-LT')}</div></div><div class="req-actions"><button class="req-btn req-accept" onclick="acceptRequest('${r.id}','${escHtml(r.title)}','${escHtml(r.notes||'')}','${r.category||'other'}')">Priimti</button><button class="req-btn req-reject" onclick="rejectRequest('${r.id}')">Atmesti</button></div></div>`).join('')}</div>
+  </div>`;
 }
 async function acceptRequest(id,title,notes,cat){
-  const day=fmt(new Date());
-  await sb.from('tasks').insert([{day,cat,name:title,note:notes,qty:1,price:0,total:0,status:'wait',client_id:currentClient.id}]);
+  await sb.from('tasks').insert([{day:fmt(new Date()),cat,categories:[cat],name:title,note:notes,qty:1,price:0,total:0,status:'wait',client_id:currentClient.id,files:[]}]);
   await sb.from('client_requests').update({status:'accepted'}).eq('id',id);
-  showToast('Užklausa priimta ir pridėta kaip užduotis!');
-  loadTasks();loadRequests();
+  showToast('Priimta!');loadTasks();loadRequests();
 }
 async function rejectRequest(id){
   await sb.from('client_requests').update({status:'rejected'}).eq('id',id);
-  showToast('Užklausa atmesta.');loadRequests();
+  showToast('Atmesta.');loadRequests();
 }
 
-// ============================================================
-// REPORTS
-// ============================================================
+// ─── REPORTS ───
 function copyReport(){
   const days=getWeekDays();
   let txt=`${currentClient?currentClient.name+' — ':''}SAVAITĖ: ${fmtNice(fmt(days[0]))} – ${fmtNice(fmt(days[6]))}\n${'─'.repeat(45)}\n`;
@@ -884,168 +858,89 @@ function copyReport(){
 }
 function printReport(){collapsed={};renderDays();setTimeout(()=>window.print(),100);}
 
-// ============================================================
-// META ADS — PILNA VERSIJA
-// ============================================================
-
-let metaPeriod='this_month';
-let metaSettings=null;
-let metaCharts={};
+// ─── META ADS ───
+let metaPeriod='this_month',metaSettings=null,metaCharts={};
 const syncCooldowns={};
-const SYNC_COOLDOWN=5*60*1000; // 5 min
-
-// --- Datos skaičiavimas ---
-function fmtD(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-
-function getPeriodRange(p){
-  const today=new Date();
-  const getMon=(base,offset=0)=>{const d=new Date(base);const day=d.getDay()||7;d.setDate(d.getDate()-day+1+offset*7);d.setHours(0,0,0,0);return d;};
-  const minDate=(a,b)=>a<b?a:b;
-  switch(p){
-    case 'this_week':{const m=getMon(today);const e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(minDate(today,e))};}
-    case 'last_week':{const m=getMon(today,-1);const e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(e)};}
-    case 'two_weeks_ago':{const m=getMon(today,-2);const e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(e)};}
-    case 'this_month':{const f=new Date(today.getFullYear(),today.getMonth(),1);return{since:fmtD(f),until:fmtD(today)};}
-    case 'last_month':{const f=new Date(today.getFullYear(),today.getMonth()-1,1);const l=new Date(today.getFullYear(),today.getMonth(),0);return{since:fmtD(f),until:fmtD(l)};}
-    case 'two_months_ago':{const f=new Date(today.getFullYear(),today.getMonth()-2,1);const l=new Date(today.getFullYear(),today.getMonth()-1,0);return{since:fmtD(f),until:fmtD(l)};}
-    default:{const f=new Date(today.getFullYear(),today.getMonth(),1);return{since:fmtD(f),until:fmtD(today)};}
-  }
-}
-
-function getCompPeriod(p){
-  return{this_week:'last_week',last_week:'two_weeks_ago',this_month:'last_month',last_month:'two_months_ago'}[p]||null;
-}
-
+const SYNC_COOLDOWN=5*60*1000;
 const PERIOD_LT={this_week:'Ši savaitė',last_week:'Praėjusi savaitė',this_month:'Šis mėnuo',last_month:'Praėjęs mėnuo'};
 const COMP_LT={this_week:'vs praeita sav.',last_week:'vs 2 sav. prieš',this_month:'vs praėjusį mėn.',last_month:'vs 2 mėn. prieš'};
 
-// --- Rate limiting ---
-function canSync(){
-  if(!currentClient)return false;
-  const key=`${currentClient.id}_${metaPeriod}`;
-  const last=syncCooldowns[key];
-  return !last||(Date.now()-last>SYNC_COOLDOWN);
-}
-function markSynced(){
-  const key=`${currentClient.id}_${metaPeriod}`;
-  syncCooldowns[key]=Date.now();
-  updateSyncBtn();
-}
-function updateSyncBtn(){
-  const btn=document.getElementById('syncBtn');
-  const bar=document.getElementById('rateLimitBar');
-  const msg=document.getElementById('rateLimitMsg');
-  if(!btn)return;
-  const key=currentClient?`${currentClient.id}_${metaPeriod}`:'';
-  const last=syncCooldowns[key];
-  const rem=last?Math.max(0,SYNC_COOLDOWN-(Date.now()-last)):0;
-  if(rem>0){
-    btn.disabled=true;
-    bar.style.display='flex';
-    const mins=Math.ceil(rem/60000);
-    msg.textContent=`API rate limit apsauga: palaukite dar ~${mins} min. prieš sinchronizuojant vėl.`;
-    setTimeout(updateSyncBtn,30000);
-  }else{
-    btn.disabled=false;
-    bar.style.display='none';
+function fmtD(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function getPeriodRange(p){
+  const today=new Date();
+  const getMon=(base,off=0)=>{const d=new Date(base);const day=d.getDay()||7;d.setDate(d.getDate()-day+1+off*7);d.setHours(0,0,0,0);return d;};
+  const mn=(a,b)=>a<b?a:b;
+  switch(p){
+    case'this_week':{const m=getMon(today),e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(mn(today,e))};}
+    case'last_week':{const m=getMon(today,-1),e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(e)};}
+    case'two_weeks_ago':{const m=getMon(today,-2),e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(e)};}
+    case'this_month':{return{since:fmtD(new Date(today.getFullYear(),today.getMonth(),1)),until:fmtD(today)};}
+    case'last_month':{return{since:fmtD(new Date(today.getFullYear(),today.getMonth()-1,1)),until:fmtD(new Date(today.getFullYear(),today.getMonth(),0))};}
+    case'two_months_ago':{return{since:fmtD(new Date(today.getFullYear(),today.getMonth()-2,1)),until:fmtD(new Date(today.getFullYear(),today.getMonth()-1,0))};}
+    default:return{since:fmtD(new Date(today.getFullYear(),today.getMonth(),1)),until:fmtD(today)};
   }
 }
+function getCompPeriod(p){return{this_week:'last_week',last_week:'two_weeks_ago',this_month:'last_month',last_month:'two_months_ago'}[p]||null;}
 
-// --- Tab rendering ---
+function canSync(){if(!currentClient)return false;const k=`${currentClient.id}_${metaPeriod}`;const l=syncCooldowns[k];return!l||(Date.now()-l>SYNC_COOLDOWN);}
+function markSynced(){syncCooldowns[`${currentClient.id}_${metaPeriod}`]=Date.now();updateSyncBtn();}
+function updateSyncBtn(){
+  const btn=document.getElementById('syncBtn'),bar=document.getElementById('rateLimitBar'),msg=document.getElementById('rateLimitMsg');
+  if(!btn)return;
+  const k=currentClient?`${currentClient.id}_${metaPeriod}`:'';
+  const l=syncCooldowns[k];const rem=l?Math.max(0,SYNC_COOLDOWN-(Date.now()-l)):0;
+  if(rem>0){btn.disabled=true;bar.style.display='flex';msg.textContent=`Rate limit: palaukite dar ${Math.ceil(rem/60000)} min.`;setTimeout(updateSyncBtn,30000);}
+  else{btn.disabled=false;bar.style.display='none';}
+}
 function renderMetaTab(){
-  const noClient=document.getElementById('metaNoClient');
-  const content=document.getElementById('metaContent');
-  if(!currentClient){noClient.style.display='flex';content.style.display='none';return;}
-  noClient.style.display='none';content.style.display='block';
+  const nc=document.getElementById('metaNoClient'),c=document.getElementById('metaContent');
+  if(!currentClient){nc.style.display='flex';c.style.display='none';return;}
+  nc.style.display='none';c.style.display='block';
   document.getElementById('metaClientTitle').textContent=currentClient.name;
   loadMetaSettings();
 }
-function openMetaSetup(){
-  const c=document.getElementById('metaSetupCard');
-  const isOpen=c.style.display!=='none';
-  c.style.display=isOpen?'none':'block';
-  if(!isOpen&&metaSettings){
-    document.getElementById('metaAccountId').value=metaSettings.account_id||'';
-    document.getElementById('metaToken').value=metaSettings.access_token||'';
-    document.getElementById('metaPageId').value=metaSettings.page_id||'';
-  }
-}
+function openMetaSetup(){const c=document.getElementById('metaSetupCard');const open=c.style.display!=='none';c.style.display=open?'none':'block';if(!open&&metaSettings){document.getElementById('metaAccountId').value=metaSettings.account_id||'';document.getElementById('metaToken').value=metaSettings.access_token||'';document.getElementById('metaPageId').value=metaSettings.page_id||'';}}
 function closeMetaSetup(){document.getElementById('metaSetupCard').style.display='none';}
-
 async function loadMetaSettings(){
   if(!currentClient)return;
   const{data}=await sb.from('meta_settings').select('*').eq('client_id',currentClient.id).single();
   metaSettings=data||null;
-  const panel=document.getElementById('metaStatsPanel');
-  const noSettings=document.getElementById('metaNoSettings');
-  if(metaSettings){panel.style.display='block';noSettings.style.display='none';updateSyncBtn();loadCachedMetaStats();}
-  else{panel.style.display='none';noSettings.style.display='flex';}
+  const panel=document.getElementById('metaStatsPanel'),noS=document.getElementById('metaNoSettings');
+  if(metaSettings){panel.style.display='block';noS.style.display='none';updateSyncBtn();loadCachedMetaStats();}
+  else{panel.style.display='none';noS.style.display='flex';}
 }
-
 async function saveMetaSettings(){
   if(!currentClient)return;
   const account_id=document.getElementById('metaAccountId').value.trim();
   const access_token=document.getElementById('metaToken').value.trim();
   const page_id=document.getElementById('metaPageId').value.trim();
-  if(!account_id||!access_token){showToast('Užpildyk Account ID ir Token!');return;}
-  const{error}=await sb.from('meta_settings').upsert(
-    [{client_id:currentClient.id,account_id,access_token,page_id:page_id||null}],
-    {onConflict:'client_id'}
-  );
+  if(!account_id||!access_token){showToast('Užpildyk laukus!');return;}
+  const{error}=await sb.from('meta_settings').upsert([{client_id:currentClient.id,account_id,access_token,page_id:page_id||null}],{onConflict:'client_id'});
   if(error){showToast('Klaida: '+error.message);return;}
   metaSettings={...metaSettings,account_id,access_token,page_id:page_id||null};
-  showToast('Nustatymai išsaugoti!');closeMetaSetup();loadMetaSettings();
+  showToast('Išsaugota!');closeMetaSetup();loadMetaSettings();
 }
-
-function setPeriod(p){
-  metaPeriod=p;
-  document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.dataset.p===p));
-  updateSyncBtn();
-  loadCachedMetaStats();
-}
-
+function setPeriod(p){metaPeriod=p;document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.dataset.p===p));updateSyncBtn();loadCachedMetaStats();}
 async function loadCachedMetaStats(){
   if(!currentClient)return;
-  // Show empty state while loading
-  document.getElementById('kpiGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:28px;color:var(--text-faint);font-size:13px">Nėra duomenų šiam laikotarpiui — spausk „Sinchronizuoti"</div>';
+  document.getElementById('kpiGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:28px;color:var(--text-faint);font-size:13px">Nėra duomenų — spausk „Sinchronizuoti"</div>';
   document.getElementById('chartsGrid').style.display='none';
+  document.getElementById('campaignsSection').style.display='none';
   document.getElementById('pageStatsSection').style.display='none';
-  document.getElementById('metaFooter').textContent='';
   document.getElementById('metaError').style.display='none';
-
-  const{data}=await sb.from('meta_stats').select('*')
-    .eq('client_id',currentClient.id)
-    .eq('period',metaPeriod)
-    .maybeSingle();
-
+  const{data}=await sb.from('meta_stats').select('*').eq('client_id',currentClient.id).eq('period',metaPeriod).maybeSingle();
   if(data){
-    // Restore cooldown from DB if synced recently
-    if(data.last_sync_at){
-      const age=Date.now()-new Date(data.last_sync_at).getTime();
-      const key=`${currentClient.id}_${metaPeriod}`;
-      if(age<SYNC_COOLDOWN&&!syncCooldowns[key]){
-        syncCooldowns[key]=Date.now()-age;
-        updateSyncBtn();
-      }
-    }
+    if(data.last_sync_at){const age=Date.now()-new Date(data.last_sync_at).getTime();const k=`${currentClient.id}_${metaPeriod}`;if(age<SYNC_COOLDOWN&&!syncCooldowns[k]){syncCooldowns[k]=Date.now()-age;updateSyncBtn();}}
     renderMetaStats(data);
   }
 }
 
-// --- Pagrindinė sinchronizacijos funkcija ---
 async function fetchAndSyncMeta(){
-  if(!currentClient||!metaSettings){showToast('Pirma sukonfigūruok Meta paskyrą!');return;}
-  if(!canSync()){showToast('Palaukite prieš sinchronizuojant vėl (rate limit)!');return;}
-
-  const loading=document.getElementById('metaLoading');
-  const errEl=document.getElementById('metaError');
-  const syncBtn=document.getElementById('syncBtn');
-
-  loading.style.display='flex';
-  errEl.style.display='none';
-  syncBtn.disabled=true;
-  syncBtn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Kraunama...';
-
+  if(!currentClient||!metaSettings){showToast('Pirma sukonfigūruok Meta!');return;}
+  if(!canSync()){showToast('Rate limit — palaukite!');return;}
+  const loading=document.getElementById('metaLoading'),errEl=document.getElementById('metaError'),syncBtn=document.getElementById('syncBtn');
+  loading.style.display='flex';errEl.style.display='none';
+  syncBtn.disabled=true;syncBtn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Kraunama...';
   try{
     const{account_id,access_token,page_id}=metaSettings;
     const range=getPeriodRange(metaPeriod);
@@ -1055,108 +950,72 @@ async function fetchAndSyncMeta(){
     const fields='spend,impressions,reach,clicks,ctr,cpm,frequency,actions,action_values';
     const tr=encodeURIComponent(JSON.stringify(range));
 
-    // Lygiagrečiai: totals + daily breakdown
-    const[totalRes,dailyRes]=await Promise.all([
-      fetch(`${base}/act_${account_id}/insights?fields=${fields}&time_range=${tr}&access_token=${access_token}`),
-      fetch(`${base}/act_${account_id}/insights?fields=spend,impressions,reach,clicks&time_range=${tr}&time_increment=1&access_token=${access_token}`)
-    ]);
-    const[totalJson,dailyJson]=await Promise.all([totalRes.json(),dailyRes.json()]);
+    // Filtras: tik aktyvios kampanijos
+    const activeFilter=encodeURIComponent(JSON.stringify([{field:'campaign.effective_status',operator:'IN',value:['ACTIVE']}]));
 
-    // Rate limit klaidos
+    // Lygiagrečiai: totals (aktyvios), daily, campaigns sąrašas
+    const[totalRes,dailyRes,campRes]=await Promise.all([
+      fetch(`${base}/act_${account_id}/insights?fields=${fields}&time_range=${tr}&filtering=${activeFilter}&access_token=${access_token}`),
+      fetch(`${base}/act_${account_id}/insights?fields=spend,impressions,reach,clicks&time_range=${tr}&time_increment=1&filtering=${activeFilter}&access_token=${access_token}`),
+      fetch(`${base}/act_${account_id}/insights?fields=campaign_id,campaign_name,spend,impressions,reach,clicks,ctr,cpm,actions,action_values&level=campaign&time_range=${tr}&filtering=${activeFilter}&access_token=${access_token}`)
+    ]);
+    const[totalJson,dailyJson,campJson]=await Promise.all([totalRes.json(),dailyRes.json(),campRes.json()]);
+
     if(totalJson.error){
       const e=totalJson.error;
-      const isRateLimit=[4,17,613,80000,80004].includes(e.code);
-      if(isRateLimit){
-        // Automatiškai nustatome cooldown
-        syncCooldowns[`${currentClient.id}_${metaPeriod}`]=Date.now();
-        updateSyncBtn();
-        throw new Error(`Meta API rate limit (${e.code}). Palaukite 5-10 min. ir bandykite vėl.`);
-      }
-      throw new Error(e.message);
+      if([4,17,613,80000,80004].includes(e.code)){syncCooldowns[`${currentClient.id}_${metaPeriod}`]=Date.now();updateSyncBtn();}
+      throw new Error(totalJson.error.message+` (${totalJson.error.code})`);
     }
 
     const d=totalJson.data?.[0]||{};
     const daily=dailyJson.data||[];
+    const purchTypes=['purchase','omni_purchase','offsite_conversion.fb_pixel_purchase'];
 
-    // Totals
-    const spend=parseFloat(d.spend||0);
-    const impressions=parseInt(d.impressions||0);
-    const reach=parseInt(d.reach||0);
-    const clicks=parseInt(d.clicks||0);
-    const ctr=parseFloat(d.ctr||0);
-    const cpm=parseFloat(d.cpm||0);
-    const frequency=parseFloat(d.frequency||0);
+    function parseConv(obj){let c=0,v=0;if(obj.actions)obj.actions.forEach(a=>{if(purchTypes.includes(a.action_type))c+=parseInt(a.value||0);});if(obj.action_values)obj.action_values.forEach(a=>{if(purchTypes.includes(a.action_type))v+=parseFloat(a.value||0);});return{c,v};}
+
+    const{c:conversions,v:convValue}=parseConv(d);
+    const spend=parseFloat(d.spend||0),impressions=parseInt(d.impressions||0),reach=parseInt(d.reach||0),clicks=parseInt(d.clicks||0);
+    const ctr=parseFloat(d.ctr||0),cpm=parseFloat(d.cpm||0),frequency=parseFloat(d.frequency||0);
+    const roas=spend>0?+(convValue/spend).toFixed(2):0;
     const cpc=clicks>0?+(spend/clicks).toFixed(3):0;
 
-    let conversions=0,convValue=0;
-    const purchaseTypes=['purchase','omni_purchase','offsite_conversion.fb_pixel_purchase'];
-    if(d.actions)d.actions.forEach(a=>{if(purchaseTypes.includes(a.action_type))conversions+=parseInt(a.value||0);});
-    if(d.action_values)d.action_values.forEach(a=>{if(purchaseTypes.includes(a.action_type))convValue+=parseFloat(a.value||0);});
-    const roas=spend>0?+(convValue/spend).toFixed(2):0;
+    // Per-campaign data
+    const campaigns_data=(campJson.data||[]).map(c=>{
+      const{c:cc,v:cv}=parseConv(c);
+      const sp=parseFloat(c.spend||0);
+      return{id:c.campaign_id,name:c.campaign_name,spend:sp,impressions:parseInt(c.impressions||0),reach:parseInt(c.reach||0),clicks:parseInt(c.clicks||0),ctr:parseFloat(c.ctr||0),cpm:parseFloat(c.cpm||0),conversions:cc,roas:sp>0?+(cv/sp).toFixed(2):0};
+    });
 
-    // Palyginimas su ankstesniu laikotarpiu
+    // Comparison
     let prev_spend=null,prev_impressions=null,prev_clicks=null,prev_roas=null,prev_conversions=null;
     if(compRange){
       try{
         const ctr2=encodeURIComponent(JSON.stringify(compRange));
-        const compRes=await fetch(`${base}/act_${account_id}/insights?fields=${fields}&time_range=${ctr2}&access_token=${access_token}`);
-        const compJson=await compRes.json();
-        if(!compJson.error&&compJson.data?.[0]){
-          const cd=compJson.data[0];
-          prev_spend=parseFloat(cd.spend||0);
-          prev_impressions=parseInt(cd.impressions||0);
-          prev_clicks=parseInt(cd.clicks||0);
-          let pConv=0,pConvVal=0;
-          if(cd.actions)cd.actions.forEach(a=>{if(purchaseTypes.includes(a.action_type))pConv+=parseInt(a.value||0);});
-          if(cd.action_values)cd.action_values.forEach(a=>{if(purchaseTypes.includes(a.action_type))pConvVal+=parseFloat(a.value||0);});
-          prev_conversions=pConv;
-          prev_roas=prev_spend>0?+(pConvVal/prev_spend).toFixed(2):0;
-        }
-      }catch(e){/* comparison not critical */}
+        const cr=await fetch(`${base}/act_${account_id}/insights?fields=${fields}&time_range=${ctr2}&filtering=${activeFilter}&access_token=${access_token}`);
+        const cj=await cr.json();
+        if(!cj.error&&cj.data?.[0]){const cd=cj.data[0];const{c:pc,v:pv}=parseConv(cd);prev_spend=parseFloat(cd.spend||0);prev_impressions=parseInt(cd.impressions||0);prev_clicks=parseInt(cd.clicks||0);prev_conversions=pc;prev_roas=prev_spend>0?+(pv/prev_spend).toFixed(2):0;}
+      }catch(e){}
     }
 
-    // Facebook puslapio statistika (nebūtina)
-    let page_followers=null,page_fan_adds=null,page_impressions_stat=null,page_engagement=null;
+    // Page stats
+    let page_data={};
     if(page_id){
       try{
-        const[pgRes,insRes]=await Promise.all([
-          fetch(`${base}/${page_id}?fields=followers_count,fan_count&access_token=${access_token}`),
-          fetch(`${base}/${page_id}/insights?metric=page_impressions_unique,page_engaged_users,page_fan_adds&period=month&access_token=${access_token}`)
+        const[pgR,insR]=await Promise.all([
+          fetch(`${base}/${page_id}?fields=followers_count,fan_count,name&access_token=${access_token}`),
+          fetch(`${base}/${page_id}/insights?metric=page_impressions_unique,page_engaged_users,page_fan_adds,page_views_total&period=month&access_token=${access_token}`)
         ]);
-        const[pgJson,insJson]=await Promise.all([pgRes.json(),insRes.json()]);
-        if(!pgJson.error)page_followers=pgJson.followers_count||pgJson.fan_count||null;
-        if(!insJson.error&&insJson.data){
-          insJson.data.forEach(m=>{
-            const v=m.values?.[m.values.length-1]?.value||0;
-            if(m.name==='page_impressions_unique')page_impressions_stat=parseInt(v);
-            if(m.name==='page_engaged_users')page_engagement=parseInt(v);
-            if(m.name==='page_fan_adds')page_fan_adds=parseInt(v);
-          });
-        }
-      }catch(e){/* page stats not critical */}
+        const[pgJ,insJ]=await Promise.all([pgR.json(),insR.json()]);
+        if(!pgJ.error)page_data.followers=pgJ.followers_count||pgJ.fan_count||0;
+        if(!insJ.error&&insJ.data){insJ.data.forEach(m=>{const v=m.values?.[m.values.length-1]?.value||0;page_data[m.name]=parseInt(v);});}
+      }catch(e){}
     }
 
-    const statsRow={
-      client_id:currentClient.id,
-      period:metaPeriod,
-      spend,impressions,reach,clicks,ctr,cpm,roas,conversions,
-      daily_data:daily,
-      prev_spend,prev_impressions,prev_clicks,prev_roas,prev_conversions,
-      page_followers,page_fan_adds,page_impressions_stat,page_engagement,
-      raw:{...d,_cpc:cpc,_frequency:frequency,_conv_value:convValue},
-      last_sync_at:new Date().toISOString(),
-      updated_at:new Date().toISOString()
-    };
-
+    const statsRow={client_id:currentClient.id,period:metaPeriod,spend,impressions,reach,clicks,ctr,cpm,roas,conversions,daily_data:daily,campaigns_data,prev_spend,prev_impressions,prev_clicks,prev_roas,prev_conversions,page_data,raw:{...d,_cpc:cpc,_frequency:frequency,_conv_value:convValue},last_sync_at:new Date().toISOString(),updated_at:new Date().toISOString()};
     await sb.from('meta_stats').upsert([statsRow],{onConflict:'client_id,period'});
-    renderMetaStats(statsRow);
-    markSynced();
-    showToast('✓ Meta statistika sinchronizuota!');
-
+    renderMetaStats(statsRow);markSynced();showToast('✓ Sinchronizuota!');
   }catch(e){
-    errEl.textContent='⚠ '+e.message;
-    errEl.style.display='block';
-    showToast('Meta klaida!');
+    errEl.textContent='⚠ '+e.message;errEl.style.display='block';showToast('Meta klaida!');
   }finally{
     loading.style.display='none';
     syncBtn.innerHTML='<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Sinchronizuoti';
@@ -1164,153 +1023,91 @@ async function fetchAndSyncMeta(){
   }
 }
 
-// --- Chart.js lazy load ---
-async function ensureChartJS(){
-  if(window.Chart)return;
-  await new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';
-    s.onload=resolve;s.onerror=reject;
-    document.head.appendChild(s);
-  });
-}
+async function ensureChartJS(){if(window.Chart)return;await new Promise((r,j)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';s.onload=r;s.onerror=j;document.head.appendChild(s);});}
 
-// --- Rendering ---
-function pctChange(curr,prev){
-  if(prev===null||prev===undefined||prev===0)return null;
-  return (curr-prev)/prev*100;
-}
-function changeHtml(curr,prev,inverse=false){
-  const p=pctChange(curr,prev);
-  if(p===null)return `<span class="kpi-change na">— nėra duomenų</span>`;
-  const positive=inverse?p<0:p>=0;
-  const cls=positive?'up':'dn';
-  const arrow=p>=0?'↑':'↓';
-  return `<span class="kpi-change ${cls}">${arrow} ${Math.abs(p).toFixed(1)}%</span>`;
-}
-
+function pct(c,p){if(p===null||p===undefined||p===0)return null;return(c-p)/p*100;}
+function chHtml(c,p,inv=false){const v=pct(c,p);if(v===null)return`<span class="kpi-change na">—</span>`;const pos=inv?v<0:v>=0;return`<span class="kpi-change ${pos?'up':'dn'}">${v>=0?'↑':'↓'} ${Math.abs(v).toFixed(1)}%</span>`;}
 function fmtNum(n){if(!n||isNaN(n))return'0';n=parseInt(n);return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);}
 function fmtEur(n){if(!n||isNaN(n))return'—';return'€'+parseFloat(n).toLocaleString('lt-LT',{minimumFractionDigits:2,maximumFractionDigits:2});}
 
 function renderMetaStats(s){
-  const comp=COMP_LT[metaPeriod]||'';
-  const cpc=s.raw?._cpc||0;
-  const frequency=s.raw?._frequency||0;
-  const convValue=s.raw?._conv_value||0;
-
+  const cpc=s.raw?._cpc||0,frequency=s.raw?._frequency||0;
   const kpis=[
-    {label:'ROAS',value:s.roas?s.roas.toFixed(2)+'x':'—',change:changeHtml(s.roas,s.prev_roas),tip:'Grąža iš reklamų',featured:true},
-    {label:'Ad Spend',value:s.spend?fmtEur(s.spend):'—',change:changeHtml(s.spend,s.prev_spend,true),tip:'Išlaidos reklamoms'},
-    {label:'Impressions',value:s.impressions?fmtNum(s.impressions):'—',change:changeHtml(s.impressions,s.prev_impressions),tip:'Viso parodymų'},
+    {label:'ROAS',value:s.roas?s.roas.toFixed(2)+'x':'—',change:chHtml(s.roas,s.prev_roas),tip:'Grąža iš reklamų',featured:true},
+    {label:'Ad Spend',value:s.spend?fmtEur(s.spend):'—',change:chHtml(s.spend,s.prev_spend,true),tip:'Aktyvios kampanijos'},
+    {label:'Impressions',value:s.impressions?fmtNum(s.impressions):'—',change:chHtml(s.impressions,s.prev_impressions),tip:''},
     {label:'Reach',value:s.reach?fmtNum(s.reach):'—',change:`<span class="kpi-change na">Unikalūs vartotojai</span>`,tip:''},
-    {label:'Clicks',value:s.clicks?fmtNum(s.clicks):'—',change:changeHtml(s.clicks,s.prev_clicks),tip:'Paspaudimai ant reklamos'},
+    {label:'Clicks',value:s.clicks?fmtNum(s.clicks):'—',change:chHtml(s.clicks,s.prev_clicks),tip:''},
     {label:'CTR',value:s.ctr?parseFloat(s.ctr).toFixed(2)+'%':'—',change:`<span class="kpi-change na">Paspaudimų dažnis</span>`,tip:''},
-    {label:'CPM',value:s.cpm?fmtEur(s.cpm):'—',change:`<span class="kpi-change na">1000 parodymų kaina</span>`,tip:''},
+    {label:'CPM',value:s.cpm?fmtEur(s.cpm):'—',change:`<span class="kpi-change na">1000 parodymų</span>`,tip:''},
     {label:'CPC',value:cpc>0?fmtEur(cpc):'—',change:`<span class="kpi-change na">Kaina už paspaudimą</span>`,tip:''},
-    {label:'Konversijos',value:s.conversions?fmtNum(s.conversions):'—',change:changeHtml(s.conversions,s.prev_conversions),tip:'Pirkimai / tikslai'},
-    {label:'Frequency',value:frequency>0?parseFloat(frequency).toFixed(1)+'x':'—',change:`<span class="kpi-change na">Vid. skaičius vienam</span>`,tip:''},
+    {label:'Konversijos',value:s.conversions?fmtNum(s.conversions):'—',change:chHtml(s.conversions,s.prev_conversions),tip:'Pirkimai'},
+    {label:'Frequency',value:frequency>0?parseFloat(frequency).toFixed(1)+'x':'—',change:`<span class="kpi-change na">Vid. žmogui</span>`,tip:''},
   ];
+  document.getElementById('kpiGrid').innerHTML=kpis.map(k=>`<div class="kpi-card${k.featured?' featured':''}"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div>${k.change}${k.tip?`<div class="kpi-tip">${k.tip}</div>`:''}</div>`).join('');
 
-  document.getElementById('kpiGrid').innerHTML=kpis.map(k=>`
-    <div class="kpi-card${k.featured?' featured':''}">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value">${k.value}</div>
-      ${k.change}
-      ${k.tip?`<div class="kpi-tip">${k.tip}</div>`:''}
-    </div>`).join('');
-
-  // Charts
   const daily=s.daily_data||[];
-  if(daily.length>0){
-    document.getElementById('chartsGrid').style.display='grid';
-    document.getElementById('spendTotal').textContent=s.spend?'€'+parseFloat(s.spend).toFixed(0):'';
-    ensureChartJS().then(()=>{drawSpendChart(daily);drawReachChart(daily);});
-  }else{
-    document.getElementById('chartsGrid').style.display='none';
-  }
+  if(daily.length){document.getElementById('chartsGrid').style.display='grid';document.getElementById('spendTotal').textContent=s.spend?'€'+parseFloat(s.spend).toFixed(0):'';ensureChartJS().then(()=>{drawSpendChart(daily);drawReachChart(daily);});}
+  else document.getElementById('chartsGrid').style.display='none';
+
+  // Campaigns table
+  const camps=s.campaigns_data||[];
+  if(camps.length){
+    document.getElementById('campaignsSection').style.display='block';
+    document.getElementById('campaignsCount').textContent=camps.length+' aktyvios';
+    renderCampaignsTable(camps);
+  }else document.getElementById('campaignsSection').style.display='none';
 
   // Page stats
-  if(s.page_followers){
+  const pd=s.page_data||{};
+  if(pd.followers){
     document.getElementById('pageStatsSection').style.display='block';
     document.getElementById('pageStatsGrid').innerHTML=[
-      {label:'Sekėjai',val:fmtNum(s.page_followers),sub:s.page_fan_adds?`+${fmtNum(s.page_fan_adds)} šį mėn.`:null},
-      {label:'Puslapio reach',val:s.page_impressions_stat?fmtNum(s.page_impressions_stat):'—',sub:'Unikalūs (mėn.)'},
-      {label:'Aktyvūs vartotojai',val:s.page_engagement?fmtNum(s.page_engagement):'—',sub:'Įsitraukimas (mėn.)'},
-    ].map(m=>`
-      <div class="kpi-card">
-        <div class="kpi-label">${m.label}</div>
-        <div class="kpi-value">${m.val}</div>
-        ${m.sub?`<span class="kpi-change na">${m.sub}</span>`:''}
-      </div>`).join('');
-  }else{
-    document.getElementById('pageStatsSection').style.display='none';
-  }
+      {label:'Sekėjai',val:fmtNum(pd.followers),sub:pd.page_fan_adds?'+'+fmtNum(pd.page_fan_adds)+' šį mėn.':null},
+      {label:'Puslapio reach',val:pd.page_impressions_unique?fmtNum(pd.page_impressions_unique):'—',sub:'Unikalūs (mėn.)'},
+      {label:'Aktyvūs vartotojai',val:pd.page_engaged_users?fmtNum(pd.page_engaged_users):'—',sub:'Įsitraukimas (mėn.)'},
+      {label:'Puslapio peržiūros',val:pd.page_views_total?fmtNum(pd.page_views_total):'—',sub:'Iš viso (mėn.)'},
+    ].map(m=>`<div class="kpi-card"><div class="kpi-label">${m.label}</div><div class="kpi-value">${m.val}</div>${m.sub?`<span class="kpi-change na">${m.sub}</span>`:''}</div>`).join('');
+  }else document.getElementById('pageStatsSection').style.display='none';
 
-  // Footer
   const range=getPeriodRange(metaPeriod);
-  const syncAt=s.last_sync_at||s.updated_at;
-  const syncStr=syncAt?new Date(syncAt).toLocaleString('lt-LT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-  document.getElementById('metaFooter').textContent=`${PERIOD_LT[metaPeriod]}: ${range.since} – ${range.until}  ·  Sinchronizuota: ${syncStr}  ·  ${comp?comp:''}`;
+  const sync=s.last_sync_at||s.updated_at;
+  const syncStr=sync?new Date(sync).toLocaleString('lt-LT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+  document.getElementById('metaFooter').textContent=`${PERIOD_LT[metaPeriod]}: ${range.since} – ${range.until}  ·  Sinch.: ${syncStr}  ·  Tik aktyvios kampanijos`;
 }
 
-// --- Grafikai ---
-const CHART_COLORS={blue:'#2D5BE3',blueFill:'rgba(45,91,227,0.08)',blueBar:'rgba(45,91,227,0.75)',blueLite:'rgba(45,91,227,0.18)'};
-const CHART_FONT={family:'DM Sans',size:10};
-const CHART_GRID='#F0EEE9';
+function renderCampaignsTable(camps){
+  const tbl=document.getElementById('campaignsTable');
+  tbl.innerHTML=`<thead><tr><th>Kampanija</th><th>Spend</th><th>Impr.</th><th>Reach</th><th>Clicks</th><th>CTR</th><th>CPM</th><th>ROAS</th><th>Konversijos</th></tr></thead><tbody>${camps.map(c=>`<tr>
+    <td><span class="camp-name" title="${escHtml(c.name)}">${escHtml(c.name)}</span></td>
+    <td class="camp-mono">${fmtEur(c.spend)}</td>
+    <td class="camp-mono">${fmtNum(c.impressions)}</td>
+    <td class="camp-mono">${fmtNum(c.reach)}</td>
+    <td class="camp-mono">${fmtNum(c.clicks)}</td>
+    <td class="camp-mono">${c.ctr?parseFloat(c.ctr).toFixed(2)+'%':'—'}</td>
+    <td class="camp-mono">${fmtEur(c.cpm)}</td>
+    <td class="camp-mono camp-roas">${c.roas?c.roas+'x':'—'}</td>
+    <td class="camp-mono">${c.conversions||'—'}</td>
+  </tr>`).join('')}</tbody>`;
+}
 
+const CC={blue:'#2D5BE3',blueFill:'rgba(45,91,227,0.08)',blueBar:'rgba(45,91,227,0.75)',blueLite:'rgba(45,91,227,0.18)'};
+const CF={family:'DM Sans',size:10};const CG='#F0EEE9';
 function drawSpendChart(daily){
   const canvas=document.getElementById('spendChart');if(!canvas)return;
   if(metaCharts.spend){metaCharts.spend.destroy();metaCharts.spend=null;}
-  const labels=daily.map(d=>new Date(d.date_start+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'}));
-  const values=daily.map(d=>parseFloat(d.spend||0));
-  metaCharts.spend=new Chart(canvas.getContext('2d'),{
-    type:'line',
-    data:{labels,datasets:[{data:values,borderColor:CHART_COLORS.blue,backgroundColor:CHART_COLORS.blueFill,fill:true,tension:0.4,pointRadius:values.length>20?2:4,pointHoverRadius:6,borderWidth:2}]},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€'+c.raw.toFixed(2)}}},
-      scales:{
-        x:{grid:{color:CHART_GRID},ticks:{font:CHART_FONT,color:'#8A877E',maxTicksLimit:8}},
-        y:{grid:{color:CHART_GRID},ticks:{font:CHART_FONT,color:'#8A877E',callback:v=>'€'+v.toFixed(0)},beginAtZero:true}
-      }
-    }
-  });
+  metaCharts.spend=new Chart(canvas.getContext('2d'),{type:'line',data:{labels:daily.map(d=>new Date(d.date_start+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'})),datasets:[{data:daily.map(d=>parseFloat(d.spend||0)),borderColor:CC.blue,backgroundColor:CC.blueFill,fill:true,tension:0.4,pointRadius:daily.length>20?2:4,pointHoverRadius:6,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€'+c.raw.toFixed(2)}}},scales:{x:{grid:{color:CG},ticks:{font:CF,color:'#8A877E',maxTicksLimit:8}},y:{grid:{color:CG},ticks:{font:CF,color:'#8A877E',callback:v=>'€'+v.toFixed(0)},beginAtZero:true}}}});
 }
-
 function drawReachChart(daily){
   const canvas=document.getElementById('reachChart');if(!canvas)return;
   if(metaCharts.reach){metaCharts.reach.destroy();metaCharts.reach=null;}
-  const labels=daily.map(d=>new Date(d.date_start+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'}));
-  metaCharts.reach=new Chart(canvas.getContext('2d'),{
-    type:'bar',
-    data:{
-      labels,
-      datasets:[
-        {label:'Reach',data:daily.map(d=>parseInt(d.reach||0)),backgroundColor:CHART_COLORS.blueBar,borderRadius:3},
-        {label:'Impressions',data:daily.map(d=>parseInt(d.impressions||0)),backgroundColor:CHART_COLORS.blueLite,borderRadius:3}
-      ]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{position:'top',labels:{font:{family:'DM Sans',size:11},color:'#1A1916',padding:10,boxWidth:10}},
-        tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmtNum(c.raw)}}
-      },
-      scales:{
-        x:{grid:{display:false},ticks:{font:CHART_FONT,color:'#8A877E',maxTicksLimit:8}},
-        y:{grid:{color:CHART_GRID},ticks:{font:CHART_FONT,color:'#8A877E',callback:v=>fmtNum(v)},beginAtZero:true}
-      }
-    }
-  });
+  metaCharts.reach=new Chart(canvas.getContext('2d'),{type:'bar',data:{labels:daily.map(d=>new Date(d.date_start+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'})),datasets:[{label:'Reach',data:daily.map(d=>parseInt(d.reach||0)),backgroundColor:CC.blueBar,borderRadius:3},{label:'Impressions',data:daily.map(d=>parseInt(d.impressions||0)),backgroundColor:CC.blueLite,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{family:'DM Sans',size:11},color:'#1A1916',padding:10,boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmtNum(c.raw)}}},scales:{x:{grid:{display:false},ticks:{font:CF,color:'#8A877E',maxTicksLimit:8}},y:{grid:{color:CG},ticks:{font:CF,color:'#8A877E',callback:v=>fmtNum(v)},beginAtZero:true}}}});
 }
 
-// ============================================================
-// UTILS
-// ============================================================
+// ─── UTILS ───
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-// Realtime
 sb.channel('tasks-a').on('postgres_changes',{event:'*',schema:'public',table:'tasks'},()=>{if(currentClient&&currentTab==='journal')loadTasks();}).subscribe();
 sb.channel('reqs-a').on('postgres_changes',{event:'*',schema:'public',table:'client_requests'},()=>{if(currentClient)loadRequests();}).subscribe();
 
