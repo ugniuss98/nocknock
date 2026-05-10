@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Darbo Žurnalas — Kliento peržiūra</title>
+<title>Darbo Žurnalas</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -27,7 +27,7 @@
   .header-left { display: flex; align-items: center; gap: 14px; }
   .logo { width: 36px; height: 36px; background: var(--text); border-radius: 9px; display: flex; align-items: center; justify-content: center; }
   .logo svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .live-dot { width: 8px; height: 8px; background: #1A7A4A; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
+  .live-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
   .live-label { font-size: 12px; color: var(--green); font-weight: 500; }
   .week-nav { display: flex; align-items: center; gap: 10px; }
@@ -81,6 +81,15 @@
   .status-wait { background: var(--gray-light); color: var(--gray); }
   .empty-day { padding: 20px; text-align: center; color: var(--text-faint); font-size: 13px; }
 
+  /* Error / not found state */
+  .error-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 60vh; text-align: center; gap: 12px; color: var(--text-muted);
+  }
+  .error-state svg { width: 44px; height: 44px; stroke: var(--text-faint); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .error-state strong { font-size: 16px; color: var(--text); }
+  .error-state span { font-size: 14px; }
+
   .new-task-flash { animation: flash 1s ease; }
   @keyframes flash { 0%{background:#EEF2FD} 100%{background:transparent} }
 
@@ -102,7 +111,7 @@
     </div>
     <div>
       <div style="font-size:16px;font-weight:600;letter-spacing:-0.3px">Darbo žurnalas</div>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:1px">Marketingo CMO planas</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:1px" id="clientNameSub">Kraunama...</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
@@ -157,6 +166,10 @@ const STATUS_CLASS = {done:'status-done',progress:'status-progress',wait:'status
 let weekOffset = 0;
 let tasks = [];
 let collapsed = {};
+let currentClient = null;
+
+// Get client slug from URL: index.html?c=slug
+const clientSlug = new URLSearchParams(window.location.search).get('c');
 
 function getMonday(offset) {
   const d = new Date();
@@ -179,10 +192,58 @@ function updateWeekLabel() {
 
 function changeWeek(dir) { weekOffset += dir; loadTasks(); }
 
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showError(title, sub) {
+  document.getElementById('daysList').innerHTML = `
+    <div class="error-state">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <strong>${title}</strong>
+      <span>${sub}</span>
+    </div>`;
+}
+
+async function init() {
+  updateWeekLabel();
+
+  if (!clientSlug) {
+    document.getElementById('clientNameSub').textContent = 'Neteisinga nuoroda';
+    showError('Neteisinga nuoroda', 'Patikrink nuorodą ir bandyk dar kartą.');
+    return;
+  }
+
+  // Load client by slug
+  const { data: client, error } = await sb.from('clients').select('*').eq('slug', clientSlug).single();
+  if (error || !client) {
+    document.getElementById('clientNameSub').textContent = 'Klientas nerastas';
+    showError('Klientas nerastas', 'Ši nuoroda nebegalioja arba yra neteisinga.');
+    return;
+  }
+
+  currentClient = client;
+  document.title = `${client.name} — Darbo žurnalas`;
+  document.getElementById('clientNameSub').textContent = client.name;
+
+  loadTasks();
+
+  // Realtime updates
+  sb.channel('tasks-client-' + client.id)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks', filter: `client_id=eq.${client.id}` }, () => loadTasks())
+    .subscribe();
+}
+
 async function loadTasks() {
+  if (!currentClient) return;
   updateWeekLabel();
   const days = getWeekDays().map(fmt);
-  const { data, error } = await sb.from('tasks').select('*').gte('day', days[0]).lte('day', days[6]).order('created_at');
+  const { data, error } = await sb.from('tasks')
+    .select('*')
+    .eq('client_id', currentClient.id)
+    .gte('day', days[0])
+    .lte('day', days[6])
+    .order('created_at');
   if (error) return;
   tasks = data || [];
   renderDays();
@@ -190,9 +251,10 @@ async function loadTasks() {
 }
 
 function updateStats() {
-  document.getElementById('statTasks').textContent = tasks.length;
-  document.getElementById('statSum').textContent = tasks.reduce((a,t) => a+t.total, 0).toFixed(0) + ' €';
-  document.getElementById('statDone').textContent = tasks.filter(t=>t.status==='done').length + '/' + tasks.length;
+  document.getElementById('statTasks').textContent = tasks.length || '—';
+  document.getElementById('statSum').textContent = tasks.length ? tasks.reduce((a,t) => a+t.total, 0).toFixed(0) + ' €' : '—';
+  const done = tasks.filter(t => t.status === 'done').length;
+  document.getElementById('statDone').textContent = tasks.length ? `${done}/${tasks.length}` : '—';
 }
 
 function renderDays() {
@@ -228,8 +290,8 @@ function renderDays() {
           : dt.map(t => `
             <div class="task-row" id="task-${t.id}">
               <div class="task-info">
-                <div class="task-name">${t.name}</div>
-                ${t.note ? `<div class="task-note">${t.note}</div>` : ''}
+                <div class="task-name">${escHtml(t.name)}</div>
+                ${t.note ? `<div class="task-note">${escHtml(t.note)}</div>` : ''}
                 <div class="task-tags">
                   <span class="tag ${CAT_CLASS[t.cat] || 'tag-other'}">${CAT_NAME[t.cat] || t.cat}</span>
                   ${t.qty !== 1 ? `<span class="tag tag-other">${t.qty} vnt.</span>` : ''}
@@ -249,12 +311,7 @@ function renderDays() {
 
 function toggleDay(key) { collapsed[key] = !collapsed[key]; renderDays(); }
 
-// Realtime — automatinis atnaujinimas kai admin kažką keičia
-sb.channel('tasks-client')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => loadTasks())
-  .subscribe();
-
-loadTasks();
+init();
 </script>
 </body>
 </html>

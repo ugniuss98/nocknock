@@ -14,11 +14,35 @@
     --green: #1A7A4A; --green-light: #E8F5EE;
     --orange: #C4590A; --orange-light: #FEF0E6;
     --gray: #6B6862; --gray-light: #F2F1EE;
+    --red: #C0392B; --red-light: #FDE8ED;
     --radius: 10px; --radius-lg: 16px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
 
+  /* ── LOGIN ── */
+  #loginScreen {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; z-index: 999;
+  }
+  .login-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 40px; width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .login-head { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .login-logo { width: 38px; height: 38px; background: var(--text); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .login-logo svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .login-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+  .login-sub { font-size: 12px; color: var(--text-muted); }
+  .login-label { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+  .login-input { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 13px; color: var(--text); outline: none; transition: border-color 0.15s; }
+  .login-input:focus { border-color: var(--accent); background: white; }
+  .login-btn { width: 100%; background: var(--text); color: white; border: none; border-radius: var(--radius); padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; margin-top: 4px; }
+  .login-btn:hover { opacity: 0.85; }
+  .login-btn:disabled { opacity: 0.5; cursor: default; }
+  .login-err { font-size: 13px; color: var(--red); min-height: 18px; }
+
+  /* ── MAIN APP ── */
   .header {
     background: var(--surface); border-bottom: 1px solid var(--border);
     padding: 18px 32px; display: flex; align-items: center;
@@ -29,37 +53,64 @@
   .logo svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .app-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
   .admin-badge { font-size: 11px; font-weight: 600; background: #1A1916; color: white; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.3px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
   .week-nav { display: flex; align-items: center; gap: 10px; }
   .week-btn { width: 34px; height: 34px; border: 1px solid var(--border-strong); background: var(--surface); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.15s; }
   .week-btn:hover { background: var(--bg); color: var(--text); }
   .week-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
   .week-label { font-size: 14px; font-weight: 500; min-width: 160px; text-align: center; }
+  .logout-btn { font-size: 13px; color: var(--text-muted); background: none; border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+  .logout-btn:hover { background: var(--red-light); border-color: #F5A8B0; color: var(--red); }
+  .logout-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  .layout { display: grid; grid-template-columns: 340px 1fr; min-height: calc(100vh - 73px); }
+  .layout { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 73px); }
 
-  .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px; position: sticky; top: 73px; height: calc(100vh - 73px); overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+  .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 20px; position: sticky; top: 73px; height: calc(100vh - 73px); overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 
+  .section-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Client selector */
+  .client-row { display: flex; gap: 8px; align-items: center; }
+  .client-select-wrap { flex: 1; position: relative; }
+  select, input, textarea { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; color: var(--text); outline: none; transition: border-color 0.15s; appearance: none; -webkit-appearance: none; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
+  select:focus, input:focus, textarea:focus { border-color: var(--accent); background: white; }
+  textarea { resize: vertical; min-height: 64px; }
+  .icon-btn { width: 36px; height: 36px; border: 1px solid var(--border-strong); background: var(--surface); border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all 0.15s; flex-shrink: 0; }
+  .icon-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .icon-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Client link bar */
+  .client-link-bar { background: var(--accent-light); border: 1px solid #C5D4FA; border-radius: var(--radius); padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
+  .client-link-bar.hidden { display: none; }
+  .client-link-url { font-size: 12px; color: var(--accent); font-family: 'DM Mono', monospace; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .copy-link-btn { font-size: 11px; font-weight: 600; color: var(--accent); background: white; border: 1px solid #C5D4FA; border-radius: 7px; padding: 4px 10px; cursor: pointer; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
+  .copy-link-btn:hover { background: var(--accent); color: white; }
+
+  /* Stats */
   .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   .stat { background: var(--bg); border-radius: var(--radius); padding: 12px; text-align: center; }
   .stat-val { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; font-family: 'DM Mono', monospace; }
   .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-  .form-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
   label { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px; font-weight: 500; }
-  select, input, textarea { width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; color: var(--text); outline: none; transition: border-color 0.15s; appearance: none; -webkit-appearance: none; }
-  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; }
-  select:focus, input:focus, textarea:focus { border-color: var(--accent); background: white; }
-  textarea { resize: vertical; min-height: 64px; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .btn-add { width: 100%; background: var(--text); color: white; border: none; border-radius: var(--radius); padding: 11px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-add:hover { opacity: 0.85; }
   .btn-add:active { transform: scale(0.98); }
   .btn-add svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-  .divider { height: 1px; background: var(--border); }
+  .divider { height: 1px; background: var(--border); flex-shrink: 0; }
   .btn-sec { width: 100%; background: transparent; border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 9px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text); transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
   .btn-sec:hover { background: var(--bg); }
   .btn-sec svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
+  /* No client selected state */
+  .no-client-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; color: var(--text-muted); gap: 8px; padding: 32px; }
+  .no-client-msg svg { width: 36px; height: 36px; stroke: var(--text-faint); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .no-client-msg strong { font-size: 14px; color: var(--text); }
+  .no-client-msg span { font-size: 13px; }
+
+  /* Main area */
   .main { padding: 28px 32px; display: flex; flex-direction: column; gap: 12px; }
 
   .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
@@ -100,12 +151,33 @@
   .status-progress { background: var(--orange-light); border-color: #F5C89A; color: var(--orange); }
   .status-wait { background: var(--gray-light); border-color: var(--border-strong); color: var(--gray); }
   .del-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); padding: 2px; border-radius: 6px; transition: color 0.15s, background 0.15s; display: flex; align-items: center; justify-content: center; }
-  .del-btn:hover { color: #C0392B; background: #FDE8ED; }
+  .del-btn:hover { color: var(--red); background: var(--red-light); }
   .del-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .empty-day { padding: 20px; text-align: center; color: var(--text-faint); font-size: 13px; }
 
+  /* Add client modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 200; display: flex; align-items: center; justify-content: center; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--surface); border-radius: var(--radius-lg); padding: 28px; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+  .modal-title { font-size: 16px; font-weight: 600; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+  .btn-cancel { flex: 1; background: transparent; border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; }
+  .btn-cancel:hover { background: var(--bg); }
+  .btn-confirm { flex: 1; background: var(--text); color: white; border: none; border-radius: var(--radius); padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .btn-confirm:hover { opacity: 0.85; }
+
   .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 12px 18px; border-radius: var(--radius); font-size: 14px; font-weight: 500; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 1000; }
   .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Print styles */
+  @media print {
+    #loginScreen, .header, .sidebar, .modal-overlay, .toast { display: none !important; }
+    .layout { grid-template-columns: 1fr !important; }
+    .main { padding: 0 !important; }
+    .day-card { break-inside: avoid; border: 1px solid #ccc !important; margin-bottom: 12px; }
+    .del-btn, .status-btn { display: none !important; }
+    .tasks-body.hidden { display: block !important; }
+  }
 
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
@@ -117,122 +189,209 @@
 </head>
 <body>
 
-<header class="header">
-  <div class="header-left">
-    <div class="logo">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-head">
+      <div class="login-logo">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      </div>
+      <div>
+        <div class="login-title">Darbo žurnalas</div>
+        <div class="login-sub">Admin prisijungimas</div>
+      </div>
     </div>
     <div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span class="app-title">Darbo žurnalas</span>
-        <span class="admin-badge">ADMIN</span>
-      </div>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:1px">Marketingo CMO planas</div>
+      <div class="login-label">El. paštas</div>
+      <input class="login-input" type="email" id="lEmail" placeholder="vardas@example.com" onkeydown="if(event.key==='Enter')document.getElementById('lPass').focus()">
     </div>
-  </div>
-  <div class="week-nav">
-    <button class="week-btn" onclick="changeWeek(-1)">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <span class="week-label" id="weekLabel"></span>
-    <button class="week-btn" onclick="changeWeek(1)">
-      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-    </button>
-  </div>
-</header>
-
-<div class="layout">
-  <aside class="sidebar">
-    <div class="stats">
-      <div class="stat"><div class="stat-val" id="statTasks">—</div><div class="stat-label">Užduotys</div></div>
-      <div class="stat"><div class="stat-val" id="statSum">—</div><div class="stat-label">Suma</div></div>
-      <div class="stat"><div class="stat-val" id="statDays">—</div><div class="stat-label">Dienos</div></div>
+    <div>
+      <div class="login-label">Slaptažodis</div>
+      <input class="login-input" type="password" id="lPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">Prisijungti</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
 
-    <div class="divider"></div>
+<!-- MAIN APP -->
+<div id="mainApp" style="display:none">
 
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="form-title">Nauja užduotis</div>
-      <div><label>Diena</label><select id="fDay"></select></div>
-      <div><label>Kategorija</label>
-        <select id="fCat">
-          <option value="ig">Instagram + Facebook</option>
-          <option value="ugc">UGC</option>
-          <option value="meta">Meta Ads</option>
-          <option value="design">Dizainas</option>
-          <option value="extra">Papildomi darbai</option>
-          <option value="other">Kita</option>
-        </select>
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
       </div>
-      <div><label>Pasirink užduotį</label>
-        <select id="fTask" onchange="onTaskSelect()">
-          <option value="">— pasirink arba rašyk žemiau —</option>
-          <optgroup label="Instagram + Facebook">
-            <option data-cat="ig" data-price="40">Įrašų planavimas (mėnesio kalendorius)</option>
-            <option data-cat="ig" data-price="25">Statinis įrašas (tekstas + nuotrauka, CTA)</option>
-            <option data-cat="ig" data-price="25">Judantis įrašas (video, reelsas)</option>
-            <option data-cat="ig" data-price="15">Stories (statiniai)</option>
-            <option data-cat="ig" data-price="15">Stories (video)</option>
-            <option data-cat="ig" data-price="50">Mėnesinės ataskaitos</option>
-          </optgroup>
-          <optgroup label="UGC">
-            <option data-cat="ugc" data-price="15">Scenarijų kūrimas</option>
-            <option data-cat="ugc" data-price="70">Kūrėjų / klientų turinio atranka</option>
-            <option data-cat="ugc" data-price="20">Vaizdo įrašo montavimas</option>
-            <option data-cat="ugc" data-price="10">Turinio adaptacija reklamoms/social</option>
-            <option data-cat="ugc" data-price="70">Komunikacija su klientais</option>
-          </optgroup>
-          <optgroup label="Meta Ads">
-            <option data-cat="meta" data-price="80">Meta kampanija</option>
-            <option data-cat="meta" data-price="15">A/B Testai</option>
-            <option data-cat="meta" data-price="45">Kas savaitę optimizacija</option>
-            <option data-cat="meta" data-price="50">Mėnesinės ataskaitos</option>
-          </optgroup>
-          <optgroup label="Dizainas">
-            <option data-cat="design" data-price="65">Vizualizacijos kūrimas – karuselė</option>
-            <option data-cat="design" data-price="45">Vizualizacijos kūrimas (plakatas, baneris)</option>
-            <option data-cat="design" data-price="50">Vizualizacijos kūrimas (animacija, video)</option>
-            <option data-cat="design" data-price="15">Turinio pritaikymas kelioms platformoms</option>
-            <option data-cat="design" data-price="12">Tekstai kampanijoms, social</option>
-          </optgroup>
-          <optgroup label="Papildomi darbai">
-            <option data-cat="extra" data-price="30">Specialios užduotys – social optimizacija</option>
-            <option data-cat="extra" data-price="30">Specialios užduotys – UGC dokumentai</option>
-            <option data-cat="extra" data-price="15">Turinio pritaikymas skirtingoms rinkoms</option>
-          </optgroup>
-        </select>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="app-title">Darbo žurnalas</span>
+          <span class="admin-badge">ADMIN</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:1px" id="headerClientName">Pasirink klientą</div>
       </div>
-      <div><label>Arba įrašyk pats</label><input type="text" id="fCustom" placeholder="Užduoties pavadinimas..."></div>
-      <div><label>Pastabos</label><textarea id="fNote" placeholder="Ką tiksliai padarei?"></textarea></div>
-      <div class="row2">
-        <div><label>Kiekis</label><input type="number" id="fQty" value="1" min="0" step="0.5"></div>
-        <div><label>Kaina (€)</label><input type="number" id="fPrice" placeholder="0" min="0" step="0.01"></div>
+    </div>
+    <div class="header-right">
+      <div class="week-nav">
+        <button class="week-btn" onclick="changeWeek(-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="week-label" id="weekLabel"></span>
+        <button class="week-btn" onclick="changeWeek(1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
-      <div><label>Statusas</label>
-        <select id="fStatus">
-          <option value="done">✅ Atlikta</option>
-          <option value="progress">🔄 Vykdoma</option>
-          <option value="wait">⏳ Laukia</option>
-        </select>
-      </div>
-      <button class="btn-add" onclick="addTask()">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Pridėti užduotį
+      <button class="logout-btn" onclick="doLogout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Atsijungti
       </button>
     </div>
+  </header>
 
-    <div class="divider"></div>
+  <div class="layout">
+    <aside class="sidebar">
 
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <div class="form-title">Ataskaita</div>
-      <button class="btn-sec" onclick="copyReport()">
-        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Kopijuoti savaitę
-      </button>
+      <!-- Client management -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="section-title">Klientas</div>
+        <div class="client-row">
+          <div class="client-select-wrap">
+            <select id="clientSelect" onchange="onClientChange()">
+              <option value="">— pasirink klientą —</option>
+            </select>
+          </div>
+          <button class="icon-btn" onclick="openAddClient()" title="Pridėti klientą">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="client-link-bar hidden" id="clientLinkBar">
+          <span class="client-link-url" id="clientLinkUrl"></span>
+          <button class="copy-link-btn" onclick="copyClientLink()">Kopijuoti</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat"><div class="stat-val" id="statTasks">—</div><div class="stat-label">Užduotys</div></div>
+        <div class="stat"><div class="stat-val" id="statSum">—</div><div class="stat-label">Suma</div></div>
+        <div class="stat"><div class="stat-val" id="statDays">—</div><div class="stat-label">Dienos</div></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Task form -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="section-title">Nauja užduotis</div>
+        <div><label>Diena</label><select id="fDay"></select></div>
+        <div><label>Kategorija</label>
+          <select id="fCat">
+            <option value="ig">Instagram + Facebook</option>
+            <option value="ugc">UGC</option>
+            <option value="meta">Meta Ads</option>
+            <option value="design">Dizainas</option>
+            <option value="extra">Papildomi darbai</option>
+            <option value="other">Kita</option>
+          </select>
+        </div>
+        <div><label>Pasirink užduotį</label>
+          <select id="fTask" onchange="onTaskSelect()">
+            <option value="">— pasirink arba rašyk žemiau —</option>
+            <optgroup label="Instagram + Facebook">
+              <option data-cat="ig" data-price="40">Įrašų planavimas (mėnesio kalendorius)</option>
+              <option data-cat="ig" data-price="25">Statinis įrašas (tekstas + nuotrauka, CTA)</option>
+              <option data-cat="ig" data-price="25">Judantis įrašas (video, reelsas)</option>
+              <option data-cat="ig" data-price="15">Stories (statiniai)</option>
+              <option data-cat="ig" data-price="15">Stories (video)</option>
+              <option data-cat="ig" data-price="50">Mėnesinės ataskaitos</option>
+            </optgroup>
+            <optgroup label="UGC">
+              <option data-cat="ugc" data-price="15">Scenarijų kūrimas</option>
+              <option data-cat="ugc" data-price="70">Kūrėjų / klientų turinio atranka</option>
+              <option data-cat="ugc" data-price="20">Vaizdo įrašo montavimas</option>
+              <option data-cat="ugc" data-price="10">Turinio adaptacija reklamoms/social</option>
+              <option data-cat="ugc" data-price="70">Komunikacija su klientais</option>
+            </optgroup>
+            <optgroup label="Meta Ads">
+              <option data-cat="meta" data-price="80">Meta kampanija</option>
+              <option data-cat="meta" data-price="15">A/B Testai</option>
+              <option data-cat="meta" data-price="45">Kas savaitę optimizacija</option>
+              <option data-cat="meta" data-price="50">Mėnesinės ataskaitos</option>
+            </optgroup>
+            <optgroup label="Dizainas">
+              <option data-cat="design" data-price="65">Vizualizacijos kūrimas – karuselė</option>
+              <option data-cat="design" data-price="45">Vizualizacijos kūrimas (plakatas, baneris)</option>
+              <option data-cat="design" data-price="50">Vizualizacijos kūrimas (animacija, video)</option>
+              <option data-cat="design" data-price="15">Turinio pritaikymas kelioms platformoms</option>
+              <option data-cat="design" data-price="12">Tekstai kampanijoms, social</option>
+            </optgroup>
+            <optgroup label="Papildomi darbai">
+              <option data-cat="extra" data-price="30">Specialios užduotys – social optimizacija</option>
+              <option data-cat="extra" data-price="30">Specialios užduotys – UGC dokumentai</option>
+              <option data-cat="extra" data-price="15">Turinio pritaikymas skirtingoms rinkoms</option>
+            </optgroup>
+          </select>
+        </div>
+        <div><label>Arba įrašyk pats</label><input type="text" id="fCustom" placeholder="Užduoties pavadinimas..."></div>
+        <div><label>Pastabos</label><textarea id="fNote" placeholder="Ką tiksliai padarei?"></textarea></div>
+        <div class="row2">
+          <div><label>Kiekis</label><input type="number" id="fQty" value="1" min="0" step="0.5"></div>
+          <div><label>Kaina (€)</label><input type="number" id="fPrice" placeholder="0" min="0" step="0.01"></div>
+        </div>
+        <div><label>Statusas</label>
+          <select id="fStatus">
+            <option value="done">✅ Atlikta</option>
+            <option value="progress">🔄 Vykdoma</option>
+            <option value="wait">⏳ Laukia</option>
+          </select>
+        </div>
+        <button class="btn-add" onclick="addTask()">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Pridėti užduotį
+        </button>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Reports -->
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="section-title">Ataskaita</div>
+        <button class="btn-sec" onclick="copyReport()">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Kopijuoti savaitę
+        </button>
+        <button class="btn-sec" onclick="printReport()">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Spausdinti / PDF
+        </button>
+      </div>
+
+    </aside>
+
+    <main class="main" id="daysList">
+      <div class="no-client-msg" id="noClientMsg">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <strong>Pasirink arba pridėk klientą</strong>
+        <span>Kairėje pasirink klientą kad matytum užduotis</span>
+      </div>
+    </main>
+  </div>
+
+</div>
+
+<!-- Add Client Modal -->
+<div class="modal-overlay hidden" id="addClientModal">
+  <div class="modal">
+    <div class="modal-title">Naujas klientas</div>
+    <div>
+      <label>Kliento pavadinimas</label>
+      <input type="text" id="newClientName" placeholder="pvz. UAB Pavyzdys" onkeydown="if(event.key==='Enter')confirmAddClient()">
     </div>
-  </aside>
-
-  <main class="main" id="daysList"></main>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddClient()">Atšaukti</button>
+      <button class="btn-confirm" onclick="confirmAddClient()">Pridėti</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -250,7 +409,142 @@ const STATUS_CLASS = {done:'status-done',progress:'status-progress',wait:'status
 
 let weekOffset = 0;
 let tasks = [];
+let clients = [];
+let currentClient = null;
 let collapsed = {};
+
+// ── AUTH ──────────────────────────────────────────────────────
+
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    showApp();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+  }
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN') showApp();
+    if (event === 'SIGNED_OUT') showLogin();
+  });
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  loadClients();
+}
+
+function showLogin() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('mainApp').style.display = 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('lEmail').value.trim();
+  const pass = document.getElementById('lPass').value;
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginErr');
+  if (!email || !pass) { err.textContent = 'Įvesk el. paštą ir slaptažodį.'; return; }
+  btn.disabled = true;
+  btn.textContent = 'Jungiamasi...';
+  err.textContent = '';
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    err.textContent = 'Neteisingi duomenys. Bandyk dar kartą.';
+    btn.disabled = false;
+    btn.textContent = 'Prisijungti';
+  }
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+}
+
+// ── CLIENTS ───────────────────────────────────────────────────
+
+function slugify(name) {
+  return name.toLowerCase()
+    .replace(/[ąą]/g,'a').replace(/[čč]/g,'c').replace(/[ęę]/g,'e')
+    .replace(/[ėė]/g,'e').replace(/[įį]/g,'i').replace(/[šš]/g,'s')
+    .replace(/[ųų]/g,'u').replace(/[ūū]/g,'u').replace(/[žž]/g,'z')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+async function loadClients() {
+  const { data, error } = await sb.from('clients').select('*').order('name');
+  if (error) { showToast('Klaida kraunant klientus'); return; }
+  clients = data || [];
+  renderClientSelect();
+}
+
+function renderClientSelect() {
+  const sel = document.getElementById('clientSelect');
+  sel.innerHTML = '<option value="">— pasirink klientą —</option>' +
+    clients.map(c => `<option value="${c.id}"${currentClient?.id===c.id?' selected':''}>${c.name}</option>`).join('');
+}
+
+function onClientChange() {
+  const id = document.getElementById('clientSelect').value;
+  currentClient = clients.find(c => c.id === id) || null;
+  updateClientLinkBar();
+  document.getElementById('headerClientName').textContent = currentClient ? currentClient.name : 'Pasirink klientą';
+  if (currentClient) {
+    document.getElementById('noClientMsg').style.display = 'none';
+    loadTasks();
+  } else {
+    tasks = [];
+    document.getElementById('daysList').innerHTML = '';
+    document.getElementById('daysList').appendChild(document.getElementById('noClientMsg'));
+    document.getElementById('noClientMsg').style.display = 'flex';
+    updateStats();
+  }
+}
+
+function updateClientLinkBar() {
+  const bar = document.getElementById('clientLinkBar');
+  if (!currentClient) { bar.classList.add('hidden'); return; }
+  const base = window.location.href.replace('admin.html','').replace(/\/$/, '');
+  const url = `${base}/index.html?c=${currentClient.slug}`;
+  document.getElementById('clientLinkUrl').textContent = url;
+  bar.classList.remove('hidden');
+}
+
+function copyClientLink() {
+  const base = window.location.href.replace('admin.html','').replace(/\/$/, '');
+  const url = `${base}/index.html?c=${currentClient.slug}`;
+  navigator.clipboard.writeText(url).then(() => showToast('Kliento nuoroda nukopijuota!'));
+}
+
+function openAddClient() {
+  document.getElementById('newClientName').value = '';
+  document.getElementById('addClientModal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('newClientName').focus(), 50);
+}
+
+function closeAddClient() {
+  document.getElementById('addClientModal').classList.add('hidden');
+}
+
+async function confirmAddClient() {
+  const name = document.getElementById('newClientName').value.trim();
+  if (!name) return;
+  const slug = slugify(name) || 'klientas-' + Date.now();
+  const { data, error } = await sb.from('clients').insert([{ name, slug }]).select().single();
+  if (error) { showToast('Klaida: ' + error.message); return; }
+  clients.push(data);
+  clients.sort((a,b) => a.name.localeCompare(b.name));
+  currentClient = data;
+  renderClientSelect();
+  updateClientLinkBar();
+  document.getElementById('headerClientName').textContent = currentClient.name;
+  document.getElementById('noClientMsg').style.display = 'none';
+  closeAddClient();
+  showToast('Klientas pridėtas!');
+  loadTasks();
+}
+
+// ── WEEK ──────────────────────────────────────────────────────
 
 function getMonday(offset) {
   const d = new Date();
@@ -280,7 +574,9 @@ function fillDaySelect() {
   ).join('');
 }
 
-function changeWeek(dir) { weekOffset += dir; loadTasks(); }
+function changeWeek(dir) { weekOffset += dir; if (currentClient) loadTasks(); else { updateWeekLabel(); fillDaySelect(); } }
+
+// ── TASKS ─────────────────────────────────────────────────────
 
 function onTaskSelect() {
   const sel = document.getElementById('fTask');
@@ -293,6 +589,7 @@ function onTaskSelect() {
 }
 
 async function addTask() {
+  if (!currentClient) { showToast('Pirma pasirink klientą!'); return; }
   const day = document.getElementById('fDay').value;
   const cat = document.getElementById('fCat').value;
   const taskSel = document.getElementById('fTask');
@@ -305,7 +602,7 @@ async function addTask() {
   const status = document.getElementById('fStatus').value;
   const total = +(qty * price).toFixed(2);
 
-  const { error } = await sb.from('tasks').insert([{ day, cat, name, note, qty, price, total, status }]);
+  const { error } = await sb.from('tasks').insert([{ day, cat, name, note, qty, price, total, status, client_id: currentClient.id }]);
   if (error) { showToast('Klaida: ' + error.message); return; }
 
   document.getElementById('fTask').value = '';
@@ -332,17 +629,23 @@ async function cycleStatus(id, current) {
 async function loadTasks() {
   updateWeekLabel();
   fillDaySelect();
+  if (!currentClient) return;
   const days = getWeekDays().map(fmt);
-  const { data, error } = await sb.from('tasks').select('*').gte('day', days[0]).lte('day', days[6]).order('created_at');
+  const { data, error } = await sb.from('tasks')
+    .select('*')
+    .eq('client_id', currentClient.id)
+    .gte('day', days[0])
+    .lte('day', days[6])
+    .order('created_at');
   if (error) { showToast('Klaida kraunant duomenis'); return; }
   tasks = data || [];
   renderDays();
 }
 
 function updateStats() {
-  document.getElementById('statTasks').textContent = tasks.length;
-  document.getElementById('statSum').textContent = tasks.reduce((a,t) => a+t.total, 0).toFixed(0) + '€';
-  document.getElementById('statDays').textContent = new Set(tasks.map(t=>t.day)).size + '/5';
+  document.getElementById('statTasks').textContent = tasks.length || '—';
+  document.getElementById('statSum').textContent = tasks.length ? tasks.reduce((a,t) => a+t.total, 0).toFixed(0) + '€' : '—';
+  document.getElementById('statDays').textContent = tasks.length ? new Set(tasks.map(t=>t.day)).size + '/5' : '—';
 }
 
 function renderDays() {
@@ -377,8 +680,8 @@ function renderDays() {
           : dt.map(t => `
             <div class="task-row">
               <div class="task-info">
-                <div class="task-name">${t.name}</div>
-                ${t.note ? `<div class="task-note">${t.note}</div>` : ''}
+                <div class="task-name">${escHtml(t.name)}</div>
+                ${t.note ? `<div class="task-note">${escHtml(t.note)}</div>` : ''}
                 <div class="task-tags">
                   <span class="tag ${CAT_CLASS[t.cat] || 'tag-other'}">${CAT_NAME[t.cat] || t.cat}</span>
                   ${t.qty !== 1 ? `<span class="tag tag-other">${t.qty} vnt.</span>` : ''}
@@ -401,10 +704,16 @@ function renderDays() {
 
 function toggleDay(key) { collapsed[key] = !collapsed[key]; renderDays(); }
 
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── REPORTS ───────────────────────────────────────────────────
+
 function copyReport() {
   const days = getWeekDays();
-  const todayStr = fmt(new Date());
-  let txt = `SAVAITĖ: ${fmtNice(fmt(days[0]))} – ${fmtNice(fmt(days[6]))}\n${'─'.repeat(40)}\n`;
+  const clientName = currentClient ? currentClient.name : '';
+  let txt = `${clientName ? clientName + ' — ' : ''}SAVAITĖ: ${fmtNice(fmt(days[0]))} – ${fmtNice(fmt(days[6]))}\n${'─'.repeat(45)}\n`;
   days.forEach((d, i) => {
     const dt = tasks.filter(t => t.day === fmt(d));
     if (!dt.length) return;
@@ -417,9 +726,18 @@ function copyReport() {
     });
   });
   const sum = tasks.reduce((a,t) => a+t.total, 0);
-  txt += `\n${'─'.repeat(40)}\nBendra suma: ${sum.toFixed(0)} €`;
+  txt += `\n${'─'.repeat(45)}\nBendra suma: ${sum.toFixed(0)} €`;
   navigator.clipboard.writeText(txt).then(() => showToast('Ataskaita nukopijuota!')).catch(() => showToast('Klaida kopijuojant'));
 }
+
+function printReport() {
+  // Expand all days before printing
+  collapsed = {};
+  renderDays();
+  setTimeout(() => window.print(), 100);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -428,12 +746,17 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// Realtime subscription
+// Realtime
 sb.channel('tasks-admin')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => loadTasks())
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => { if (currentClient) loadTasks(); })
+  .subscribe();
+sb.channel('clients-admin')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'clients' }, loadClients)
   .subscribe();
 
-loadTasks();
+updateWeekLabel();
+fillDaySelect();
+initAuth();
 </script>
 </body>
 </html>
