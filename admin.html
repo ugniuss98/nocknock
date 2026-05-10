@@ -91,6 +91,8 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .cat-pill.sel[data-cat="design"]{background:#9C4A10;}
 .cat-pill.sel[data-cat="extra"]{background:#9C1A36;}
 .cat-pill.sel[data-cat="other"]{background:var(--gray);}
+.cat-pill.sel[data-cat="youtube"]{background:#CC0000;}
+.cat-pill.sel[data-cat="tiktok"]{background:#161616;}
 .cat-pill.sel[data-cat="custom"]{background:var(--accent);}
 
 /* MULTI FILE */
@@ -166,6 +168,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .task-tags{display:flex;flex-wrap:wrap;gap:4px;}
 .tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
 .tag-ig{background:#EDE8FD;color:#4A3AAA;}.tag-ugc{background:#E6F5EE;color:#1A5C38;}
+.tag-youtube{background:#FFE8E8;color:#CC0000;}.tag-tiktok{background:#E8E8E8;color:#161616;}
 .tag-meta{background:#E8F0FD;color:#1A4098;}.tag-design{background:#FEF3E7;color:#9C4A10;}
 .tag-extra{background:#FDE8ED;color:#9C1A36;}.tag-other{background:var(--gray-light);color:var(--gray);}
 .task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
@@ -506,13 +509,15 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 const CATS=[
   {code:'ig',label:'Instagram + FB',color:'#4A3AAA'},
   {code:'ugc',label:'UGC',color:'#1A5C38'},
+  {code:'youtube',label:'YouTube',color:'#CC0000'},
+  {code:'tiktok',label:'TikTok',color:'#161616'},
   {code:'meta',label:'Meta Ads',color:'#1A4098'},
   {code:'design',label:'Dizainas',color:'#9C4A10'},
   {code:'extra',label:'Papildomi',color:'#9C1A36'},
   {code:'other',label:'Kita',color:'#6B6862'},
 ];
 const CAT_MAP=Object.fromEntries(CATS.map(c=>[c.code,c]));
-const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
+const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',youtube:'tag-youtube',tiktok:'tag-tiktok',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
 const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
 const STATUS_LABELS={done:'✅ Atlikta',progress:'🔄 Vykdoma',wait:'⏳ Laukia'};
 const STATUS_CLASS={done:'status-done',progress:'status-progress',wait:'status-wait'};

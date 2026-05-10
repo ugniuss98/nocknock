@@ -100,6 +100,7 @@
   .task-tags{display:flex;flex-wrap:wrap;gap:4px;}
   .tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
   .tag-ig{background:#EDE8FD;color:#4A3AAA;}.tag-ugc{background:#E6F5EE;color:#1A5C38;}
+  .tag-youtube{background:#FFE8E8;color:#CC0000;}.tag-tiktok{background:#E8E8E8;color:#161616;}
   .tag-meta{background:#E8F0FD;color:#1A4098;}.tag-design{background:#FEF3E7;color:#9C4A10;}
   .tag-extra{background:#FDE8ED;color:#9C1A36;}.tag-other{background:var(--gray-light);color:var(--gray);}
   .task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
@@ -361,6 +362,8 @@
       <select class="m-input" id="rCat">
         <option value="ig">Instagram + Facebook</option>
         <option value="ugc">UGC</option>
+        <option value="youtube">YouTube</option>
+        <option value="tiktok">TikTok</option>
         <option value="meta">Meta Ads</option>
         <option value="design">Dizainas</option>
         <option value="extra">Papildomi darbai</option>
@@ -420,8 +423,8 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
 const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
-const CAT_NAME={ig:'Instagram + Facebook',ugc:'UGC',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi darbai',other:'Kita'};
-const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
+const CAT_NAME={ig:'Instagram + Facebook',ugc:'UGC',youtube:'YouTube',tiktok:'TikTok',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi darbai',other:'Kita'};
+const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',youtube:'tag-youtube',tiktok:'tag-tiktok',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
 const STATUS_LABELS={done:'✅ Atlikta',progress:'🔄 Vykdoma',wait:'⏳ Laukia'};
 const STATUS_CLASS={done:'status-done',progress:'status-progress',wait:'status-wait'};
 const PERIOD_LT={'this_week':'Ši savaitė','last_week':'Praėjusi savaitė','this_month':'Šis mėnuo','last_month':'Praėjęs mėnuo'};
