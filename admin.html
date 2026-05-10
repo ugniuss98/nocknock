@@ -19,6 +19,8 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
   /* LOGIN */
   #loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;}
@@ -63,7 +65,6 @@
   .layout{display:grid;grid-template-columns:296px 1fr;min-height:calc(100vh - 60px);}
   .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
   .s-main{padding:20px 24px;display:flex;flex-direction:column;gap:10px;}
-  .full-content{padding:20px 24px;}
 
   /* COMMON */
   .sec-title{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;}
@@ -98,7 +99,7 @@
   .stat-val{font-size:18px;font-weight:600;letter-spacing:-.5px;font-family:'DM Mono',monospace;}
   .stat-label{font-size:10px;color:var(--text-muted);margin-top:2px;}
 
-  /* FILE ATTACH IN FORM */
+  /* FILE ATTACH */
   .file-attach-zone{border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px;background:var(--bg);}
   .file-attach-zone:hover{border-color:var(--accent);background:var(--accent-light);}
   .file-attach-zone svg{width:16px;height:16px;stroke:var(--text-faint);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
@@ -108,7 +109,7 @@
   .file-attach-clear:hover{color:var(--red);}
   .file-attach-clear svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-  /* REQUESTS CARD */
+  /* REQUESTS */
   .requests-card{background:var(--surface);border:1px solid #F5C89A;border-radius:var(--radius-lg);overflow:hidden;}
   .requests-head{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
   .requests-head:hover{background:var(--orange-light);}
@@ -148,7 +149,6 @@
   .task-row{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .1s;}
   .task-row:last-child{border-bottom:none;}
   .task-row:hover{background:var(--bg);}
-  /* file thumbnail */
   .task-thumb-wrap{flex-shrink:0;}
   .task-thumb{width:44px;height:44px;border-radius:7px;object-fit:cover;display:block;border:1px solid var(--border);}
   .task-thumb-icon{width:44px;height:44px;border-radius:7px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
@@ -175,29 +175,72 @@
   .no-client-msg svg{width:32px;height:32px;stroke:var(--text-faint);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
   .no-client-msg strong{font-size:13px;color:var(--text);}
 
-  /* META TAB */
-  .meta-page{display:flex;flex-direction:column;gap:18px;max-width:860px;}
-  .meta-setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;}
-  .meta-setup-title{font-size:14px;font-weight:600;margin-bottom:3px;}
-  .meta-setup-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.5;}
+  /* =====================
+     META ADS — REDESIGN
+     ===================== */
+  .meta-wrapper{padding:20px 24px;max-width:1100px;}
+  .meta-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px;}
+  .meta-title{font-size:18px;font-weight:700;letter-spacing:-.3px;}
+  .meta-subtitle{font-size:12px;color:var(--text-muted);margin-top:3px;}
+  .meta-actions{display:flex;align-items:center;gap:8px;}
+
+  .btn-meta-settings{font-size:12px;font-weight:500;padding:8px 13px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;color:var(--text-muted);}
+  .btn-meta-settings:hover{background:var(--bg);color:var(--text);}
+  .btn-meta-settings svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .btn-sync{font-size:12px;font-weight:600;padding:8px 14px;border-radius:var(--radius);border:none;background:var(--accent);color:white;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
+  .btn-sync:hover{opacity:.85;}
+  .btn-sync:disabled{opacity:.45;cursor:default;}
+  .btn-sync svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* Period tabs */
+  .period-tabs{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:16px;width:fit-content;flex-wrap:wrap;}
+  .ptab{font-size:12px;font-weight:500;padding:6px 13px;border-radius:7px;border:none;background:none;cursor:pointer;color:var(--text-muted);transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+  .ptab.active{background:white;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+  .ptab:hover:not(.active){color:var(--text);}
+
+  /* Rate limit bar */
+  .rate-bar{background:var(--orange-light);border:1px solid #F5C89A;border-radius:var(--radius);padding:9px 13px;font-size:12px;color:var(--orange);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .rate-bar svg{width:14px;height:14px;stroke:var(--orange);fill:none;stroke-width:2;flex-shrink:0;}
+
+  /* Meta setup card */
+  .meta-setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:14px;}
+  .meta-setup-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+  .meta-setup-sub{font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.6;}
   .meta-form{display:flex;flex-direction:column;gap:10px;}
-  .meta-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;}
-  .meta-stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;}
-  .meta-stat-label{font-size:10px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
-  .meta-stat-val{font-size:22px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-.5px;}
-  .meta-stat-sub{font-size:11px;color:var(--text-faint);margin-top:2px;}
-  .meta-stat-card.roas .meta-stat-val{color:var(--green);}
-  .meta-stat-card.spend .meta-stat-val{color:var(--accent);}
-  .period-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .period-btn{font-size:12px;font-weight:500;padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;}
-  .period-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
-  .period-btn:hover:not(.active){background:var(--bg);}
-  .sync-btn{font-size:12px;font-weight:600;padding:6px 13px;border-radius:var(--radius);border:none;background:var(--green);color:white;cursor:pointer;display:flex;align-items:center;gap:5px;transition:opacity .15s;margin-left:auto;}
-  .sync-btn:hover{opacity:.85;}
-  .sync-btn svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
-  .meta-updated{font-size:11px;color:var(--text-faint);}
-  .meta-error{background:var(--red-light);border:1px solid #F5A8B0;border-radius:var(--radius);padding:10px 13px;font-size:12px;color:var(--red);}
-  .meta-loading{text-align:center;padding:36px;color:var(--text-muted);font-size:13px;}
+  .meta-error{background:var(--red-light);border:1px solid #F5A8B0;border-radius:var(--radius);padding:10px 13px;font-size:12px;color:var(--red);margin-bottom:12px;}
+  .meta-loading{text-align:center;padding:28px;color:var(--text-muted);font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;}
+  .meta-loading svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2;animation:spin 1s linear infinite;}
+
+  /* KPI grid */
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:15px 16px;transition:box-shadow .15s;}
+  .kpi-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.06);}
+  .kpi-card.featured{border-color:#C5D4FA;background:linear-gradient(135deg,#f0f4fd 0%,#e8eefb 100%);}
+  .kpi-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;}
+  .kpi-value{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:-.5px;margin-bottom:5px;line-height:1.1;}
+  .kpi-card.featured .kpi-value{color:var(--accent);}
+  .kpi-change{font-size:11px;font-weight:500;display:flex;align-items:center;gap:3px;}
+  .kpi-change.up{color:var(--green);}
+  .kpi-change.dn{color:var(--red);}
+  .kpi-change.na{color:var(--text-faint);}
+  .kpi-tip{font-size:10px;color:var(--text-faint);margin-top:3px;}
+
+  /* Charts */
+  .charts-grid{display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:14px;}
+  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;}
+  .chart-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .chart-card-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
+  .chart-card-value{font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent);}
+  .chart-wrap{position:relative;height:180px;}
+
+  /* Page stats */
+  .meta-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;}
+  .meta-section-header{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .meta-section-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;}
+  .page-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+
+  /* Footer */
+  .meta-footer{font-size:11px;color:var(--text-faint);text-align:right;padding:4px 0 8px;}
 
   /* MODAL */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;display:flex;align-items:center;justify-content:center;}
@@ -221,11 +264,20 @@
     .del-btn,.status-btn{display:none!important;}
     .tasks-body.hidden{display:block!important;}
   }
+  @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
   @media(max-width:900px){
     .layout{grid-template-columns:1fr;}
     .sidebar{position:static;height:auto;}
     .header{padding:10px 14px;flex-wrap:wrap;}
-    .s-main,.full-content{padding:14px;}
+    .s-main{padding:14px;}
+    .meta-wrapper{padding:14px;}
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .charts-grid{grid-template-columns:1fr;}
+    .page-kpi-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:600px){
+    .kpi-grid{grid-template-columns:1fr 1fr;}
+    .period-tabs{width:100%;}
   }
 </style>
 </head>
@@ -280,7 +332,6 @@
   <div id="tabJournal">
     <div class="layout">
       <aside class="sidebar">
-        <!-- Client -->
         <div style="display:flex;flex-direction:column;gap:7px">
           <div class="sec-title">Klientas</div>
           <div class="client-row">
@@ -295,14 +346,12 @@
           </div>
         </div>
         <div class="divider"></div>
-        <!-- Stats -->
         <div class="stats">
           <div class="stat"><div class="stat-val" id="statTasks">—</div><div class="stat-label">Užduotys</div></div>
           <div class="stat"><div class="stat-val" id="statSum">—</div><div class="stat-label">Suma</div></div>
           <div class="stat"><div class="stat-val" id="statDays">—</div><div class="stat-label">Dienos</div></div>
         </div>
         <div class="divider"></div>
-        <!-- Task form -->
         <div style="display:flex;flex-direction:column;gap:8px">
           <div class="sec-title">Nauja užduotis</div>
           <div><label>Diena</label><select id="fDay"></select></div>
@@ -367,7 +416,6 @@
               <option value="wait">⏳ Laukia</option>
             </select>
           </div>
-          <!-- FILE ATTACH -->
           <div>
             <label>Prisegti failą (nebūtina)</label>
             <div class="file-attach-zone" id="attachZone" onclick="document.getElementById('taskFile').click()">
@@ -381,7 +429,6 @@
           </button>
         </div>
         <div class="divider"></div>
-        <!-- Reports -->
         <div style="display:flex;flex-direction:column;gap:6px">
           <div class="sec-title">Ataskaita</div>
           <button class="btn-sec" onclick="copyReport()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Kopijuoti savaitę</button>
@@ -395,63 +442,127 @@
           <strong>Pasirink arba pridėk klientą</strong>
           <span style="font-size:12px">Kairėje pasirink klientą</span>
         </div>
-        <!-- Requests card injected here by JS -->
         <div id="requestsArea"></div>
-        <!-- Day cards -->
         <div id="daysList"></div>
       </main>
     </div>
   </div>
 
   <!-- META TAB -->
-  <div id="tabMeta" style="display:none" class="full-content">
-    <div class="meta-page">
+  <div id="tabMeta" style="display:none">
+    <div class="meta-wrapper">
+
       <div id="metaNoClient" class="no-client-msg" style="min-height:200px">
         <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <strong>Pasirink klientą</strong><span style="font-size:12px">Viršuje pasirink klientą</span>
+        <strong>Pasirink klientą</strong>
+        <span style="font-size:12px">Viršuje pasirink klientą norėdamas peržiūrėti Meta statistiką</span>
       </div>
-      <div id="metaContent" style="display:none;flex-direction:column;gap:14px">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+
+      <div id="metaContent" style="display:none">
+
+        <!-- Header -->
+        <div class="meta-header">
           <div>
-            <div style="font-size:15px;font-weight:600" id="metaClientTitle">Meta Ads statistika</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:2px">ROAS, Spend, Impressions ir kt.</div>
+            <div class="meta-title">Meta Ads Analytics</div>
+            <div class="meta-subtitle" id="metaClientTitle">—</div>
           </div>
-          <button class="btn-sec" style="width:auto" onclick="openMetaSetup()">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Paskyros nustatymai
-          </button>
+          <div class="meta-actions">
+            <button class="btn-meta-settings" onclick="openMetaSetup()">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Nustatymai
+            </button>
+            <button class="btn-sync" id="syncBtn" onclick="fetchAndSyncMeta()">
+              <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              Sinchronizuoti
+            </button>
+          </div>
         </div>
+
+        <!-- Setup card -->
         <div id="metaSetupCard" class="meta-setup-card" style="display:none">
-          <div class="meta-setup-title">Meta Ads paskyros sujungimas</div>
-          <div class="meta-setup-sub">Įvesk Ad Account ID ir ilgalaikį prieigos raktą.<br><strong>Meta for Developers → Tools → Graph API Explorer → Get Token</strong></div>
+          <div class="meta-setup-title">Meta Ads paskyros nustatymai</div>
+          <div class="meta-setup-sub">
+            <strong>Ad Account ID</strong> — rasi Meta Business Suite → Nustatymai → Ad Accounts.<br>
+            <strong>Access Token</strong> — Meta for Developers → Graph API Explorer → Get Token → pasirink <em>ads_read</em> + <em>read_insights</em>.<br>
+            Rekomenduojama: System User token Meta Business Suite (neišsibaigiantis).
+          </div>
           <div class="meta-form">
-            <div><label>Ad Account ID</label><input type="text" id="metaAccountId" placeholder="123456789"></div>
+            <div><label>Ad Account ID (be „act_" priešdėlio)</label><input type="text" id="metaAccountId" placeholder="123456789"></div>
             <div><label>Access Token</label><input type="text" id="metaToken" placeholder="EAAxxxxxx..."></div>
+            <div><label>Facebook Page ID (nebūtina — puslapio statistikai)</label><input type="text" id="metaPageId" placeholder="123456789"></div>
             <div style="display:flex;gap:7px">
               <button class="btn-cancel" onclick="closeMetaSetup()">Atšaukti</button>
               <button class="btn-confirm" onclick="saveMetaSettings()">Išsaugoti</button>
             </div>
           </div>
         </div>
-        <div id="metaStatsPanel" style="display:none;flex-direction:column;gap:12px">
-          <div class="period-row">
-            <button class="period-btn active" onclick="setPeriod('this_week')" data-p="this_week">Ši savaitė</button>
-            <button class="period-btn" onclick="setPeriod('last_week')" data-p="last_week">Praėjusi savaitė</button>
-            <button class="period-btn" onclick="setPeriod('this_month')" data-p="this_month">Šis mėnuo</button>
-            <button class="period-btn" onclick="setPeriod('last_month')" data-p="last_month">Praėjęs mėnuo</button>
-            <button class="sync-btn" onclick="fetchAndSyncMeta()">
-              <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Sinchronizuoti
-            </button>
-          </div>
-          <div id="metaError" class="meta-error" style="display:none"></div>
-          <div id="metaLoading" class="meta-loading" style="display:none">Kraunama statistika...</div>
-          <div class="meta-stats-grid" id="metaStatsGrid"></div>
-          <div class="meta-updated" id="metaUpdated"></div>
-        </div>
+
+        <!-- No settings -->
         <div id="metaNoSettings" class="no-client-msg" style="display:none;min-height:150px">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           <strong>Meta paskyra neprijungta</strong>
-          <span style="font-size:12px">Spausk „Paskyros nustatymai"</span>
+          <span style="font-size:12px">Spausk „Nustatymai" ir įvesk Ad Account ID bei Access Token</span>
         </div>
+
+        <!-- Stats panel -->
+        <div id="metaStatsPanel" style="display:none">
+
+          <!-- Period tabs -->
+          <div class="period-tabs">
+            <button class="ptab active" data-p="this_week" onclick="setPeriod('this_week')">Ši savaitė</button>
+            <button class="ptab" data-p="last_week" onclick="setPeriod('last_week')">Praėjusi savaitė</button>
+            <button class="ptab" data-p="this_month" onclick="setPeriod('this_month')">Šis mėnuo</button>
+            <button class="ptab" data-p="last_month" onclick="setPeriod('last_month')">Praėjęs mėnuo</button>
+          </div>
+
+          <!-- Rate limit warning -->
+          <div id="rateLimitBar" class="rate-bar" style="display:none">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="rateLimitMsg">Palaukite prieš sinchronizuojant vėl.</span>
+          </div>
+
+          <!-- Error -->
+          <div id="metaError" class="meta-error" style="display:none"></div>
+
+          <!-- Loading -->
+          <div id="metaLoading" class="meta-loading" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            Kraunami duomenys iš Meta Graph API...
+          </div>
+
+          <!-- KPI Grid -->
+          <div class="kpi-grid" id="kpiGrid"></div>
+
+          <!-- Charts -->
+          <div class="charts-grid" id="chartsGrid" style="display:none">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <span class="chart-card-title">Dienos išlaidos</span>
+                <span class="chart-card-value" id="spendTotal"></span>
+              </div>
+              <div class="chart-wrap"><canvas id="spendChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <span class="chart-card-title">Reach &amp; Impressions</span>
+              </div>
+              <div class="chart-wrap"><canvas id="reachChart"></canvas></div>
+            </div>
+          </div>
+
+          <!-- Page stats -->
+          <div class="meta-section" id="pageStatsSection" style="display:none">
+            <div class="meta-section-header">
+              <svg style="width:14px;height:14px;stroke:var(--text-muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              <span class="meta-section-title">Facebook puslapio statistika</span>
+            </div>
+            <div class="page-kpi-grid" id="pageStatsGrid"></div>
+          </div>
+
+          <!-- Footer -->
+          <div class="meta-footer" id="metaFooter"></div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -484,10 +595,11 @@ const STATUS_LABELS={done:'✅ Atlikta',progress:'🔄 Vykdoma',wait:'⏳ Laukia
 const STATUS_CLASS={done:'status-done',progress:'status-progress',wait:'status-wait'};
 
 let weekOffset=0,tasks=[],clients=[],currentClient=null,collapsed={};
-let currentTab='journal',metaPeriod='this_month',metaSettings=null;
-let pendingFile=null;
+let currentTab='journal',pendingFile=null;
 
+// ============================================================
 // AUTH
+// ============================================================
 async function initAuth(){
   const{data:{session}}=await sb.auth.getSession();
   if(session)showApp();
@@ -506,19 +618,23 @@ async function doLogin(){
 }
 async function doLogout(){await sb.auth.signOut();}
 
+// ============================================================
 // TABS
+// ============================================================
 function setTab(tab){
   currentTab=tab;
   ['journal','meta'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
     const el=document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
-    if(el)el.style.display=t===tab?(t==='journal'?'block':'block'):'none';
+    if(el)el.style.display=t===tab?'block':'none';
   });
   document.getElementById('weekNav').style.display=tab==='journal'?'flex':'none';
   if(tab==='meta')renderMetaTab();
 }
 
+// ============================================================
 // CLIENTS
+// ============================================================
 function slugify(n){return n.toLowerCase().replace(/[ą]/g,'a').replace(/[č]/g,'c').replace(/[ę]/g,'e').replace(/[ė]/g,'e').replace(/[į]/g,'i').replace(/[š]/g,'s').replace(/[ų]/g,'u').replace(/[ū]/g,'u').replace(/[ž]/g,'z').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 async function loadClients(){const{data}=await sb.from('clients').select('*').order('name');clients=data||[];renderClientSelect();}
 function renderClientSelect(){
@@ -530,16 +646,8 @@ function onClientChange(){
   currentClient=clients.find(c=>c.id===id)||null;
   updateClientLinkBar();
   document.getElementById('headerClientName').textContent=currentClient?currentClient.name:'Pasirink klientą';
-  if(currentClient){
-    document.getElementById('noClientMsg').style.display='none';
-    loadTasks();loadRequests();
-  }else{
-    tasks=[];
-    document.getElementById('daysList').innerHTML='';
-    document.getElementById('requestsArea').innerHTML='';
-    document.getElementById('noClientMsg').style.display='flex';
-    updateStats();
-  }
+  if(currentClient){document.getElementById('noClientMsg').style.display='none';loadTasks();loadRequests();}
+  else{tasks=[];document.getElementById('daysList').innerHTML='';document.getElementById('requestsArea').innerHTML='';document.getElementById('noClientMsg').style.display='flex';updateStats();}
   if(currentTab==='meta')renderMetaTab();
 }
 function updateClientLinkBar(){
@@ -567,7 +675,9 @@ async function confirmAddClient(){
   closeAddClient();showToast('Klientas pridėtas!');loadTasks();loadRequests();
 }
 
-// WEEK
+// ============================================================
+// WEEK / DATES
+// ============================================================
 function getMonday(o){const d=new Date(),day=d.getDay()||7;d.setDate(d.getDate()-day+1+o*7);d.setHours(0,0,0,0);return d;}
 function fmt(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
 function fmtNice(d){return new Date(d+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'});}
@@ -586,11 +696,13 @@ function onTaskSelect(){
   if(opt.value)document.getElementById('fCustom').value='';
 }
 
+// ============================================================
 // FILE ATTACH
+// ============================================================
 function onTaskFileSelect(e){
   const f=e.target.files[0];if(!f)return;
   pendingFile=f;
-  const zone=document.getElementById('attachZone'),txt=document.getElementById('attachText');
+  const zone=document.getElementById('attachZone');
   zone.innerHTML='';
   if(f.type.startsWith('image/')){
     const img=document.createElement('img');img.className='file-attach-preview';
@@ -612,7 +724,9 @@ function clearTaskFile(){
   zone.innerHTML=`<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--text-faint);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><span class="file-attach-text" id="attachText">PNG, JPG, MP4 — iki 30MB</span><input type="file" id="taskFile" accept="image/*,video/*" style="display:none" onchange="onTaskFileSelect(event)">`;
 }
 
+// ============================================================
 // TASKS
+// ============================================================
 async function addTask(){
   if(!currentClient){showToast('Pirma pasirink klientą!');return;}
   const day=document.getElementById('fDay').value,cat=document.getElementById('fCat').value;
@@ -624,7 +738,6 @@ async function addTask(){
   const note=document.getElementById('fNote').value.trim();
   const status=document.getElementById('fStatus').value;
   const total=+(qty*price).toFixed(2);
-
   let file_url=null,file_name=null,file_mime=null;
   if(pendingFile){
     const ext=pendingFile.name.split('.').pop();
@@ -635,7 +748,6 @@ async function addTask(){
       file_url=publicUrl;file_name=pendingFile.name;file_mime=pendingFile.type;
     }else{showToast('Failo klaida: '+upErr.message);}
   }
-
   const{error}=await sb.from('tasks').insert([{day,cat,name,note,qty,price,total,status,client_id:currentClient.id,file_url,file_name,file_mime}]);
   if(error){showToast('Klaida: '+error.message);return;}
   document.getElementById('fTask').value='';document.getElementById('fCustom').value='';
@@ -707,7 +819,9 @@ function renderDays(){
 }
 function toggleDay(key){collapsed[key]=!collapsed[key];renderDays();}
 
+// ============================================================
 // CLIENT REQUESTS
+// ============================================================
 async function loadRequests(){
   if(!currentClient)return;
   const{data}=await sb.from('client_requests').select('*').eq('client_id',currentClient.id).eq('status','pending').order('created_at',{ascending:false});
@@ -754,7 +868,9 @@ async function rejectRequest(id){
   showToast('Užklausa atmesta.');loadRequests();
 }
 
+// ============================================================
 // REPORTS
+// ============================================================
 function copyReport(){
   const days=getWeekDays();
   let txt=`${currentClient?currentClient.name+' — ':''}SAVAITĖ: ${fmtNice(fmt(days[0]))} – ${fmtNice(fmt(days[6]))}\n${'─'.repeat(45)}\n`;
@@ -768,79 +884,429 @@ function copyReport(){
 }
 function printReport(){collapsed={};renderDays();setTimeout(()=>window.print(),100);}
 
-// META
+// ============================================================
+// META ADS — PILNA VERSIJA
+// ============================================================
+
+let metaPeriod='this_month';
+let metaSettings=null;
+let metaCharts={};
+const syncCooldowns={};
+const SYNC_COOLDOWN=5*60*1000; // 5 min
+
+// --- Datos skaičiavimas ---
+function fmtD(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+
+function getPeriodRange(p){
+  const today=new Date();
+  const getMon=(base,offset=0)=>{const d=new Date(base);const day=d.getDay()||7;d.setDate(d.getDate()-day+1+offset*7);d.setHours(0,0,0,0);return d;};
+  const minDate=(a,b)=>a<b?a:b;
+  switch(p){
+    case 'this_week':{const m=getMon(today);const e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(minDate(today,e))};}
+    case 'last_week':{const m=getMon(today,-1);const e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(e)};}
+    case 'two_weeks_ago':{const m=getMon(today,-2);const e=new Date(m);e.setDate(m.getDate()+6);return{since:fmtD(m),until:fmtD(e)};}
+    case 'this_month':{const f=new Date(today.getFullYear(),today.getMonth(),1);return{since:fmtD(f),until:fmtD(today)};}
+    case 'last_month':{const f=new Date(today.getFullYear(),today.getMonth()-1,1);const l=new Date(today.getFullYear(),today.getMonth(),0);return{since:fmtD(f),until:fmtD(l)};}
+    case 'two_months_ago':{const f=new Date(today.getFullYear(),today.getMonth()-2,1);const l=new Date(today.getFullYear(),today.getMonth()-1,0);return{since:fmtD(f),until:fmtD(l)};}
+    default:{const f=new Date(today.getFullYear(),today.getMonth(),1);return{since:fmtD(f),until:fmtD(today)};}
+  }
+}
+
+function getCompPeriod(p){
+  return{this_week:'last_week',last_week:'two_weeks_ago',this_month:'last_month',last_month:'two_months_ago'}[p]||null;
+}
+
+const PERIOD_LT={this_week:'Ši savaitė',last_week:'Praėjusi savaitė',this_month:'Šis mėnuo',last_month:'Praėjęs mėnuo'};
+const COMP_LT={this_week:'vs praeita sav.',last_week:'vs 2 sav. prieš',this_month:'vs praėjusį mėn.',last_month:'vs 2 mėn. prieš'};
+
+// --- Rate limiting ---
+function canSync(){
+  if(!currentClient)return false;
+  const key=`${currentClient.id}_${metaPeriod}`;
+  const last=syncCooldowns[key];
+  return !last||(Date.now()-last>SYNC_COOLDOWN);
+}
+function markSynced(){
+  const key=`${currentClient.id}_${metaPeriod}`;
+  syncCooldowns[key]=Date.now();
+  updateSyncBtn();
+}
+function updateSyncBtn(){
+  const btn=document.getElementById('syncBtn');
+  const bar=document.getElementById('rateLimitBar');
+  const msg=document.getElementById('rateLimitMsg');
+  if(!btn)return;
+  const key=currentClient?`${currentClient.id}_${metaPeriod}`:'';
+  const last=syncCooldowns[key];
+  const rem=last?Math.max(0,SYNC_COOLDOWN-(Date.now()-last)):0;
+  if(rem>0){
+    btn.disabled=true;
+    bar.style.display='flex';
+    const mins=Math.ceil(rem/60000);
+    msg.textContent=`API rate limit apsauga: palaukite dar ~${mins} min. prieš sinchronizuojant vėl.`;
+    setTimeout(updateSyncBtn,30000);
+  }else{
+    btn.disabled=false;
+    bar.style.display='none';
+  }
+}
+
+// --- Tab rendering ---
 function renderMetaTab(){
-  const noClient=document.getElementById('metaNoClient'),content=document.getElementById('metaContent');
+  const noClient=document.getElementById('metaNoClient');
+  const content=document.getElementById('metaContent');
   if(!currentClient){noClient.style.display='flex';content.style.display='none';return;}
-  noClient.style.display='none';content.style.display='flex';
-  document.getElementById('metaClientTitle').textContent=currentClient.name+' — Meta Ads';
+  noClient.style.display='none';content.style.display='block';
+  document.getElementById('metaClientTitle').textContent=currentClient.name;
   loadMetaSettings();
 }
-function openMetaSetup(){const c=document.getElementById('metaSetupCard');c.style.display=c.style.display==='none'?'block':'none';if(metaSettings){document.getElementById('metaAccountId').value=metaSettings.account_id||'';document.getElementById('metaToken').value=metaSettings.access_token||'';}}
+function openMetaSetup(){
+  const c=document.getElementById('metaSetupCard');
+  const isOpen=c.style.display!=='none';
+  c.style.display=isOpen?'none':'block';
+  if(!isOpen&&metaSettings){
+    document.getElementById('metaAccountId').value=metaSettings.account_id||'';
+    document.getElementById('metaToken').value=metaSettings.access_token||'';
+    document.getElementById('metaPageId').value=metaSettings.page_id||'';
+  }
+}
 function closeMetaSetup(){document.getElementById('metaSetupCard').style.display='none';}
+
 async function loadMetaSettings(){
   if(!currentClient)return;
   const{data}=await sb.from('meta_settings').select('*').eq('client_id',currentClient.id).single();
   metaSettings=data||null;
-  if(metaSettings){document.getElementById('metaStatsPanel').style.display='flex';document.getElementById('metaNoSettings').style.display='none';loadCachedMetaStats();}
-  else{document.getElementById('metaStatsPanel').style.display='none';document.getElementById('metaNoSettings').style.display='flex';}
+  const panel=document.getElementById('metaStatsPanel');
+  const noSettings=document.getElementById('metaNoSettings');
+  if(metaSettings){panel.style.display='block';noSettings.style.display='none';updateSyncBtn();loadCachedMetaStats();}
+  else{panel.style.display='none';noSettings.style.display='flex';}
 }
+
 async function saveMetaSettings(){
   if(!currentClient)return;
   const account_id=document.getElementById('metaAccountId').value.trim();
   const access_token=document.getElementById('metaToken').value.trim();
-  if(!account_id||!access_token){showToast('Užpildyk abu laukus!');return;}
-  const{error}=await sb.from('meta_settings').upsert([{client_id:currentClient.id,account_id,access_token}],{onConflict:'client_id'});
+  const page_id=document.getElementById('metaPageId').value.trim();
+  if(!account_id||!access_token){showToast('Užpildyk Account ID ir Token!');return;}
+  const{error}=await sb.from('meta_settings').upsert(
+    [{client_id:currentClient.id,account_id,access_token,page_id:page_id||null}],
+    {onConflict:'client_id'}
+  );
   if(error){showToast('Klaida: '+error.message);return;}
+  metaSettings={...metaSettings,account_id,access_token,page_id:page_id||null};
   showToast('Nustatymai išsaugoti!');closeMetaSetup();loadMetaSettings();
 }
-function setPeriod(p){metaPeriod=p;document.querySelectorAll('.period-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));}
-async function loadCachedMetaStats(){
-  if(!currentClient)return;
-  const{data}=await sb.from('meta_stats').select('*').eq('client_id',currentClient.id).single();
-  if(data)renderMetaStats(data);
-}
-async function fetchAndSyncMeta(){
-  if(!currentClient||!metaSettings){showToast('Pirma sukonfigūruok Meta paskyrą!');return;}
-  const loading=document.getElementById('metaLoading'),errEl=document.getElementById('metaError');
-  loading.style.display='block';errEl.style.display='none';
-  try{
-    const{account_id,access_token}=metaSettings;
-    const url=`https://graph.facebook.com/v19.0/act_${account_id}/insights?fields=spend,impressions,reach,clicks,ctr,cpm,actions,action_values&date_preset=${metaPeriod}&access_token=${access_token}`;
-    const res=await fetch(url);const json=await res.json();
-    if(json.error)throw new Error(json.error.message);
-    const d=json.data&&json.data[0]?json.data[0]:{};
-    const spend=parseFloat(d.spend||0),impressions=parseInt(d.impressions||0),reach=parseInt(d.reach||0);
-    const clicks=parseInt(d.clicks||0),ctr=parseFloat(d.ctr||0),cpm=parseFloat(d.cpm||0);
-    let conversions=0,convValue=0;
-    if(d.actions)d.actions.forEach(a=>{if(['purchase','omni_purchase'].includes(a.action_type))conversions+=parseInt(a.value||0);});
-    if(d.action_values)d.action_values.forEach(a=>{if(['purchase','omni_purchase'].includes(a.action_type))convValue+=parseFloat(a.value||0);});
-    const roas=spend>0?+(convValue/spend).toFixed(2):0;
-    const stats={client_id:currentClient.id,period:metaPeriod,spend,impressions,reach,clicks,ctr,cpm,roas,conversions,raw:d};
-    await sb.from('meta_stats').upsert([stats],{onConflict:'client_id'});
-    renderMetaStats({...stats,updated_at:new Date().toISOString()});
-    showToast('Meta statistika sinchronizuota!');
-  }catch(e){errEl.textContent='Klaida: '+e.message;errEl.style.display='block';showToast('Meta klaida');}
-  finally{loading.style.display='none';}
-}
-function fmtNum(n){return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);}
-function renderMetaStats(s){
-  const PERIOD_LT={'this_week':'Ši savaitė','last_week':'Praėjusi savaitė','this_month':'Šis mėnuo','last_month':'Praėjęs mėnuo'};
-  document.getElementById('metaStatsGrid').innerHTML=[
-    {label:'ROAS',val:s.roas?s.roas.toFixed(2)+'x':'—',sub:'Grąža iš reklamų',cls:'roas'},
-    {label:'Ad Spend',val:s.spend?'€'+parseFloat(s.spend).toFixed(2):'—',sub:'Išleista reklamoms',cls:'spend'},
-    {label:'Impressions',val:s.impressions?fmtNum(s.impressions):'—',sub:'Parodymai'},
-    {label:'Reach',val:s.reach?fmtNum(s.reach):'—',sub:'Unikalūs pasiekti'},
-    {label:'Clicks',val:s.clicks?fmtNum(s.clicks):'—',sub:'Paspaudimai'},
-    {label:'CTR',val:s.ctr?parseFloat(s.ctr).toFixed(2)+'%':'—',sub:'Paspaudimų dalis'},
-    {label:'CPM',val:s.cpm?'€'+parseFloat(s.cpm).toFixed(2):'—',sub:'Kaina už 1000 parod.'},
-    {label:'Konversijos',val:s.conversions?fmtNum(s.conversions):'—',sub:'Pirkimai'},
-  ].map(m=>`<div class="meta-stat-card ${m.cls||''}"><div class="meta-stat-label">${m.label}</div><div class="meta-stat-val">${m.val}</div>${m.sub?`<div class="meta-stat-sub">${m.sub}</div>`:''}</div>`).join('');
-  const upd=new Date(s.updated_at).toLocaleString('lt-LT');
-  document.getElementById('metaUpdated').textContent=`${PERIOD_LT[s.period]||s.period} · Atnaujinta: ${upd}`;
+
+function setPeriod(p){
+  metaPeriod=p;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.toggle('active',b.dataset.p===p));
+  updateSyncBtn();
+  loadCachedMetaStats();
 }
 
+async function loadCachedMetaStats(){
+  if(!currentClient)return;
+  // Show empty state while loading
+  document.getElementById('kpiGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:28px;color:var(--text-faint);font-size:13px">Nėra duomenų šiam laikotarpiui — spausk „Sinchronizuoti"</div>';
+  document.getElementById('chartsGrid').style.display='none';
+  document.getElementById('pageStatsSection').style.display='none';
+  document.getElementById('metaFooter').textContent='';
+  document.getElementById('metaError').style.display='none';
+
+  const{data}=await sb.from('meta_stats').select('*')
+    .eq('client_id',currentClient.id)
+    .eq('period',metaPeriod)
+    .maybeSingle();
+
+  if(data){
+    // Restore cooldown from DB if synced recently
+    if(data.last_sync_at){
+      const age=Date.now()-new Date(data.last_sync_at).getTime();
+      const key=`${currentClient.id}_${metaPeriod}`;
+      if(age<SYNC_COOLDOWN&&!syncCooldowns[key]){
+        syncCooldowns[key]=Date.now()-age;
+        updateSyncBtn();
+      }
+    }
+    renderMetaStats(data);
+  }
+}
+
+// --- Pagrindinė sinchronizacijos funkcija ---
+async function fetchAndSyncMeta(){
+  if(!currentClient||!metaSettings){showToast('Pirma sukonfigūruok Meta paskyrą!');return;}
+  if(!canSync()){showToast('Palaukite prieš sinchronizuojant vėl (rate limit)!');return;}
+
+  const loading=document.getElementById('metaLoading');
+  const errEl=document.getElementById('metaError');
+  const syncBtn=document.getElementById('syncBtn');
+
+  loading.style.display='flex';
+  errEl.style.display='none';
+  syncBtn.disabled=true;
+  syncBtn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Kraunama...';
+
+  try{
+    const{account_id,access_token,page_id}=metaSettings;
+    const range=getPeriodRange(metaPeriod);
+    const compKey=getCompPeriod(metaPeriod);
+    const compRange=compKey?getPeriodRange(compKey):null;
+    const base='https://graph.facebook.com/v21.0';
+    const fields='spend,impressions,reach,clicks,ctr,cpm,frequency,actions,action_values';
+    const tr=encodeURIComponent(JSON.stringify(range));
+
+    // Lygiagrečiai: totals + daily breakdown
+    const[totalRes,dailyRes]=await Promise.all([
+      fetch(`${base}/act_${account_id}/insights?fields=${fields}&time_range=${tr}&access_token=${access_token}`),
+      fetch(`${base}/act_${account_id}/insights?fields=spend,impressions,reach,clicks&time_range=${tr}&time_increment=1&access_token=${access_token}`)
+    ]);
+    const[totalJson,dailyJson]=await Promise.all([totalRes.json(),dailyRes.json()]);
+
+    // Rate limit klaidos
+    if(totalJson.error){
+      const e=totalJson.error;
+      const isRateLimit=[4,17,613,80000,80004].includes(e.code);
+      if(isRateLimit){
+        // Automatiškai nustatome cooldown
+        syncCooldowns[`${currentClient.id}_${metaPeriod}`]=Date.now();
+        updateSyncBtn();
+        throw new Error(`Meta API rate limit (${e.code}). Palaukite 5-10 min. ir bandykite vėl.`);
+      }
+      throw new Error(e.message);
+    }
+
+    const d=totalJson.data?.[0]||{};
+    const daily=dailyJson.data||[];
+
+    // Totals
+    const spend=parseFloat(d.spend||0);
+    const impressions=parseInt(d.impressions||0);
+    const reach=parseInt(d.reach||0);
+    const clicks=parseInt(d.clicks||0);
+    const ctr=parseFloat(d.ctr||0);
+    const cpm=parseFloat(d.cpm||0);
+    const frequency=parseFloat(d.frequency||0);
+    const cpc=clicks>0?+(spend/clicks).toFixed(3):0;
+
+    let conversions=0,convValue=0;
+    const purchaseTypes=['purchase','omni_purchase','offsite_conversion.fb_pixel_purchase'];
+    if(d.actions)d.actions.forEach(a=>{if(purchaseTypes.includes(a.action_type))conversions+=parseInt(a.value||0);});
+    if(d.action_values)d.action_values.forEach(a=>{if(purchaseTypes.includes(a.action_type))convValue+=parseFloat(a.value||0);});
+    const roas=spend>0?+(convValue/spend).toFixed(2):0;
+
+    // Palyginimas su ankstesniu laikotarpiu
+    let prev_spend=null,prev_impressions=null,prev_clicks=null,prev_roas=null,prev_conversions=null;
+    if(compRange){
+      try{
+        const ctr2=encodeURIComponent(JSON.stringify(compRange));
+        const compRes=await fetch(`${base}/act_${account_id}/insights?fields=${fields}&time_range=${ctr2}&access_token=${access_token}`);
+        const compJson=await compRes.json();
+        if(!compJson.error&&compJson.data?.[0]){
+          const cd=compJson.data[0];
+          prev_spend=parseFloat(cd.spend||0);
+          prev_impressions=parseInt(cd.impressions||0);
+          prev_clicks=parseInt(cd.clicks||0);
+          let pConv=0,pConvVal=0;
+          if(cd.actions)cd.actions.forEach(a=>{if(purchaseTypes.includes(a.action_type))pConv+=parseInt(a.value||0);});
+          if(cd.action_values)cd.action_values.forEach(a=>{if(purchaseTypes.includes(a.action_type))pConvVal+=parseFloat(a.value||0);});
+          prev_conversions=pConv;
+          prev_roas=prev_spend>0?+(pConvVal/prev_spend).toFixed(2):0;
+        }
+      }catch(e){/* comparison not critical */}
+    }
+
+    // Facebook puslapio statistika (nebūtina)
+    let page_followers=null,page_fan_adds=null,page_impressions_stat=null,page_engagement=null;
+    if(page_id){
+      try{
+        const[pgRes,insRes]=await Promise.all([
+          fetch(`${base}/${page_id}?fields=followers_count,fan_count&access_token=${access_token}`),
+          fetch(`${base}/${page_id}/insights?metric=page_impressions_unique,page_engaged_users,page_fan_adds&period=month&access_token=${access_token}`)
+        ]);
+        const[pgJson,insJson]=await Promise.all([pgRes.json(),insRes.json()]);
+        if(!pgJson.error)page_followers=pgJson.followers_count||pgJson.fan_count||null;
+        if(!insJson.error&&insJson.data){
+          insJson.data.forEach(m=>{
+            const v=m.values?.[m.values.length-1]?.value||0;
+            if(m.name==='page_impressions_unique')page_impressions_stat=parseInt(v);
+            if(m.name==='page_engaged_users')page_engagement=parseInt(v);
+            if(m.name==='page_fan_adds')page_fan_adds=parseInt(v);
+          });
+        }
+      }catch(e){/* page stats not critical */}
+    }
+
+    const statsRow={
+      client_id:currentClient.id,
+      period:metaPeriod,
+      spend,impressions,reach,clicks,ctr,cpm,roas,conversions,
+      daily_data:daily,
+      prev_spend,prev_impressions,prev_clicks,prev_roas,prev_conversions,
+      page_followers,page_fan_adds,page_impressions_stat,page_engagement,
+      raw:{...d,_cpc:cpc,_frequency:frequency,_conv_value:convValue},
+      last_sync_at:new Date().toISOString(),
+      updated_at:new Date().toISOString()
+    };
+
+    await sb.from('meta_stats').upsert([statsRow],{onConflict:'client_id,period'});
+    renderMetaStats(statsRow);
+    markSynced();
+    showToast('✓ Meta statistika sinchronizuota!');
+
+  }catch(e){
+    errEl.textContent='⚠ '+e.message;
+    errEl.style.display='block';
+    showToast('Meta klaida!');
+  }finally{
+    loading.style.display='none';
+    syncBtn.innerHTML='<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Sinchronizuoti';
+    updateSyncBtn();
+  }
+}
+
+// --- Chart.js lazy load ---
+async function ensureChartJS(){
+  if(window.Chart)return;
+  await new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js';
+    s.onload=resolve;s.onerror=reject;
+    document.head.appendChild(s);
+  });
+}
+
+// --- Rendering ---
+function pctChange(curr,prev){
+  if(prev===null||prev===undefined||prev===0)return null;
+  return (curr-prev)/prev*100;
+}
+function changeHtml(curr,prev,inverse=false){
+  const p=pctChange(curr,prev);
+  if(p===null)return `<span class="kpi-change na">— nėra duomenų</span>`;
+  const positive=inverse?p<0:p>=0;
+  const cls=positive?'up':'dn';
+  const arrow=p>=0?'↑':'↓';
+  return `<span class="kpi-change ${cls}">${arrow} ${Math.abs(p).toFixed(1)}%</span>`;
+}
+
+function fmtNum(n){if(!n||isNaN(n))return'0';n=parseInt(n);return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);}
+function fmtEur(n){if(!n||isNaN(n))return'—';return'€'+parseFloat(n).toLocaleString('lt-LT',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+function renderMetaStats(s){
+  const comp=COMP_LT[metaPeriod]||'';
+  const cpc=s.raw?._cpc||0;
+  const frequency=s.raw?._frequency||0;
+  const convValue=s.raw?._conv_value||0;
+
+  const kpis=[
+    {label:'ROAS',value:s.roas?s.roas.toFixed(2)+'x':'—',change:changeHtml(s.roas,s.prev_roas),tip:'Grąža iš reklamų',featured:true},
+    {label:'Ad Spend',value:s.spend?fmtEur(s.spend):'—',change:changeHtml(s.spend,s.prev_spend,true),tip:'Išlaidos reklamoms'},
+    {label:'Impressions',value:s.impressions?fmtNum(s.impressions):'—',change:changeHtml(s.impressions,s.prev_impressions),tip:'Viso parodymų'},
+    {label:'Reach',value:s.reach?fmtNum(s.reach):'—',change:`<span class="kpi-change na">Unikalūs vartotojai</span>`,tip:''},
+    {label:'Clicks',value:s.clicks?fmtNum(s.clicks):'—',change:changeHtml(s.clicks,s.prev_clicks),tip:'Paspaudimai ant reklamos'},
+    {label:'CTR',value:s.ctr?parseFloat(s.ctr).toFixed(2)+'%':'—',change:`<span class="kpi-change na">Paspaudimų dažnis</span>`,tip:''},
+    {label:'CPM',value:s.cpm?fmtEur(s.cpm):'—',change:`<span class="kpi-change na">1000 parodymų kaina</span>`,tip:''},
+    {label:'CPC',value:cpc>0?fmtEur(cpc):'—',change:`<span class="kpi-change na">Kaina už paspaudimą</span>`,tip:''},
+    {label:'Konversijos',value:s.conversions?fmtNum(s.conversions):'—',change:changeHtml(s.conversions,s.prev_conversions),tip:'Pirkimai / tikslai'},
+    {label:'Frequency',value:frequency>0?parseFloat(frequency).toFixed(1)+'x':'—',change:`<span class="kpi-change na">Vid. skaičius vienam</span>`,tip:''},
+  ];
+
+  document.getElementById('kpiGrid').innerHTML=kpis.map(k=>`
+    <div class="kpi-card${k.featured?' featured':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      ${k.change}
+      ${k.tip?`<div class="kpi-tip">${k.tip}</div>`:''}
+    </div>`).join('');
+
+  // Charts
+  const daily=s.daily_data||[];
+  if(daily.length>0){
+    document.getElementById('chartsGrid').style.display='grid';
+    document.getElementById('spendTotal').textContent=s.spend?'€'+parseFloat(s.spend).toFixed(0):'';
+    ensureChartJS().then(()=>{drawSpendChart(daily);drawReachChart(daily);});
+  }else{
+    document.getElementById('chartsGrid').style.display='none';
+  }
+
+  // Page stats
+  if(s.page_followers){
+    document.getElementById('pageStatsSection').style.display='block';
+    document.getElementById('pageStatsGrid').innerHTML=[
+      {label:'Sekėjai',val:fmtNum(s.page_followers),sub:s.page_fan_adds?`+${fmtNum(s.page_fan_adds)} šį mėn.`:null},
+      {label:'Puslapio reach',val:s.page_impressions_stat?fmtNum(s.page_impressions_stat):'—',sub:'Unikalūs (mėn.)'},
+      {label:'Aktyvūs vartotojai',val:s.page_engagement?fmtNum(s.page_engagement):'—',sub:'Įsitraukimas (mėn.)'},
+    ].map(m=>`
+      <div class="kpi-card">
+        <div class="kpi-label">${m.label}</div>
+        <div class="kpi-value">${m.val}</div>
+        ${m.sub?`<span class="kpi-change na">${m.sub}</span>`:''}
+      </div>`).join('');
+  }else{
+    document.getElementById('pageStatsSection').style.display='none';
+  }
+
+  // Footer
+  const range=getPeriodRange(metaPeriod);
+  const syncAt=s.last_sync_at||s.updated_at;
+  const syncStr=syncAt?new Date(syncAt).toLocaleString('lt-LT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+  document.getElementById('metaFooter').textContent=`${PERIOD_LT[metaPeriod]}: ${range.since} – ${range.until}  ·  Sinchronizuota: ${syncStr}  ·  ${comp?comp:''}`;
+}
+
+// --- Grafikai ---
+const CHART_COLORS={blue:'#2D5BE3',blueFill:'rgba(45,91,227,0.08)',blueBar:'rgba(45,91,227,0.75)',blueLite:'rgba(45,91,227,0.18)'};
+const CHART_FONT={family:'DM Sans',size:10};
+const CHART_GRID='#F0EEE9';
+
+function drawSpendChart(daily){
+  const canvas=document.getElementById('spendChart');if(!canvas)return;
+  if(metaCharts.spend){metaCharts.spend.destroy();metaCharts.spend=null;}
+  const labels=daily.map(d=>new Date(d.date_start+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'}));
+  const values=daily.map(d=>parseFloat(d.spend||0));
+  metaCharts.spend=new Chart(canvas.getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[{data:values,borderColor:CHART_COLORS.blue,backgroundColor:CHART_COLORS.blueFill,fill:true,tension:0.4,pointRadius:values.length>20?2:4,pointHoverRadius:6,borderWidth:2}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€'+c.raw.toFixed(2)}}},
+      scales:{
+        x:{grid:{color:CHART_GRID},ticks:{font:CHART_FONT,color:'#8A877E',maxTicksLimit:8}},
+        y:{grid:{color:CHART_GRID},ticks:{font:CHART_FONT,color:'#8A877E',callback:v=>'€'+v.toFixed(0)},beginAtZero:true}
+      }
+    }
+  });
+}
+
+function drawReachChart(daily){
+  const canvas=document.getElementById('reachChart');if(!canvas)return;
+  if(metaCharts.reach){metaCharts.reach.destroy();metaCharts.reach=null;}
+  const labels=daily.map(d=>new Date(d.date_start+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'}));
+  metaCharts.reach=new Chart(canvas.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Reach',data:daily.map(d=>parseInt(d.reach||0)),backgroundColor:CHART_COLORS.blueBar,borderRadius:3},
+        {label:'Impressions',data:daily.map(d=>parseInt(d.impressions||0)),backgroundColor:CHART_COLORS.blueLite,borderRadius:3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'top',labels:{font:{family:'DM Sans',size:11},color:'#1A1916',padding:10,boxWidth:10}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmtNum(c.raw)}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:CHART_FONT,color:'#8A877E',maxTicksLimit:8}},
+        y:{grid:{color:CHART_GRID},ticks:{font:CHART_FONT,color:'#8A877E',callback:v=>fmtNum(v)},beginAtZero:true}
+      }
+    }
+  });
+}
+
+// ============================================================
 // UTILS
+// ============================================================
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
