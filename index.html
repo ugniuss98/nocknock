@@ -157,9 +157,45 @@
 
   .footer{text-align:center;padding:28px;color:var(--text-faint);font-size:11px;padding-bottom:80px;}
 
+  /* TABS */
+  .tab-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;position:sticky;top:65px;z-index:90;}
+  .tab-btn{padding:11px 16px;font-size:13px;font-weight:500;color:var(--text-muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;font-family:'DM Sans',sans-serif;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+  /* STATS SECTION */
+  .stats-section{padding:20px 24px;max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+  .stats-section.hidden{display:none;}
+  .stats-period-bar{display:flex;gap:7px;flex-wrap:wrap;}
+  .stats-period-btn{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--border-strong);border-radius:20px;background:var(--surface);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;color:var(--text);}
+  .stats-period-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
+  .stats-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+  .stats-card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+  .stats-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:1px;background:var(--border);}
+  .kpi-cell{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:3px;}
+  .kpi-val{font-size:20px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-.5px;}
+  .kpi-val.green{color:var(--green);}
+  .kpi-val.blue{color:var(--accent);}
+  .kpi-val.orange{color:var(--orange);}
+  .kpi-lbl{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.3px;}
+  .camp-table{width:100%;border-collapse:collapse;font-size:12px;}
+  .camp-table th{text-align:left;padding:8px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg);}
+  .camp-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap;}
+  .camp-table tr:last-child td{border-bottom:none;}
+  .camp-table tbody tr:hover td{background:var(--bg);}
+  .camp-name-cell{font-weight:500;color:var(--text);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .roas-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+  .roas-good{background:var(--green-light);color:var(--green);}
+  .roas-ok{background:var(--orange-light);color:var(--orange);}
+  .roas-bad{background:var(--gray-light);color:var(--gray);}
+  .page-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:1px;background:var(--border);}
+  .sync-label{font-size:11px;color:var(--text-faint);}
+  .stats-empty{padding:32px;text-align:center;color:var(--text-faint);font-size:13px;background:var(--surface);}
+
   /* PRINT */
   @media print{
-    .header,.top-bar,.meta-bar,.req-fab,.modal-overlay,.footer,.my-requests{display:none!important;}
+    .header,.top-bar,.meta-bar,.req-fab,.modal-overlay,.footer,.my-requests,.tab-nav,.stats-section{display:none!important;}
     .print-header{display:block!important;}
     body{background:white;}
     .main{padding:0;max-width:100%;}
@@ -206,7 +242,13 @@
   </div>
 </header>
 
-<div class="top-bar">
+<!-- Tab navigation -->
+<nav class="tab-nav" id="tabNav" style="display:none">
+  <button class="tab-btn active" id="tabBtnZurnalas" onclick="switchTab('zurnalas')">Žurnalas</button>
+  <button class="tab-btn" id="tabBtnStatistika" onclick="switchTab('statistika')">Statistika</button>
+</nav>
+
+<div class="top-bar" id="topBar">
   <div class="stat-inline"><span class="stat-val" id="statTasks">—</span><span class="stat-label">užduotys</span></div>
   <div class="bar-sep"></div>
   <div class="stat-inline"><span class="stat-val" id="statSum">—</span><span class="stat-label">suma</span></div>
@@ -245,6 +287,61 @@
 <main class="main" id="mainArea">
   <!-- My requests + day cards rendered here -->
 </main>
+
+<!-- STATISTIKA TAB CONTENT -->
+<section class="stats-section hidden" id="statsSection">
+  <!-- Period selector -->
+  <div class="stats-period-bar">
+    <button class="stats-period-btn active" data-period="this_week" onclick="selectStatsPeriod(this)">Ši savaitė</button>
+    <button class="stats-period-btn" data-period="last_week" onclick="selectStatsPeriod(this)">Praėjusi savaitė</button>
+    <button class="stats-period-btn" data-period="this_month" onclick="selectStatsPeriod(this)">Šis mėnuo</button>
+    <button class="stats-period-btn" data-period="last_month" onclick="selectStatsPeriod(this)">Praėjęs mėnuo</button>
+  </div>
+
+  <!-- Meta Ads KPI -->
+  <div class="stats-card">
+    <div class="stats-card-head">
+      <span class="stats-card-title">Meta Ads — Apžvalga</span>
+      <span class="sync-label" id="statsSyncLabel"></span>
+    </div>
+    <div id="metaKpiGrid"><div class="stats-empty">Sinchronizuojama...</div></div>
+  </div>
+
+  <!-- Active Campaigns -->
+  <div class="stats-card hidden" id="campCard">
+    <div class="stats-card-head">
+      <span class="stats-card-title">Aktyvios kampanijos</span>
+      <span class="sync-label" id="campCount"></span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="camp-table">
+        <thead>
+          <tr>
+            <th>Kampanija</th>
+            <th>Išlaidos</th>
+            <th>Impr.</th>
+            <th>Pasiek.</th>
+            <th>Paspaud.</th>
+            <th>CTR</th>
+            <th>CPM</th>
+            <th>Konvers.</th>
+            <th>ROAS</th>
+          </tr>
+        </thead>
+        <tbody id="campTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Page / Profile Stats -->
+  <div class="stats-card hidden" id="pageCard">
+    <div class="stats-card-head">
+      <span class="stats-card-title">Puslapis / Profilis</span>
+      <span class="sync-label">Laikotarpio duomenys</span>
+    </div>
+    <div class="page-kpi-grid" id="pageKpiGrid"></div>
+  </div>
+</section>
 
 <div class="footer">Paskutinis atnaujinimas: <span id="lastUpdate">—</span></div>
 
@@ -356,6 +453,7 @@ async function init(){
   document.getElementById('clientNameSub').textContent=client.name;
   document.getElementById('printClientName').textContent=client.name;
   document.getElementById('reqFab').classList.remove('hidden');
+  document.getElementById('tabNav').style.display='';
   loadTasks();loadMyRequests();loadMetaStats();
   sb.channel('t'+client.id).on('postgres_changes',{event:'*',schema:'public',table:'tasks',filter:`client_id=eq.${client.id}`},loadTasks).subscribe();
   sb.channel('r'+client.id).on('postgres_changes',{event:'*',schema:'public',table:'client_requests',filter:`client_id=eq.${client.id}`},loadMyRequests).subscribe();
@@ -489,10 +587,12 @@ function showSuccessToast(){
   setTimeout(()=>t.remove(),3500);
 }
 
-// META STATS
+// META STATS (meta-bar at top — shows most recently synced row)
 async function loadMetaStats(){
   if(!currentClient)return;
-  const{data}=await sb.from('meta_stats').select('*').eq('client_id',currentClient.id).single();
+  // Load the most recently synced row for the mini meta-bar
+  const{data:rows}=await sb.from('meta_stats').select('*').eq('client_id',currentClient.id).order('last_sync_at',{ascending:false}).limit(1);
+  const data=rows&&rows[0];
   if(!data){document.getElementById('metaBar').classList.add('hidden');return;}
   document.getElementById('metaBar').classList.remove('hidden');
   document.getElementById('mRoas').textContent=data.roas?parseFloat(data.roas).toFixed(2)+'x':'—';
@@ -503,6 +603,108 @@ async function loadMetaStats(){
   document.getElementById('mConv').textContent=data.conversions?fmtNum(data.conversions):'—';
   document.getElementById('metaPeriodTag').textContent=PERIOD_LT[data.period]||'';
 }
+
+// STATS TAB
+let currentStatsPeriod='this_week';
+let currentTab='zurnalas';
+
+function switchTab(tab){
+  currentTab=tab;
+  document.getElementById('tabBtnZurnalas').classList.toggle('active',tab==='zurnalas');
+  document.getElementById('tabBtnStatistika').classList.toggle('active',tab==='statistika');
+  // Žurnalas tab shows: top-bar, meta-bar, mainArea, footer; hides statsSection
+  const isStats=tab==='statistika';
+  document.getElementById('topBar').classList.toggle('hidden',isStats);
+  if(isStats)document.getElementById('metaBar').style.display='none';
+  else document.getElementById('metaBar').style.display=document.getElementById('metaBar').classList.contains('hidden')?'none':'';
+  document.getElementById('mainArea').classList.toggle('hidden',isStats);
+  document.getElementById('statsSection').classList.toggle('hidden',!isStats);
+  document.getElementById('reqFab').classList.toggle('hidden',isStats);
+  document.querySelector('.footer').classList.toggle('hidden',isStats);
+  if(tab==='statistika')loadStatsForPeriod(currentStatsPeriod);
+}
+
+function selectStatsPeriod(el){
+  document.querySelectorAll('.stats-period-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  currentStatsPeriod=el.dataset.period;
+  loadStatsForPeriod(currentStatsPeriod);
+}
+
+async function loadStatsForPeriod(period){
+  if(!currentClient)return;
+  document.getElementById('metaKpiGrid').innerHTML='<div class="stats-empty">Kraunama...</div>';
+  document.getElementById('campCard').classList.add('hidden');
+  document.getElementById('pageCard').classList.add('hidden');
+  const{data}=await sb.from('meta_stats').select('*').eq('client_id',currentClient.id).eq('period',period).maybeSingle();
+  if(!data){
+    document.getElementById('metaKpiGrid').innerHTML='<div class="stats-empty">Šiam laikotarpiui duomenų dar nėra.<br>Administratorius turi sinchronizuoti Meta duomenis.</div>';
+    return;
+  }
+  renderMetaKpis(data);
+  renderCampaigns(data.campaigns_data);
+  renderPageStats(data.page_data);
+  // Sync label
+  if(data.last_sync_at){
+    const d=new Date(data.last_sync_at);
+    document.getElementById('statsSyncLabel').textContent='Sinch: '+d.toLocaleDateString('lt-LT')+' '+d.toLocaleTimeString('lt-LT',{hour:'2-digit',minute:'2-digit'});
+  }
+}
+
+function renderMetaKpis(data){
+  const sp=parseFloat(data.spend||0),roas=parseFloat(data.roas||0);
+  const kpis=[
+    {val:sp>0?'€'+sp.toFixed(2):'—',lbl:'Ad Spend',cls:'blue'},
+    {val:roas>0?roas.toFixed(2)+'x':'—',lbl:'ROAS',cls:roas>=2?'green':roas>=1?'orange':''},
+    {val:data.impressions?fmtNum(data.impressions):'—',lbl:'Impressions',cls:''},
+    {val:data.reach?fmtNum(data.reach):'—',lbl:'Pasiekiamumas',cls:''},
+    {val:data.clicks?fmtNum(data.clicks):'—',lbl:'Paspaudimai',cls:''},
+    {val:data.ctr?parseFloat(data.ctr).toFixed(2)+'%':'—',lbl:'CTR',cls:''},
+    {val:data.cpm?'€'+parseFloat(data.cpm).toFixed(2):'—',lbl:'CPM',cls:''},
+    {val:data.conversions?fmtNum(data.conversions):'—',lbl:'Konversijos',cls:'green'},
+  ];
+  document.getElementById('metaKpiGrid').innerHTML=`<div class="kpi-grid">${kpis.map(k=>`<div class="kpi-cell"><div class="kpi-val${k.cls?' '+k.cls:''}">${k.val}</div><div class="kpi-lbl">${k.lbl}</div></div>`).join('')}</div>`;
+}
+
+function renderCampaigns(camps){
+  if(!camps||!camps.length)return;
+  document.getElementById('campCard').classList.remove('hidden');
+  document.getElementById('campCount').textContent=camps.length+' kampanija'+(camps.length===1?'':'s');
+  const tbody=document.getElementById('campTbody');
+  tbody.innerHTML=camps.map(c=>{
+    const roas=parseFloat(c.roas||0);
+    const roasCls=roas>=2?'roas-good':roas>=1?'roas-ok':'roas-bad';
+    return`<tr>
+      <td class="camp-name-cell" title="${escHtml(c.name)}">${escHtml(c.name)}</td>
+      <td>€${parseFloat(c.spend||0).toFixed(2)}</td>
+      <td>${fmtNum(c.impressions||0)}</td>
+      <td>${fmtNum(c.reach||0)}</td>
+      <td>${fmtNum(c.clicks||0)}</td>
+      <td>${parseFloat(c.ctr||0).toFixed(2)}%</td>
+      <td>€${parseFloat(c.cpm||0).toFixed(2)}</td>
+      <td>${c.conversions||0}</td>
+      <td><span class="roas-pill ${roasCls}">${roas>0?roas.toFixed(2)+'x':'—'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderPageStats(pd){
+  if(!pd||!Object.keys(pd).length)return;
+  document.getElementById('pageCard').classList.remove('hidden');
+  const items=[
+    {key:'followers',lbl:'Sekėjai',icon:'👥'},
+    {key:'page_fan_adds',lbl:'Nauji sekėjai',icon:'📈'},
+    {key:'page_impressions_unique',lbl:'Unikalūs peržiūros',icon:'👁'},
+    {key:'page_engaged_users',lbl:'Įsitraukę naud.',icon:'💬'},
+    {key:'page_views_total',lbl:'Profilio peržiūros',icon:'🔍'},
+  ];
+  const cells=items.filter(i=>pd[i.key]!=null).map(i=>`
+    <div class="kpi-cell">
+      <div class="kpi-val">${fmtNum(parseInt(pd[i.key]||0))}</div>
+      <div class="kpi-lbl">${i.icon} ${i.lbl}</div>
+    </div>`).join('');
+  document.getElementById('pageKpiGrid').innerHTML=cells||'<div class="stats-empty">Nėra puslapio duomenų</div>'
+;}
 
 // PDF
 function fillPdfDates(){
