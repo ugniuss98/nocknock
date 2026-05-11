@@ -103,6 +103,58 @@
   .deadline-soon{background:var(--orange-light);color:var(--orange);}
   .deadline-over{background:var(--red-light);color:var(--red);}
 
+  /* CLIENT DELETE BUTTON */
+  .task-del-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:3px;border-radius:5px;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .task-del-btn:hover{color:var(--red);background:var(--red-light);}
+  .task-del-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+
+  /* TABS */
+  .tab-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:4px;}
+  .c-tab-btn{font-size:13px;font-weight:500;padding:10px 14px;border-radius:0;border:none;border-bottom:2px solid transparent;cursor:pointer;background:none;color:var(--text-muted);transition:all .15s;display:flex;align-items:center;gap:5px;margin-bottom:-1px;}
+  .c-tab-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .c-tab-btn:hover{color:var(--text);}
+  .c-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+  /* UGC */
+  .ugc-wrapper{padding:20px 24px;max-width:100%;}
+  .ugc-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .ugc-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+  .ugc-table th{text-align:left;padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);background:var(--bg);border-bottom:1px solid var(--border);white-space:nowrap;}
+  .ugc-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+  .ugc-table tbody tr:last-child td{border-bottom:none;}
+  .ugc-table tbody tr:hover td{background:#FAFAF8;}
+  .ugc-creator{font-weight:600;font-size:12px;}
+  .ugc-platforms{display:flex;flex-direction:column;gap:2px;}
+  .ugc-plat{font-size:11px;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+  .ugc-followers{font-size:10px;color:var(--text-faint);font-family:'DM Mono',monospace;}
+  .ugc-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+  .vs-laukiama{background:var(--gray-light);color:var(--gray);}
+  .vs-filmuojama{background:#FEF0E6;color:#9C4A10;}
+  .vs-atsiusta{background:var(--accent-light);color:var(--accent);}
+  .vs-paviešinta{background:var(--green-light);color:var(--green);}
+  .ugc-received-yes{color:var(--green);font-weight:600;}
+  .ugc-received-no{color:var(--text-faint);}
+  .ugc-edit-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:4px;border-radius:5px;transition:all .15s;display:inline-flex;}
+  .ugc-edit-btn:hover{background:var(--bg);color:var(--accent);}
+  .ugc-edit-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+  .ugc-del-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:4px;border-radius:5px;transition:all .15s;display:inline-flex;}
+  .ugc-del-btn:hover{color:var(--red);}
+  .ugc-del-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+  .ugc-modal-grid{display:flex;flex-direction:column;gap:9px;}
+  .ugc-platform-row{display:flex;gap:6px;align-items:center;}
+  .ugc-platform-row select{flex:0 0 110px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 11px;color:var(--text);outline:none;appearance:none;-webkit-appearance:none;}
+  .ugc-platform-row input{flex:1;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 11px;color:var(--text);outline:none;}
+  .ugc-platform-row input:focus,.ugc-platform-row select:focus{border-color:var(--accent);background:white;}
+  .ugc-platform-row button{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:16px;line-height:1;padding:0 2px;}
+  .ugc-platform-row button:hover{color:var(--red);}
+  .ugc-empty{text-align:center;padding:40px;color:var(--text-faint);font-size:13px;}
+  .ugc-add-btn{background:var(--accent);color:white;border:none;border-radius:var(--radius);padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
+  .ugc-add-btn:hover{opacity:.85;}
+  .ugc-add-btn svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:2.5;}
+  .ugc-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .ugc-modal-overlay.hidden{display:none;}
+  .ugc-modal-box{background:var(--surface);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:520px;display:flex;flex-direction:column;gap:11px;box-shadow:0 20px 60px rgba(0,0,0,.18);max-height:90vh;overflow-y:auto;}
+
   /* NEW REQUEST FLOATING BUTTON */
   .req-fab{position:fixed;bottom:28px;right:28px;background:var(--accent);color:white;border:none;border-radius:50px;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(45,91,227,.35);display:flex;align-items:center;gap:7px;transition:all .2s;z-index:50;}
   .req-fab:hover{background:#1E45C4;transform:translateY(-1px);box-shadow:0 6px 24px rgba(45,91,227,.4);}
@@ -187,18 +239,27 @@
       <div style="font-size:11px;color:var(--text-muted);margin-top:1px" id="clientNameSub">Kraunama...</div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+  <div id="hRight" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:5px"><div class="live-dot"></div><span class="live-label">Realiu laiku</span></div>
-    <div class="week-nav">
+    <div class="week-nav" id="weekNav">
       <button class="wk-btn" onclick="changeWeek(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span class="week-label" id="weekLabel"></span>
       <button class="wk-btn" onclick="changeWeek(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
     </div>
-    <button class="pdf-btn" onclick="openPdfModal()">
+    <button class="pdf-btn" id="pdfBtnEl" onclick="openPdfModal()">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF
     </button>
   </div>
 </header>
+
+<div class="tab-bar" id="tabBar" style="display:none">
+  <button class="c-tab-btn active" id="ctab-journal" onclick="setClientTab('journal')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Žurnalas
+  </button>
+  <button class="c-tab-btn" id="ctab-ugc" onclick="setClientTab('ugc')">
+    <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>UGC Siuntos
+  </button>
+</div>
 
 <div class="top-bar" id="topBar">
   <div class="stat-inline"><span class="stat-val" id="statTasks">—</span><span class="stat-label">užduotys</span></div>
@@ -223,7 +284,78 @@
   <!-- My requests + day cards rendered here -->
 </main>
 
-<div class="footer">Paskutinis atnaujinimas: <span id="lastUpdate">—</span></div>
+<!-- UGC TAB -->
+<div id="ugcTab" style="display:none">
+  <div class="ugc-wrapper">
+    <div class="ugc-toolbar">
+      <span style="font-size:13px;font-weight:600">UGC Siuntos</span>
+      <button class="ugc-add-btn" onclick="openUgcModal()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti įrašą
+      </button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="ugc-table" id="ugcTable">
+        <thead><tr>
+          <th style="width:28px">#</th>
+          <th>Kūrėjas</th>
+          <th>Platforma</th>
+          <th>Išsiuntimo data</th>
+          <th>Siunta gauta</th>
+          <th>Siuntos turinys</th>
+          <th>Kontaktai</th>
+          <th>Video statusas</th>
+          <th>Pastabos</th>
+          <th style="width:56px"></th>
+        </tr></thead>
+        <tbody id="ugcTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- UGC MODAL -->
+<div class="ugc-modal-overlay hidden" id="ugcModal">
+  <div class="ugc-modal-box">
+    <div style="font-size:15px;font-weight:600" id="ugcModalTitle">Naujas UGC įrašas</div>
+    <div class="ugc-modal-grid">
+      <div><label class="m-label">Kūrėjo vardas / @handle</label><input class="m-input" type="text" id="ugcName" placeholder="@username arba vardas"></div>
+      <div>
+        <label class="m-label">Platforma ir sekėjai</label>
+        <div id="ugcPlatformsList" style="display:flex;flex-direction:column;gap:5px;margin-top:3px"></div>
+        <button onclick="addUgcPlatform()" style="font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;padding:3px 0;margin-top:4px">+ Pridėti platformą</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <div><label class="m-label">Išsiuntimo data</label><input class="m-input" type="date" id="ugcDate"></div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:2px">
+          <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="ugcReceived" style="width:15px;height:15px;cursor:pointer">Siunta gauta
+          </label>
+        </div>
+      </div>
+      <div><label class="m-label">Siuntos turinys</label><input class="m-input" type="text" id="ugcPackage" placeholder="pvz. 3 x F03, 2 x F09"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <div><label class="m-label">Kontakto vardas</label><input class="m-input" type="text" id="ugcContactName" placeholder="Vardas"></div>
+        <div><label class="m-label">Šalis</label><input class="m-input" type="text" id="ugcCountry" placeholder="pvz. Germany"></div>
+      </div>
+      <div><label class="m-label">El. paštas</label><input class="m-input" type="email" id="ugcEmail" placeholder="email@example.com"></div>
+      <div><label class="m-label">Video statusas</label>
+        <select class="m-input" id="ugcVideoStatus">
+          <option value="laukiama">⏳ Laukiama</option>
+          <option value="filmuojama">🎬 Filmuojama</option>
+          <option value="atsiusta">📨 Atsiųsta</option>
+          <option value="paviešinta">✅ Paviešinta</option>
+        </select>
+      </div>
+      <div><label class="m-label">Pastabos</label><textarea class="m-input" id="ugcNotes" placeholder="Papildoma informacija..." style="min-height:60px"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeUgcModal()">Atšaukti</button>
+      <button class="btn-send" onclick="saveUgcEntry()">Išsaugoti</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer" id="footerEl">Paskutinis atnaujinimas: <span id="lastUpdate">—</span></div>
 
 <!-- Floating new request button -->
 <button class="req-fab hidden" id="reqFab" onclick="openReqModal()">
@@ -348,9 +480,11 @@ async function init(){
   document.getElementById('clientNameSub').textContent=client.name;
   document.getElementById('printClientName').textContent=client.name;
   document.getElementById('reqFab').classList.remove('hidden');
+  document.getElementById('tabBar').style.display='flex';
   loadTasks();loadMyRequests();
   sb.channel('t'+client.id).on('postgres_changes',{event:'*',schema:'public',table:'tasks',filter:`client_id=eq.${client.id}`},loadTasks).subscribe();
   sb.channel('r'+client.id).on('postgres_changes',{event:'*',schema:'public',table:'client_requests',filter:`client_id=eq.${client.id}`},loadMyRequests).subscribe();
+  sb.channel('ugc'+client.id).on('postgres_changes',{event:'*',schema:'public',table:'ugc_shipments',filter:`client_id=eq.${client.id}`},()=>{if(clientTab==='ugc')renderUgcTab();}).subscribe();
 }
 
 async function loadTasks(){
@@ -433,6 +567,7 @@ function renderMain(){
               ${t.price>0?`<span class="task-price">${t.total.toFixed(0)} €</span>`:''}
               ${deadlineBadge(t.deadline)}
               <span class="status-tag ${STATUS_CLASS[t.status]||'status-done'}">${STATUS_LABELS[t.status]||'✅ Atlikta'}</span>
+              <button class="task-del-btn" onclick="deleteClientTask(${t.id})" title="Ištrinti"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
             </div>
           </div>`).join('')}
       </div>`;
@@ -441,6 +576,138 @@ function renderMain(){
   updateStats();
 }
 function toggleDay(key){collapsed[key]=!collapsed[key];renderMain();}
+
+// ─── CLIENT DELETE TASK ───
+async function deleteClientTask(id){
+  if(!confirm('Ištrinti šią užduotį?'))return;
+  const{error}=await sb.from('tasks').delete().eq('id',id);
+  if(error){alert('Klaida: '+error.message);}
+}
+
+// ─── TABS ───
+let clientTab='journal';
+function setClientTab(tab){
+  clientTab=tab;
+  ['journal','ugc'].forEach(t=>{
+    document.getElementById('ctab-'+t).classList.toggle('active',t===tab);
+  });
+  const isJournal=tab==='journal';
+  document.getElementById('topBar').style.display=isJournal?'flex':'none';
+  document.getElementById('mainArea').style.display=isJournal?'flex':'none';
+  document.getElementById('footerEl').style.display=isJournal?'block':'none';
+  document.getElementById('reqFab').style.display=isJournal?'flex':'none';
+  document.getElementById('weekNav').style.display=isJournal?'flex':'none';
+  document.getElementById('pdfBtnEl').style.display=isJournal?'flex':'none';
+  document.getElementById('ugcTab').style.display=isJournal?'none':'block';
+  if(tab==='ugc')renderUgcTab();
+}
+
+// ─── UGC ───
+let ugcEntries=[],editingUgcId=null,ugcPlatforms=[];
+const UGC_STATUS_LABELS={laukiama:'⏳ Laukiama',filmuojama:'🎬 Filmuojama',atsiusta:'📨 Atsiųsta',paviešinta:'✅ Paviešinta'};
+const UGC_STATUS_CLS={laukiama:'vs-laukiama',filmuojama:'vs-filmuojama',atsiusta:'vs-atsiusta',paviešinta:'vs-paviešinta'};
+
+async function renderUgcTab(){
+  if(!currentClient)return;
+  const{data}=await sb.from('ugc_shipments').select('*').eq('client_id',currentClient.id).order('created_at',{ascending:false});
+  ugcEntries=data||[];
+  const tbody=document.getElementById('ugcTbody');
+  if(!ugcEntries.length){
+    tbody.innerHTML=`<tr><td colspan="10" class="ugc-empty">Nėra įrašų. Spausk „Pridėti įrašą".</td></tr>`;return;
+  }
+  tbody.innerHTML=ugcEntries.map((e,i)=>{
+    const platforms=(e.platforms||[]).map(p=>`<div class="ugc-plat">${escHtml(p.platform||'')} ${p.handle?`<span style="color:var(--text-muted)">@${escHtml(p.handle)}</span>`:''} ${p.followers?`<span class="ugc-followers">${escHtml(String(p.followers))}</span>`:''}</div>`).join('');
+    const recv=e.package_received?`<span class="ugc-received-yes">✓ Gauta</span>`:`<span class="ugc-received-no">—</span>`;
+    const stCls=UGC_STATUS_CLS[e.video_status]||'vs-laukiama';
+    const contacts=[e.contact_name,e.contact_country,e.contact_email].filter(Boolean).join(' · ');
+    return`<tr>
+      <td style="color:var(--text-faint);font-size:11px">${i+1}</td>
+      <td><div class="ugc-creator">${escHtml(e.creator_name||'')}</div></td>
+      <td><div class="ugc-platforms">${platforms||'—'}</div></td>
+      <td style="white-space:nowrap;font-size:11px">${e.shipment_date?fmtNice(e.shipment_date):'—'}</td>
+      <td>${recv}</td>
+      <td style="font-size:11px;max-width:120px">${escHtml(e.package_contents||'—')}</td>
+      <td style="font-size:11px;max-width:130px">${escHtml(contacts||'—')}</td>
+      <td><span class="ugc-status ${stCls}">${UGC_STATUS_LABELS[e.video_status]||e.video_status||'—'}</span></td>
+      <td style="font-size:11px;max-width:150px;color:var(--text-muted)">${escHtml(e.notes||'')}</td>
+      <td style="white-space:nowrap">
+        <button class="ugc-edit-btn" onclick="openUgcModal('${e.id}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="ugc-del-btn" onclick="deleteUgcEntry('${e.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openUgcModal(editId){
+  editingUgcId=editId||null;ugcPlatforms=[];
+  document.getElementById('ugcModalTitle').textContent=editId?'Redaguoti įrašą':'Naujas UGC įrašas';
+  ['ugcName','ugcPackage','ugcContactName','ugcCountry','ugcEmail','ugcNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ugcDate').value='';
+  document.getElementById('ugcReceived').checked=false;
+  document.getElementById('ugcVideoStatus').value='laukiama';
+  if(editId){
+    const e=ugcEntries.find(x=>x.id===editId);
+    if(e){
+      document.getElementById('ugcName').value=e.creator_name||'';
+      document.getElementById('ugcDate').value=e.shipment_date||'';
+      document.getElementById('ugcReceived').checked=!!e.package_received;
+      document.getElementById('ugcPackage').value=e.package_contents||'';
+      document.getElementById('ugcContactName').value=e.contact_name||'';
+      document.getElementById('ugcCountry').value=e.contact_country||'';
+      document.getElementById('ugcEmail').value=e.contact_email||'';
+      document.getElementById('ugcVideoStatus').value=e.video_status||'laukiama';
+      document.getElementById('ugcNotes').value=e.notes||'';
+      ugcPlatforms=(e.platforms||[]).map(p=>({...p}));
+    }
+  }
+  if(!ugcPlatforms.length)ugcPlatforms=[{platform:'Instagram',handle:'',followers:''}];
+  renderUgcPlatforms();
+  document.getElementById('ugcModal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('ugcName').focus(),50);
+}
+function closeUgcModal(){document.getElementById('ugcModal').classList.add('hidden');editingUgcId=null;ugcPlatforms=[];}
+
+function addUgcPlatform(){ugcPlatforms.push({platform:'Instagram',handle:'',followers:''});renderUgcPlatforms();}
+function removeUgcPlatform(idx){ugcPlatforms.splice(idx,1);if(!ugcPlatforms.length)ugcPlatforms=[{platform:'Instagram',handle:'',followers:''}];renderUgcPlatforms();}
+function renderUgcPlatforms(){
+  const PLATS=['Instagram','TikTok','YouTube','Facebook','Twitter/X','Kita'];
+  document.getElementById('ugcPlatformsList').innerHTML=ugcPlatforms.map((p,i)=>`
+    <div class="ugc-platform-row">
+      <select onchange="ugcPlatforms[${i}].platform=this.value">${PLATS.map(pl=>`<option${pl===p.platform?' selected':''}>${pl}</option>`).join('')}</select>
+      <input type="text" placeholder="@handle" value="${escHtml(p.handle||'')}" oninput="ugcPlatforms[${i}].handle=this.value">
+      <input type="text" placeholder="Sekėjai" value="${escHtml(p.followers||'')}" oninput="ugcPlatforms[${i}].followers=this.value" style="max-width:88px">
+      ${ugcPlatforms.length>1?`<button onclick="removeUgcPlatform(${i})" title="Pašalinti">✕</button>`:''}
+    </div>`).join('');
+}
+
+async function saveUgcEntry(){
+  if(!currentClient)return;
+  const name=document.getElementById('ugcName').value.trim();
+  if(!name){document.getElementById('ugcName').style.borderColor='var(--red)';return;}
+  document.getElementById('ugcName').style.borderColor='';
+  const payload={
+    client_id:currentClient.id,creator_name:name,
+    platforms:ugcPlatforms.filter(p=>p.platform),
+    shipment_date:document.getElementById('ugcDate').value||null,
+    package_received:document.getElementById('ugcReceived').checked,
+    package_contents:document.getElementById('ugcPackage').value.trim()||null,
+    contact_name:document.getElementById('ugcContactName').value.trim()||null,
+    contact_country:document.getElementById('ugcCountry').value.trim()||null,
+    contact_email:document.getElementById('ugcEmail').value.trim()||null,
+    video_status:document.getElementById('ugcVideoStatus').value,
+    notes:document.getElementById('ugcNotes').value.trim()||null,
+  };
+  const{error}=editingUgcId
+    ?await sb.from('ugc_shipments').update(payload).eq('id',editingUgcId)
+    :await sb.from('ugc_shipments').insert([payload]);
+  if(error){alert('Klaida: '+error.message);return;}
+  closeUgcModal();renderUgcTab();
+}
+async function deleteUgcEntry(id){
+  if(!confirm('Ištrinti šį UGC įrašą?'))return;
+  await sb.from('ugc_shipments').delete().eq('id',id);
+  renderUgcTab();
+}
 
 // MY REQUESTS
 async function loadMyRequests(){
