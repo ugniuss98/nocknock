@@ -294,6 +294,15 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .todo-empty{text-align:center;padding:36px 20px;color:var(--text-faint);font-size:13px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius-lg);}
 /* Tab badge */
 .tab-badge{font-size:10px;font-weight:700;background:var(--red);color:white;padding:1px 5px;border-radius:20px;min-width:16px;text-align:center;}
+/* Todo filter */
+.todo-filters{display:flex;flex-wrap:wrap;gap:5px;}
+.todo-filter-pill{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text-muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.todo-filter-pill:hover{border-color:var(--accent);color:var(--accent);}
+.todo-filter-pill.active{background:var(--text);border-color:var(--text);color:white;}
+/* Client badge on item */
+.todo-client-badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;background:var(--accent-light);color:var(--accent);white-space:nowrap;}
+/* Client select in form */
+.todo-client-sel{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 26px 5px 9px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;max-width:140px;}
 
 @media print{#loginScreen,.header,.sidebar,.modal-overlay,.toast{display:none!important;}.layout{grid-template-columns:1fr!important;}.s-main{padding:0!important;}.day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}.del-btn,.status-btn{display:none!important;}.tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
@@ -535,10 +544,12 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
           <button class="todo-pri-pill p-normal sel" data-p="normal" onclick="selectPriority('normal')">● Normalu</button>
           <button class="todo-pri-pill p-low" data-p="low" onclick="selectPriority('low')">↓ Vėliau</button>
         </div>
+        <select class="todo-client-sel" id="todoClientSel"><option value="">— Bendra —</option></select>
         <input class="todo-deadline-inp" type="date" id="todoDeadline" title="Deadline">
         <button class="todo-add-btn" onclick="addTodo()">+ Pridėti</button>
       </div>
     </div>
+    <div class="todo-filters" id="todoFilters"></div>
     <div id="todoList"></div>
   </div>
 </div>
@@ -647,6 +658,7 @@ function setTab(tab){
 // ─── TODO ───
 let todos=[];
 let newTodoPriority='normal';
+let todoFilterClient='all'; // 'all' | '' (bendra) | client_id
 
 const PRI_COLORS={urgent:'#C0392B',high:'#C4590A',normal:'#2D5BE3',low:'#B5B2AA'};
 const PRI_LABELS={urgent:'⚡ Skubu',high:'↑ Svarbu',normal:'● Normalu',low:'↓ Vėliau'};
@@ -660,9 +672,41 @@ function selectPriority(p){
   });
 }
 
+function buildTodoClientSelects(){
+  const opts='<option value="">— Bendra —</option>'+clients.map(c=>`<option value="${c.id}">${escHtml(c.name)}</option>`).join('');
+  const sel=document.getElementById('todoClientSel');
+  if(sel)sel.innerHTML=opts;
+  renderTodoFilters();
+}
+
+function renderTodoFilters(){
+  const el=document.getElementById('todoFilters');
+  if(!el)return;
+  // Collect which client IDs appear in todos
+  const usedIds=new Set(todos.map(t=>t.client_id||''));
+  const pills=[
+    {id:'all',label:'Visi'},
+    {id:'',label:'Bendra'},
+    ...clients.filter(c=>usedIds.has(c.id)).map(c=>({id:c.id,label:c.name}))
+  ];
+  el.innerHTML=pills.map(p=>`<button class="todo-filter-pill${todoFilterClient===p.id?' active':''}" onclick="setTodoFilter('${p.id}')">${escHtml(p.label)}</button>`).join('');
+}
+
+function setTodoFilter(id){
+  todoFilterClient=id;
+  renderTodoFilters();
+  renderTodos();
+}
+
+function getFilteredTodos(list){
+  if(todoFilterClient==='all')return list;
+  return list.filter(t=>(t.client_id||'')===(todoFilterClient||''));
+}
+
 async function loadTodos(){
   const{data}=await sb.from('admin_todos').select('*').order('created_at',{ascending:false});
   todos=data||[];
+  renderTodoFilters();
   renderTodos();
   updateTodoBadge();
 }
@@ -705,11 +749,12 @@ function deadlineBadgeTodo(dl){
 
 function renderTodos(){
   const el=document.getElementById('todoList');
-  if(!todos.length){el.innerHTML=`<div class="todo-empty">Nėra užduočių — pridėk pirmą! 🎯</div>`;return;}
+  const filtered=getFilteredTodos(todos);
+  if(!filtered.length){el.innerHTML=`<div class="todo-empty">${todos.length?'Nėra užduočių šiam filtrui.':'Nėra užduočių — pridėk pirmą! 🎯'}</div>`;return;}
   const today=new Date();today.setHours(0,0,0,0);
-  const overdue=todos.filter(t=>!t.done&&t.deadline&&new Date(t.deadline+'T12:00:00')<today);
-  const open=todos.filter(t=>!t.done&&!(t.deadline&&new Date(t.deadline+'T12:00:00')<today));
-  const done=todos.filter(t=>t.done);
+  const overdue=filtered.filter(t=>!t.done&&t.deadline&&new Date(t.deadline+'T12:00:00')<today);
+  const open=filtered.filter(t=>!t.done&&!(t.deadline&&new Date(t.deadline+'T12:00:00')<today));
+  const done=filtered.filter(t=>t.done);
   let html='';
 
   if(overdue.length){
@@ -734,6 +779,7 @@ function todoItemHtml(t,isOverdue){
   const p=t.priority||'normal';
   const borderColor=PRI_COLORS[p];
   const priLabel=PRI_LABELS[p];
+  const client=t.client_id?clients.find(c=>c.id===t.client_id):null;
   return`<div class="todo-item${t.done?' done-item':''}${isOverdue?' overdue-item':''}" style="border-left-color:${borderColor}">
     <div class="todo-cb${t.done?' checked':''}" onclick="toggleTodo(${t.id},${t.done})">
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -743,6 +789,7 @@ function todoItemHtml(t,isOverdue){
       <div class="todo-meta">
         ${deadlineBadgeTodo(t.deadline)}
         <span class="todo-pri-badge pb-${p}">${priLabel}</span>
+        ${client?`<span class="todo-client-badge">${escHtml(client.name)}</span>`:''}
       </div>
     </div>
     <button class="todo-del" onclick="deleteTodo(${t.id})" title="Ištrinti"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
@@ -754,10 +801,12 @@ async function addTodo(){
   const text=inp.value.trim();if(!text)return;
   const deadline=document.getElementById('todoDeadline').value||null;
   const priority=newTodoPriority;
+  const clientSel=document.getElementById('todoClientSel');
+  const client_id=clientSel?.value||null;
   inp.value='';document.getElementById('todoDeadline').value='';
-  const{data,error}=await sb.from('admin_todos').insert([{text,priority,deadline}]).select().single();
+  const{data,error}=await sb.from('admin_todos').insert([{text,priority,deadline,client_id}]).select().single();
   if(error){showToast('Klaida: '+error.message);return;}
-  todos.unshift(data);renderTodos();updateTodoBadge();
+  todos.unshift(data);renderTodoFilters();renderTodos();updateTodoBadge();
   showToast('Pridėta!');
 }
 
@@ -780,6 +829,7 @@ async function loadClients(){
   const{data}=await sb.from('clients').select('*').order('name');
   clients=data||[];
   renderClientSelect();
+  buildTodoClientSelects();
   // Auto-select ferosticker on first load
   if(!currentClient){
     const def=clients.find(c=>c.slug==='ferosticker');
