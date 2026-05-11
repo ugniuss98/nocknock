@@ -80,12 +80,6 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .stat-val{font-size:18px;font-weight:600;letter-spacing:-.5px;font-family:'DM Mono',monospace;}
 .stat-label{font-size:10px;color:var(--text-muted);margin-top:2px;}
 
-/* FORMAT PILLS */
-.fmt-pills-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0;}
-.fmt-pill{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap;display:flex;align-items:center;gap:4px;}
-.fmt-pill:hover{border-color:var(--accent);color:var(--accent);}
-.fmt-pill.sel{background:var(--text);border-color:var(--text);color:white;}
-
 /* CATEGORY PILLS */
 .cat-pills-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0;}
 .cat-pill{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--border-strong);background:var(--bg);cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap;}
@@ -113,16 +107,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .fp-icon svg{width:16px;height:16px;stroke:var(--text-faint);fill:none;stroke-width:1.5;}
 .fp-rm{position:absolute;top:-5px;right:-5px;width:16px;height:16px;background:var(--red);color:white;border:none;border-radius:50%;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;line-height:1;font-weight:700;padding:0;}
 
-/* TEMPLATES */
-.tpl-row{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;}
-.tpl-name{flex:1;font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.tpl-price{font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace;white-space:nowrap;}
-.tpl-cats{display:flex;gap:3px;flex-wrap:wrap;}
-.tpl-cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.tpl-del{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:2px;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:color .15s;}
-.tpl-del:hover{color:var(--red);}
-.tpl-del svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
-.tpl-form{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;flex-direction:column;gap:7px;}
+
 
 /* REQUESTS */
 .requests-card{background:var(--surface);border:1px solid #F5C89A;border-radius:var(--radius-lg);overflow:hidden;}
@@ -275,25 +260,23 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
           <div class="sec-title">Nauja užduotis</div>
           <div><label>Diena</label><select id="fDay"></select></div>
 
-          <!-- Template picker -->
+          <!-- Task picker -->
           <div>
-            <label style="display:flex;align-items:center;justify-content:space-between">Šablonas<span id="tplCount" style="font-weight:400;color:var(--text-faint)"></span></label>
+            <label>Užduotis / Darbas</label>
             <select id="fTask" onchange="onTaskSelect()">
-              <option value="">— pasirink šabloną —</option>
+              <option value="">— pasirink —</option>
             </select>
           </div>
 
-          <div><label>Užduoties pavadinimas</label><input type="text" id="fCustom" placeholder="Arba įrašyk pats..."></div>
-
-          <!-- Format type -->
-          <div>
-            <label>Formatas</label>
-            <div class="fmt-pills-wrap" id="fmtPills"></div>
+          <!-- Custom name (shown only when "Kita" selected) -->
+          <div id="fCustomWrap" style="display:none">
+            <label>Pavadinimas</label>
+            <input type="text" id="fCustom" placeholder="Įrašyk darbą...">
           </div>
 
           <!-- Multi-category pills -->
           <div>
-            <label>Kategorijos</label>
+            <label>Kategorija</label>
             <div class="cat-pills-wrap" id="taskCatPills"></div>
           </div>
 
@@ -320,33 +303,6 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
             <div id="filesPreview" class="files-preview"></div>
           </div>
           <button class="btn-primary" onclick="addTask()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti užduotį</button>
-        </div>
-
-        <div class="divider"></div>
-        <!-- Template management -->
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div class="sec-title">Mano šablonai</div>
-            <button class="icon-btn" onclick="toggleTplForm()" title="Naujas šablonas"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-          </div>
-          <!-- Add template form -->
-          <div id="tplFormWrap" class="tpl-form" style="display:none">
-            <div><label>Pavadinimas</label><input type="text" id="tplName" placeholder="pvz. Reelsas su tekstu..."></div>
-            <div>
-              <label>Kategorijos</label>
-              <div class="cat-pills-wrap" id="tplCatPills"></div>
-            </div>
-            <div class="row2">
-              <div><label>Kaina (€)</label><input type="number" id="tplPrice" placeholder="0" step="0.01"></div>
-              <div style="display:flex;align-items:flex-end">
-                <button class="btn-primary" onclick="saveTemplate()" style="font-size:12px;padding:8px">Išsaugoti</button>
-              </div>
-            </div>
-          </div>
-          <!-- Template list -->
-          <div id="templatesList" style="display:flex;flex-direction:column;gap:5px">
-            <div style="font-size:12px;color:var(--text-faint);text-align:center;padding:8px">Nėra šablonų — sukurk pirmą</div>
-          </div>
         </div>
 
         <div class="divider"></div>
@@ -398,14 +354,37 @@ const CATS=[
 const CAT_MAP=Object.fromEntries(CATS.map(c=>[c.code,c]));
 const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',youtube:'tag-youtube',tiktok:'tag-tiktok',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
 
-const FORMATS=[
-  {code:'reel',   label:'Judantis įrašas', icon:'🎬', price:80},
-  {code:'story',  label:'Story',            icon:'📖', price:25},
-  {code:'photo',  label:'Nuotrauka',        icon:'📷', price:40},
-  {code:'carousel',label:'Karuselė',        icon:'🎠', price:55},
-  {code:'ugc',    label:'UGC video',        icon:'🎥', price:100},
+const TASK_LIST=[
+  // Instagram + Facebook
+  {group:'Instagram + Facebook', cat:'ig', name:'Įrašų planavimas (mėnesio kalendorius)', price:40},
+  {group:'Instagram + Facebook', cat:'ig', name:'Statinis įrašas (tekstas + nuotrauka, iliustracija, CTA)', price:25},
+  {group:'Instagram + Facebook', cat:'ig', name:'Judantis įrašas (video, judantis vizualas, reelsas)', price:25},
+  {group:'Instagram + Facebook', cat:'ig', name:'Stories (statiniai)', price:15},
+  {group:'Instagram + Facebook', cat:'ig', name:'Stories (video)', price:15},
+  {group:'Instagram + Facebook', cat:'ig', name:'Mėnesinės ataskaitos', price:50},
+  // UGC
+  {group:'UGC', cat:'ugc', name:'Scenarijų kūrimas', price:15},
+  {group:'UGC', cat:'ugc', name:'Kūrėjų / klientų turinio atranka', price:70},
+  {group:'UGC', cat:'ugc', name:'Vaizdo įrašo montavimas', price:20},
+  {group:'UGC', cat:'ugc', name:'Turinio adaptacija reklamoms/social', price:10},
+  {group:'UGC', cat:'ugc', name:'Komunikacija su klientais', price:70},
+  // Meta Ads
+  {group:'Meta Ads sistema', cat:'meta', name:'Meta kampanija', price:80},
+  {group:'Meta Ads sistema', cat:'meta', name:'A/B Testai', price:15},
+  {group:'Meta Ads sistema', cat:'meta', name:'Kas savaitę optimizacija', price:45},
+  {group:'Meta Ads sistema', cat:'meta', name:'Mėnesinės ataskaitos (Meta)', price:50},
+  // Dizainas
+  {group:'Dizaino darbai', cat:'design', name:'Vizualizacijos kūrimas - karuselė', price:65},
+  {group:'Dizaino darbai', cat:'design', name:'Vizualizacijos kūrimas (plakatas, baneris, karuselė ir tt.)', price:45},
+  {group:'Dizaino darbai', cat:'design', name:'Vizualizacijos kūrimas (animacija, video, reels)', price:50},
+  {group:'Dizaino darbai', cat:'design', name:'Turinio pritaikymas kelioms platformoms', price:15},
+  {group:'Dizaino darbai', cat:'design', name:'Tekstai kampanijoms, social', price:12},
+  // Papildomi
+  {group:'Papildomi darbai', cat:'extra', name:'Specialios užduotys', price:30},
+  {group:'Papildomi darbai', cat:'extra', name:'Turinio pritaikymas skirtingoms rinkoms', price:15},
+  // Kita
+  {group:'Kita', cat:'other', name:'— Kitas darbas (įrašyti rankiniu būdu) —', price:0, custom:true},
 ];
-const FORMAT_MAP=Object.fromEntries(FORMATS.map(f=>[f.code,f]));
 
 const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
 const STATUS_LABELS={done:'✅ Atlikta',progress:'🔄 Vykdoma',wait:'⏳ Laukia'};
@@ -413,11 +392,8 @@ const STATUS_CLASS={done:'status-done',progress:'status-progress',wait:'status-w
 
 let weekOffset=0,tasks=[],clients=[],currentClient=null,collapsed={};
 let currentTab='journal';
-let selectedCats=[]; // task form
-let tplCats=[];      // template form
-let pendingFiles=[];  // file list
-let templates=[];
-let selectedFormat=null; // format pill
+let selectedCats=[];
+let pendingFiles=[];
 
 // ─── AUTH ───
 async function initAuth(){
@@ -426,7 +402,7 @@ async function initAuth(){
   else{document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
   sb.auth.onAuthStateChange((e,s)=>{if(e==='SIGNED_IN')showApp();if(e==='SIGNED_OUT')showLogin();});
 }
-function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';loadClients();loadTemplates();renderCatPills();renderFmtPills();}
+function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';loadClients();buildTaskSelect();renderCatPills();}
 function showLogin(){document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
 async function doLogin(){
   const email=document.getElementById('lEmail').value.trim(),pass=document.getElementById('lPass').value;
@@ -503,111 +479,51 @@ function renderCatPills(){
   // Task form pills
   const tp=document.getElementById('taskCatPills');
   if(tp)tp.innerHTML=CATS.map(c=>`<span class="cat-pill${selectedCats.includes(c.code)?' sel':''}" data-cat="${c.code}" onclick="toggleTaskCat('${c.code}')">${c.label}</span>`).join('');
-  // Template form pills
-  const tpp=document.getElementById('tplCatPills');
-  if(tpp)tpp.innerHTML=CATS.map(c=>`<span class="cat-pill${tplCats.includes(c.code)?' sel':''}" data-cat="${c.code}" onclick="toggleTplCat('${c.code}')">${c.label}</span>`).join('');
 }
 function toggleTaskCat(code){
   if(selectedCats.includes(code))selectedCats=selectedCats.filter(c=>c!==code);
   else if(selectedCats.length<3)selectedCats.push(code);
   renderCatPills();
 }
-function toggleTplCat(code){
-  if(tplCats.includes(code))tplCats=tplCats.filter(c=>c!==code);
-  else if(tplCats.length<3)tplCats.push(code);
-  renderCatPills();
-}
 
-// ─── FORMAT PILLS ───
-function renderFmtPills(){
-  const wrap=document.getElementById('fmtPills');
-  if(!wrap)return;
-  wrap.innerHTML=FORMATS.map(f=>`
-    <span class="fmt-pill${selectedFormat===f.code?' sel':''}" onclick="selectFormat('${f.code}')">
-      ${f.icon} ${f.label} <span style="opacity:.6;font-size:10px">${f.price}€</span>
-    </span>`).join('');
-}
-function selectFormat(code){
-  // Toggle: click again to deselect
-  selectedFormat=selectedFormat===code?null:code;
-  renderFmtPills();
-  // Auto-fill price only if field is empty or was previously auto-filled
-  const priceEl=document.getElementById('fPrice');
-  if(selectedFormat){
-    const fmt=FORMAT_MAP[selectedFormat];
-    if(!priceEl.value||priceEl.dataset.auto==='1'){
-      priceEl.value=fmt.price;
-      priceEl.dataset.auto='1';
-    }
-  }else{
-    if(priceEl.dataset.auto==='1'){priceEl.value='';priceEl.dataset.auto='';}
-  }
-}
-
-// ─── TEMPLATES ───
-async function loadTemplates(){
-  const{data}=await sb.from('task_templates').select('*').order('sort_order').order('created_at');
-  templates=data||[];
-  renderTemplateList();
-  populateTemplateSelect();
-}
-function renderTemplateList(){
-  const list=document.getElementById('templatesList');
-  if(!templates.length){list.innerHTML='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:8px">Nėra šablonų — sukurk pirmą</div>';return;}
-  list.innerHTML=templates.map(t=>{
-    const cats=(t.categories||[]).map(c=>`<span class="tpl-cat-dot" style="background:${CAT_MAP[c]?.color||'#888'}" title="${CAT_MAP[c]?.label||c}"></span>`).join('');
-    return `<div class="tpl-row">
-      <span class="tpl-cats">${cats}</span>
-      <span class="tpl-name" title="${escHtml(t.name)}">${escHtml(t.name)}</span>
-      ${t.price>0?`<span class="tpl-price">${parseFloat(t.price).toFixed(0)}€</span>`:''}
-      <button class="tpl-del" onclick="deleteTemplate('${t.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
-    </div>`;
-  }).join('');
-  document.getElementById('tplCount').textContent=`(${templates.length})`;
-}
-function populateTemplateSelect(){
+// ─── TASK LIST SELECT ───
+function buildTaskSelect(){
   const sel=document.getElementById('fTask');
-  const customOpts=templates.map(t=>`<option value="tpl:${t.id}" data-tpl-id="${t.id}">${t.name}${t.price>0?' — '+parseFloat(t.price).toFixed(0)+'€':''}</option>`).join('');
-  sel.innerHTML=`<option value="">— pasirink šabloną —</option>${customOpts?`<optgroup label="Mano šablonai">${customOpts}</optgroup>`:''}`;
+  const groups={};
+  TASK_LIST.forEach(t=>{if(!groups[t.group])groups[t.group]=[];groups[t.group].push(t);});
+  sel.innerHTML=`<option value="">— pasirink užduotį —</option>`+
+    Object.entries(groups).map(([grp,items])=>
+      `<optgroup label="${grp}">`+
+      items.map((t,i)=>{
+        const idx=TASK_LIST.indexOf(t);
+        const priceStr=t.price>0?` — ${t.price}€/vnt.`:'';
+        return `<option value="${idx}">${t.name}${t.custom?'':priceStr}</option>`;
+      }).join('')+
+      `</optgroup>`
+    ).join('');
 }
 function onTaskSelect(){
   const sel=document.getElementById('fTask');
-  const val=sel.value;
-  if(!val)return;
-  if(val.startsWith('tpl:')){
-    const id=val.replace('tpl:','');
-    const tpl=templates.find(t=>t.id===id);
-    if(!tpl)return;
-    document.getElementById('fCustom').value=tpl.name;
-    selectedCats=[...(tpl.categories||[])];
-    const priceEl=document.getElementById('fPrice');
-    if(tpl.price){priceEl.value=tpl.price;priceEl.dataset.auto='';}
-    renderCatPills();
+  const idx=parseInt(sel.value);
+  if(isNaN(idx)||sel.value===''){
+    document.getElementById('fCustomWrap').style.display='none';
+    return;
   }
-}
-function toggleTplForm(){
-  const w=document.getElementById('tplFormWrap');
-  const open=w.style.display!=='none';
-  w.style.display=open?'none':'flex';
-  w.style.flexDirection='column';
-  if(!open){tplCats=[];renderCatPills();document.getElementById('tplName').value='';document.getElementById('tplPrice').value='';}
-}
-async function saveTemplate(){
-  const name=document.getElementById('tplName').value.trim();
-  if(!name){showToast('Įrašyk pavadinimą!');return;}
-  const price=parseFloat(document.getElementById('tplPrice').value)||0;
-  const{data,error}=await sb.from('task_templates').insert([{name,categories:tplCats,price}]).select().single();
-  if(error){showToast('Klaida: '+error.message);return;}
-  templates.push(data);
-  renderTemplateList();populateTemplateSelect();
-  toggleTplForm();showToast('Šablonas išsaugotas!');
-}
-async function deleteTemplate(id){
-  if(!confirm('Ištrinti šį šabloną?'))return;
-  await sb.from('task_templates').delete().eq('id',id);
-  templates=templates.filter(t=>t.id!==id);
-  renderTemplateList();populateTemplateSelect();
-  showToast('Ištrinta.');
+  const task=TASK_LIST[idx];
+  if(!task)return;
+  if(task.custom){
+    // Show manual name input
+    document.getElementById('fCustomWrap').style.display='block';
+    document.getElementById('fCustom').value='';
+    document.getElementById('fCustom').focus();
+    document.getElementById('fPrice').value='';
+    selectedCats=[];
+  }else{
+    document.getElementById('fCustomWrap').style.display='none';
+    document.getElementById('fPrice').value=task.price||0;
+    selectedCats=task.cat?[task.cat]:[];
+  }
+  renderCatPills();
 }
 
 // ─── MULTI-FILE ───
@@ -638,9 +554,15 @@ function clearFiles(){pendingFiles=[];document.getElementById('filesPreview').in
 async function addTask(){
   if(!currentClient){showToast('Pirma pasirink klientą!');return;}
   const day=document.getElementById('fDay').value;
-  const sel=document.getElementById('fTask'),custom=document.getElementById('fCustom').value.trim();
-  const name=custom||(sel.value&&!sel.value.startsWith('tpl:')?sel.options[sel.selectedIndex].text:'');
-  if(!name){showToast('Įrašyk arba pasirink užduotį!');return;}
+  const sel=document.getElementById('fTask');
+  const idx=parseInt(sel.value);
+  const task=!isNaN(idx)?TASK_LIST[idx]:null;
+  const custom=document.getElementById('fCustom').value.trim();
+  // Determine final name
+  let name='';
+  if(task&&task.custom){name=custom;}
+  else if(task){name=task.name;}
+  if(!name){showToast('Pasirink arba įrašyk užduotį!');return;}
   const qty=parseFloat(document.getElementById('fQty').value)||1;
   const price=parseFloat(document.getElementById('fPrice').value)||0;
   const note=document.getElementById('fNote').value.trim();
@@ -660,19 +582,19 @@ async function addTask(){
       files.push({url:publicUrl,name:f.name,mime:f.type});
     }else{showToast('Failo klaida: '+upErr.message);}
   }
-  // backward compat
   const file_url=files[0]?.url||null;
   const file_name=files[0]?.name||null;
   const file_mime=files[0]?.mime||null;
 
-  const format=selectedFormat||null;
-  const{error}=await sb.from('tasks').insert([{day,cat,categories,name,note,qty,price,total,status,format,client_id:currentClient.id,files,file_url,file_name,file_mime}]);
+  const{error}=await sb.from('tasks').insert([{day,cat,categories,name,note,qty,price,total,status,client_id:currentClient.id,files,file_url,file_name,file_mime}]);
   if(error){showToast('Klaida: '+error.message);return;}
-  document.getElementById('fTask').value='';document.getElementById('fCustom').value='';
+  sel.value='';
+  document.getElementById('fCustom').value='';
+  document.getElementById('fCustomWrap').style.display='none';
   document.getElementById('fNote').value='';
-  const priceEl=document.getElementById('fPrice');priceEl.value='';priceEl.dataset.auto='';
+  document.getElementById('fPrice').value='';
   document.getElementById('fQty').value='1';
-  selectedCats=[];selectedFormat=null;renderCatPills();renderFmtPills();clearFiles();
+  selectedCats=[];renderCatPills();clearFiles();
   showToast('Užduotis pridėta!');
 }
 async function deleteTask(id){if(!confirm('Ištrinti?'))return;await sb.from('tasks').delete().eq('id',id);}
@@ -720,7 +642,7 @@ function renderDays(){
             <div class="task-info">
               <div class="task-name">${escHtml(t.name)}</div>
               ${t.note?`<div class="task-note">${escHtml(t.note)}</div>`:''}
-              <div class="task-tags">${getTaskCats(t).map(c=>`<span class="tag ${CAT_CLASS[c]||'tag-other'}">${CAT_MAP[c]?.label||c}</span>`).join('')}${t.format&&FORMAT_MAP[t.format]?`<span class="tag tag-other">${FORMAT_MAP[t.format].icon} ${FORMAT_MAP[t.format].label}</span>`:''}${t.qty!==1?`<span class="tag tag-other">${t.qty}×</span>`:''}</div>
+              <div class="task-tags">${getTaskCats(t).map(c=>`<span class="tag ${CAT_CLASS[c]||'tag-other'}">${CAT_MAP[c]?.label||c}</span>`).join('')}${t.qty!==1?`<span class="tag tag-other">${t.qty}×</span>`:''}</div>
             </div>
             <div class="task-right">
               ${t.price>0?`<span class="task-price">${t.total.toFixed(0)} €</span>`:''}

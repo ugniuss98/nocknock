@@ -300,7 +300,6 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
 const CAT_NAME={ig:'Instagram + Facebook',ugc:'UGC',youtube:'YouTube',tiktok:'TikTok',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi darbai',other:'Kita'};
 const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',youtube:'tag-youtube',tiktok:'tag-tiktok',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
-const FORMAT_LABEL={reel:'🎬 Judantis įrašas',story:'📖 Story',photo:'📷 Nuotrauka',carousel:'🎠 Karuselė',ugc:'🎥 UGC video'};
 const STATUS_LABELS={done:'✅ Atlikta',progress:'🔄 Vykdoma',wait:'⏳ Laukia'};
 const STATUS_CLASS={done:'status-done',progress:'status-progress',wait:'status-wait'};
 
@@ -409,7 +408,6 @@ function renderMain(){
               ${t.note?`<div class="task-note">${escHtml(t.note)}</div>`:''}
               <div class="task-tags">
                 <span class="tag ${CAT_CLASS[t.cat]||'tag-other'}">${CAT_NAME[t.cat]||t.cat}</span>
-                ${t.format&&FORMAT_LABEL[t.format]?`<span class="tag tag-other">${FORMAT_LABEL[t.format]}</span>`:''}
                 ${t.qty!==1?`<span class="tag tag-other">${t.qty} vnt.</span>`:''}
               </div>
             </div>
