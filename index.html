@@ -98,6 +98,10 @@
   .status-progress{background:var(--orange-light);color:var(--orange);}
   .status-wait{background:var(--gray-light);color:var(--gray);}
   .empty-day{padding:16px;text-align:center;color:var(--text-faint);font-size:12px;}
+  .deadline-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+  .deadline-ok{background:var(--gray-light);color:var(--gray);}
+  .deadline-soon{background:var(--orange-light);color:var(--orange);}
+  .deadline-over{background:var(--red-light);color:var(--red);}
 
   /* NEW REQUEST FLOATING BUTTON */
   .req-fab{position:fixed;bottom:28px;right:28px;background:var(--accent);color:white;border:none;border-radius:50px;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(45,91,227,.35);display:flex;align-items:center;gap:7px;transition:all .2s;z-index:50;}
@@ -251,7 +255,11 @@
     </div>
     <div>
       <div class="m-label">Detaliau (nebūtina)</div>
-      <textarea class="m-input" id="rNotes" placeholder="Papildoma informacija, deadline, nuorodos..."></textarea>
+      <textarea class="m-input" id="rNotes" placeholder="Papildoma informacija, nuorodos..."></textarea>
+    </div>
+    <div>
+      <div class="m-label">Deadline (nebūtina)</div>
+      <input class="m-input" type="date" id="rDeadline">
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeReqModal()">Atšaukti</button>
@@ -311,6 +319,16 @@ function fmt(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0')
 function fmtNice(d){return new Date(d+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'});}
 function fmtNum(n){return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function deadlineBadge(dl){
+  if(!dl)return'';
+  const today=new Date();today.setHours(0,0,0,0);
+  const d=new Date(dl+'T12:00:00');
+  const diff=Math.round((d-today)/(1000*60*60*24));
+  let cls='deadline-ok',lbl=fmtNice(dl);
+  if(diff<0){cls='deadline-over';lbl='⚠ '+lbl;}
+  else if(diff<=3){cls='deadline-soon';}
+  return`<span class="deadline-badge ${cls}">${lbl}</span>`;
+}
 function getMonday(o){const d=new Date(),day=d.getDay()||7;d.setDate(d.getDate()-day+1+o*7);d.setHours(0,0,0,0);return d;}
 function getWeekDays(o=0){const m=getMonday(o);return Array.from({length:7},(_,i)=>{const d=new Date(m);d.setDate(d.getDate()+i);return d;});}
 function updateWeekLabel(){const d=getWeekDays(weekOffset);document.getElementById('weekLabel').textContent=fmtNice(fmt(d[0]))+' – '+fmtNice(fmt(d[6]));}
@@ -413,6 +431,7 @@ function renderMain(){
             </div>
             <div class="task-right">
               ${t.price>0?`<span class="task-price">${t.total.toFixed(0)} €</span>`:''}
+              ${deadlineBadge(t.deadline)}
               <span class="status-tag ${STATUS_CLASS[t.status]||'status-done'}">${STATUS_LABELS[t.status]||'✅ Atlikta'}</span>
             </div>
           </div>`).join('')}
@@ -435,6 +454,7 @@ async function loadMyRequests(){
 function openReqModal(){
   document.getElementById('rTitle').value='';
   document.getElementById('rNotes').value='';
+  document.getElementById('rDeadline').value='';
   document.getElementById('reqModal').classList.remove('hidden');
   setTimeout(()=>document.getElementById('rTitle').focus(),100);
 }
@@ -445,9 +465,10 @@ async function submitRequest(){
   document.getElementById('rTitle').style.borderColor='';
   const cat=document.getElementById('rCat').value;
   const notes=document.getElementById('rNotes').value.trim();
+  const deadline=document.getElementById('rDeadline').value||null;
   const btn=document.querySelector('.btn-send');
   btn.disabled=true;btn.textContent='Siunčiama...';
-  const{error}=await sb.from('client_requests').insert([{client_id:currentClient.id,title,notes,category:cat,status:'pending'}]);
+  const{error}=await sb.from('client_requests').insert([{client_id:currentClient.id,title,notes,category:cat,status:'pending',deadline}]);
   btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Siųsti užklausą';
   if(error){alert('Klaida: '+error.message);return;}
   closeReqModal();
