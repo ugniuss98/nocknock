@@ -231,30 +231,69 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .ugc-empty{text-align:center;padding:40px;color:var(--text-faint);font-size:13px;}
 
 /* TODO */
-.todo-wrap{max-width:640px;margin:0 auto;padding:28px 24px;display:flex;flex-direction:column;gap:16px;}
-.todo-input-row{display:flex;gap:8px;}
-.todo-input-row input{flex:1;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;color:var(--text);outline:none;transition:border-color .15s;}
-.todo-input-row input:focus{border-color:var(--accent);}
-.todo-add-btn{background:var(--text);color:white;border:none;border-radius:var(--radius);padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:opacity .15s;display:flex;align-items:center;gap:6px;}
+.todo-wrap{max-width:660px;margin:0 auto;padding:28px 24px;display:flex;flex-direction:column;gap:20px;}
+/* Form card */
+.todo-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.todo-form-top{display:flex;align-items:center;gap:10px;}
+.todo-pri-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:background .15s;}
+.todo-text-inp{flex:1;font-family:'DM Sans',sans-serif;font-size:14px;background:transparent;border:none;color:var(--text);outline:none;padding:0;}
+.todo-text-inp::placeholder{color:var(--text-faint);}
+.todo-form-bottom{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+/* Priority pills */
+.todo-pri-pills{display:flex;gap:4px;flex:1;flex-wrap:wrap;}
+.todo-pri-pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid transparent;cursor:pointer;transition:all .15s;background:var(--bg);color:var(--text-muted);}
+.todo-pri-pill:hover{opacity:.8;}
+.todo-pri-pill.p-urgent{border-color:#F5A8B0;color:#C0392B;}
+.todo-pri-pill.p-high{border-color:#F5C89A;color:#C4590A;}
+.todo-pri-pill.p-normal{border-color:#C5D4FA;color:var(--accent);}
+.todo-pri-pill.p-low{border-color:var(--border-strong);color:var(--gray);}
+.todo-pri-pill.sel.p-urgent{background:#C0392B;color:white;border-color:#C0392B;}
+.todo-pri-pill.sel.p-high{background:#C4590A;color:white;border-color:#C4590A;}
+.todo-pri-pill.sel.p-normal{background:var(--accent);color:white;border-color:var(--accent);}
+.todo-pri-pill.sel.p-low{background:var(--gray);color:white;border-color:var(--gray);}
+.todo-deadline-inp{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 9px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none;width:auto;appearance:none;-webkit-appearance:none;cursor:pointer;}
+.todo-deadline-inp:focus{border-color:var(--accent);}
+.todo-add-btn{background:var(--text);color:white;border:none;border-radius:var(--radius);padding:7px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .15s;flex-shrink:0;}
 .todo-add-btn:hover{opacity:.85;}
-.todo-add-btn svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:2.5;}
-.todo-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);padding:0 2px;}
-.todo-list{display:flex;flex-direction:column;gap:1px;}
-.todo-item{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);transition:background .1s;}
+/* Section */
+.todo-section{display:flex;flex-direction:column;gap:6px;}
+.todo-section-hd{display:flex;align-items:center;gap:8px;padding:0 2px;}
+.todo-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+.todo-section-label.lbl-overdue{color:var(--red);}
+.todo-section-label.lbl-open{color:var(--text-muted);}
+.todo-section-label.lbl-done{color:var(--text-faint);}
+.todo-section-count{font-size:10px;font-weight:600;padding:1px 6px;border-radius:20px;background:var(--bg);}
+.todo-list{display:flex;flex-direction:column;gap:3px;}
+/* Item */
+.todo-item{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-left-width:3px;border-radius:var(--radius);transition:background .1s;cursor:default;}
 .todo-item:hover{background:#FAFAF8;}
-.todo-item.done-item{opacity:.55;}
-.todo-cb{width:18px;height:18px;border-radius:5px;border:2px solid var(--border-strong);background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.todo-cb:hover{border-color:var(--accent);}
+.todo-item.done-item{opacity:.5;}
+.todo-item.overdue-item{background:#FEF9F9;}
+.todo-cb{width:17px;height:17px;border-radius:4px;border:2px solid var(--border-strong);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;}
+.todo-cb:hover{border-color:var(--green);}
 .todo-cb.checked{background:var(--green);border-color:var(--green);}
+.todo-cb svg{width:9px;height:9px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;display:none;}
 .todo-cb.checked svg{display:block;}
-.todo-cb svg{display:none;width:10px;height:10px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
-.todo-text{flex:1;font-size:13px;font-weight:400;line-height:1.4;cursor:pointer;word-break:break-word;}
+.todo-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.todo-text{font-size:13px;font-weight:400;line-height:1.45;word-break:break-word;cursor:pointer;}
+.todo-text:hover{opacity:.8;}
 .todo-text.striked{text-decoration:line-through;color:var(--text-muted);}
-.todo-date{font-size:10px;color:var(--text-faint);white-space:nowrap;flex-shrink:0;}
-.todo-del{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:3px;border-radius:5px;display:flex;align-items:center;transition:color .15s;flex-shrink:0;}
+.todo-meta{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+.todo-dl-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.todo-dl-ok{background:var(--gray-light);color:var(--gray);}
+.todo-dl-soon{background:var(--orange-light);color:var(--orange);}
+.todo-dl-over{background:var(--red-light);color:var(--red);}
+.todo-pri-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.pb-urgent{background:#FDE8ED;color:#C0392B;}
+.pb-high{background:var(--orange-light);color:#C4590A;}
+.pb-normal{background:var(--accent-light);color:var(--accent);}
+.pb-low{background:var(--gray-light);color:var(--gray);}
+.todo-del{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:3px;border-radius:5px;display:flex;align-items:center;transition:color .15s;flex-shrink:0;margin-top:1px;}
 .todo-del:hover{color:var(--red);}
-.todo-del svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
-.todo-empty{text-align:center;padding:40px 20px;color:var(--text-faint);font-size:13px;}
+.todo-del svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.todo-empty{text-align:center;padding:36px 20px;color:var(--text-faint);font-size:13px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius-lg);}
+/* Tab badge */
+.tab-badge{font-size:10px;font-weight:700;background:var(--red);color:white;padding:1px 5px;border-radius:20px;min-width:16px;text-align:center;}
 
 @media print{#loginScreen,.header,.sidebar,.modal-overlay,.toast{display:none!important;}.layout{grid-template-columns:1fr!important;}.s-main{padding:0!important;}.day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}.del-btn,.status-btn{display:none!important;}.tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
@@ -289,7 +328,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     <div class="h-center">
       <button class="tab-btn active" id="tab-journal" onclick="setTab('journal')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Žurnalas</button>
       <button class="tab-btn" id="tab-ugc" onclick="setTab('ugc')"><svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>UGC Siuntos</button>
-      <button class="tab-btn" id="tab-todo" onclick="setTab('todo')"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Mano To Do</button>
+      <button class="tab-btn" id="tab-todo" onclick="setTab('todo')"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Mano To Do<span class="tab-badge" id="todoBadge" style="display:none"></span></button>
     </div>
     <div class="h-right">
       <div class="week-nav" id="weekNav">
@@ -483,9 +522,22 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 <!-- TODO TAB -->
 <div id="tabTodo" style="display:none">
   <div class="todo-wrap">
-    <div class="todo-input-row">
-      <input type="text" id="todoInput" placeholder="Nauja užduotis..." onkeydown="if(event.key==='Enter')addTodo()">
-      <button class="todo-add-btn" onclick="addTodo()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti</button>
+    <!-- Add form -->
+    <div class="todo-form">
+      <div class="todo-form-top">
+        <div class="todo-pri-dot" id="todoPriDot" style="background:#2D5BE3"></div>
+        <input class="todo-text-inp" type="text" id="todoInput" placeholder="Nauja užduotis..." onkeydown="if(event.key==='Enter')addTodo()">
+      </div>
+      <div class="todo-form-bottom">
+        <div class="todo-pri-pills">
+          <button class="todo-pri-pill p-urgent" data-p="urgent" onclick="selectPriority('urgent')">⚡ Skubu</button>
+          <button class="todo-pri-pill p-high" data-p="high" onclick="selectPriority('high')">↑ Svarbu</button>
+          <button class="todo-pri-pill p-normal sel" data-p="normal" onclick="selectPriority('normal')">● Normalu</button>
+          <button class="todo-pri-pill p-low" data-p="low" onclick="selectPriority('low')">↓ Vėliau</button>
+        </div>
+        <input class="todo-deadline-inp" type="date" id="todoDeadline" title="Deadline">
+        <button class="todo-add-btn" onclick="addTodo()">+ Pridėti</button>
+      </div>
     </div>
     <div id="todoList"></div>
   </div>
@@ -566,7 +618,7 @@ async function initAuth(){
   else{document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
   sb.auth.onAuthStateChange((e,s)=>{if(e==='SIGNED_IN')showApp();if(e==='SIGNED_OUT')showLogin();});
 }
-function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';loadClients();buildTaskSelect();renderCatPills();}
+function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';loadClients();buildTaskSelect();renderCatPills();loadTodos();}
 function showLogin(){document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
 async function doLogin(){
   const email=document.getElementById('lEmail').value.trim(),pass=document.getElementById('lPass').value;
@@ -594,57 +646,132 @@ function setTab(tab){
 
 // ─── TODO ───
 let todos=[];
+let newTodoPriority='normal';
+
+const PRI_COLORS={urgent:'#C0392B',high:'#C4590A',normal:'#2D5BE3',low:'#B5B2AA'};
+const PRI_LABELS={urgent:'⚡ Skubu',high:'↑ Svarbu',normal:'● Normalu',low:'↓ Vėliau'};
+const PRI_ORDER={urgent:0,high:1,normal:2,low:3};
+
+function selectPriority(p){
+  newTodoPriority=p;
+  document.getElementById('todoPriDot').style.background=PRI_COLORS[p];
+  document.querySelectorAll('.todo-pri-pill').forEach(el=>{
+    el.classList.toggle('sel',el.dataset.p===p);
+  });
+}
+
 async function loadTodos(){
   const{data}=await sb.from('admin_todos').select('*').order('created_at',{ascending:false});
-  todos=data||[];renderTodos();
+  todos=data||[];
+  renderTodos();
+  updateTodoBadge();
 }
+
+function updateTodoBadge(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const overdue=todos.filter(t=>!t.done&&t.deadline&&new Date(t.deadline+'T12:00:00')<today).length;
+  const open=todos.filter(t=>!t.done).length;
+  const badge=document.getElementById('todoBadge');
+  if(overdue>0){badge.textContent=overdue;badge.style.display='inline-block';badge.style.background='var(--red)';}
+  else if(open>0){badge.textContent=open;badge.style.display='inline-block';badge.style.background='var(--gray)';}
+  else{badge.style.display='none';}
+}
+
+function sortTodos(list){
+  const today=new Date();today.setHours(0,0,0,0);
+  return [...list].sort((a,b)=>{
+    // Priority first
+    const pa=PRI_ORDER[a.priority||'normal'],pb=PRI_ORDER[b.priority||'normal'];
+    if(pa!==pb)return pa-pb;
+    // Then deadline (soonest first, no deadline last)
+    if(a.deadline&&b.deadline)return a.deadline.localeCompare(b.deadline);
+    if(a.deadline)return -1;
+    if(b.deadline)return 1;
+    return new Date(b.created_at)-new Date(a.created_at);
+  });
+}
+
+function deadlineBadgeTodo(dl){
+  if(!dl)return'';
+  const today=new Date();today.setHours(0,0,0,0);
+  const d=new Date(dl+'T12:00:00');
+  const diff=Math.round((d-today)/(1000*60*60*24));
+  let cls='todo-dl-ok',lbl=new Date(dl+'T12:00:00').toLocaleDateString('lt-LT',{month:'short',day:'numeric'});
+  if(diff<0){cls='todo-dl-over';lbl='⚠ '+lbl+' (vėluoja)';}
+  else if(diff===0){cls='todo-dl-soon';lbl='🔴 Šiandien';}
+  else if(diff<=2){cls='todo-dl-soon';lbl='⏰ '+lbl;}
+  return`<span class="todo-dl-badge ${cls}">${lbl}</span>`;
+}
+
 function renderTodos(){
   const el=document.getElementById('todoList');
-  if(!todos.length){el.innerHTML=`<div class="todo-empty">Nėra užduočių. Pridėk pirmą! 🎯</div>`;return;}
-  const open=todos.filter(t=>!t.done);
+  if(!todos.length){el.innerHTML=`<div class="todo-empty">Nėra užduočių — pridėk pirmą! 🎯</div>`;return;}
+  const today=new Date();today.setHours(0,0,0,0);
+  const overdue=todos.filter(t=>!t.done&&t.deadline&&new Date(t.deadline+'T12:00:00')<today);
+  const open=todos.filter(t=>!t.done&&!(t.deadline&&new Date(t.deadline+'T12:00:00')<today));
   const done=todos.filter(t=>t.done);
   let html='';
+
+  if(overdue.length){
+    html+=`<div class="todo-section"><div class="todo-section-hd"><span class="todo-section-label lbl-overdue">🔴 Vėluoja</span><span class="todo-section-count" style="color:var(--red);background:#FDE8ED">${overdue.length}</span></div><div class="todo-list">`;
+    html+=sortTodos(overdue).map(t=>todoItemHtml(t,true)).join('');
+    html+=`</div></div>`;
+  }
   if(open.length){
-    html+=`<div class="todo-section-label" style="margin-bottom:6px">Laukia · ${open.length}</div><div class="todo-list" style="margin-bottom:16px">`;
-    html+=open.map(t=>todoItemHtml(t)).join('');
-    html+=`</div>`;
+    html+=`<div class="todo-section"><div class="todo-section-hd"><span class="todo-section-label lbl-open">Laukia</span><span class="todo-section-count">${open.length}</span></div><div class="todo-list">`;
+    html+=sortTodos(open).map(t=>todoItemHtml(t,false)).join('');
+    html+=`</div></div>`;
   }
   if(done.length){
-    html+=`<div class="todo-section-label" style="margin-bottom:6px">Atlikta · ${done.length}</div><div class="todo-list">`;
-    html+=done.map(t=>todoItemHtml(t)).join('');
-    html+=`</div>`;
+    html+=`<div class="todo-section"><div class="todo-section-hd"><span class="todo-section-label lbl-done">Atlikta</span><span class="todo-section-count">${done.length}</span></div><div class="todo-list">`;
+    html+=sortTodos(done).map(t=>todoItemHtml(t,false)).join('');
+    html+=`</div></div>`;
   }
   el.innerHTML=html;
 }
-function todoItemHtml(t){
-  const d=new Date(t.created_at).toLocaleDateString('lt-LT',{month:'short',day:'numeric'});
-  return`<div class="todo-item${t.done?' done-item':''}">
+
+function todoItemHtml(t,isOverdue){
+  const p=t.priority||'normal';
+  const borderColor=PRI_COLORS[p];
+  const priLabel=PRI_LABELS[p];
+  return`<div class="todo-item${t.done?' done-item':''}${isOverdue?' overdue-item':''}" style="border-left-color:${borderColor}">
     <div class="todo-cb${t.done?' checked':''}" onclick="toggleTodo(${t.id},${t.done})">
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
-    <span class="todo-text${t.done?' striked':''}" onclick="toggleTodo(${t.id},${t.done})">${escHtml(t.text)}</span>
-    <span class="todo-date">${d}</span>
-    <button class="todo-del" onclick="deleteTodo(${t.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
+    <div class="todo-body">
+      <span class="todo-text${t.done?' striked':''}" onclick="toggleTodo(${t.id},${t.done})">${escHtml(t.text)}</span>
+      <div class="todo-meta">
+        ${deadlineBadgeTodo(t.deadline)}
+        <span class="todo-pri-badge pb-${p}">${priLabel}</span>
+      </div>
+    </div>
+    <button class="todo-del" onclick="deleteTodo(${t.id})" title="Ištrinti"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
   </div>`;
 }
+
 async function addTodo(){
   const inp=document.getElementById('todoInput');
   const text=inp.value.trim();if(!text)return;
-  inp.value='';
-  const{data,error}=await sb.from('admin_todos').insert([{text}]).select().single();
+  const deadline=document.getElementById('todoDeadline').value||null;
+  const priority=newTodoPriority;
+  inp.value='';document.getElementById('todoDeadline').value='';
+  const{data,error}=await sb.from('admin_todos').insert([{text,priority,deadline}]).select().single();
   if(error){showToast('Klaida: '+error.message);return;}
-  todos.unshift(data);renderTodos();
+  todos.unshift(data);renderTodos();updateTodoBadge();
   showToast('Pridėta!');
 }
+
 async function toggleTodo(id,wasDone){
   const{error}=await sb.from('admin_todos').update({done:!wasDone}).eq('id',id);
   if(error){showToast('Klaida');return;}
   const t=todos.find(x=>x.id===id);if(t)t.done=!wasDone;
-  renderTodos();
+  renderTodos();updateTodoBadge();
 }
+
 async function deleteTodo(id){
   await sb.from('admin_todos').delete().eq('id',id);
-  todos=todos.filter(t=>t.id!==id);renderTodos();
+  todos=todos.filter(t=>t.id!==id);
+  renderTodos();updateTodoBadge();
 }
 
 // ─── CLIENTS ───
