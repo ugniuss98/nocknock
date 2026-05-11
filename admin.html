@@ -230,6 +230,32 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .ugc-platform-row button:hover{color:var(--red);}
 .ugc-empty{text-align:center;padding:40px;color:var(--text-faint);font-size:13px;}
 
+/* TODO */
+.todo-wrap{max-width:640px;margin:0 auto;padding:28px 24px;display:flex;flex-direction:column;gap:16px;}
+.todo-input-row{display:flex;gap:8px;}
+.todo-input-row input{flex:1;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;color:var(--text);outline:none;transition:border-color .15s;}
+.todo-input-row input:focus{border-color:var(--accent);}
+.todo-add-btn{background:var(--text);color:white;border:none;border-radius:var(--radius);padding:10px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:opacity .15s;display:flex;align-items:center;gap:6px;}
+.todo-add-btn:hover{opacity:.85;}
+.todo-add-btn svg{width:13px;height:13px;stroke:white;fill:none;stroke-width:2.5;}
+.todo-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);padding:0 2px;}
+.todo-list{display:flex;flex-direction:column;gap:1px;}
+.todo-item{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);transition:background .1s;}
+.todo-item:hover{background:#FAFAF8;}
+.todo-item.done-item{opacity:.55;}
+.todo-cb{width:18px;height:18px;border-radius:5px;border:2px solid var(--border-strong);background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.todo-cb:hover{border-color:var(--accent);}
+.todo-cb.checked{background:var(--green);border-color:var(--green);}
+.todo-cb.checked svg{display:block;}
+.todo-cb svg{display:none;width:10px;height:10px;stroke:white;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+.todo-text{flex:1;font-size:13px;font-weight:400;line-height:1.4;cursor:pointer;word-break:break-word;}
+.todo-text.striked{text-decoration:line-through;color:var(--text-muted);}
+.todo-date{font-size:10px;color:var(--text-faint);white-space:nowrap;flex-shrink:0;}
+.todo-del{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:3px;border-radius:5px;display:flex;align-items:center;transition:color .15s;flex-shrink:0;}
+.todo-del:hover{color:var(--red);}
+.todo-del svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+.todo-empty{text-align:center;padding:40px 20px;color:var(--text-faint);font-size:13px;}
+
 @media print{#loginScreen,.header,.sidebar,.modal-overlay,.toast{display:none!important;}.layout{grid-template-columns:1fr!important;}.s-main{padding:0!important;}.day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}.del-btn,.status-btn{display:none!important;}.tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.header{padding:10px 14px;flex-wrap:wrap;}.s-main,.meta-wrapper{padding:14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-grid{grid-template-columns:1fr;}.page-kpi-grid{grid-template-columns:repeat(2,1fr);}}
@@ -263,6 +289,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     <div class="h-center">
       <button class="tab-btn active" id="tab-journal" onclick="setTab('journal')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Žurnalas</button>
       <button class="tab-btn" id="tab-ugc" onclick="setTab('ugc')"><svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>UGC Siuntos</button>
+      <button class="tab-btn" id="tab-todo" onclick="setTab('todo')"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Mano To Do</button>
     </div>
     <div class="h-right">
       <div class="week-nav" id="weekNav">
@@ -453,6 +480,17 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
   </div>
 </div>
 
+<!-- TODO TAB -->
+<div id="tabTodo" style="display:none">
+  <div class="todo-wrap">
+    <div class="todo-input-row">
+      <input type="text" id="todoInput" placeholder="Nauja užduotis..." onkeydown="if(event.key==='Enter')addTodo()">
+      <button class="todo-add-btn" onclick="addTodo()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti</button>
+    </div>
+    <div id="todoList"></div>
+  </div>
+</div>
+
 <div class="modal-overlay hidden" id="addClientModal">
   <div class="modal">
     <div class="modal-title">Naujas klientas</div>
@@ -543,13 +581,70 @@ async function doLogout(){await sb.auth.signOut();}
 // ─── TABS ───
 function setTab(tab){
   currentTab=tab;
-  ['journal','ugc'].forEach(t=>{
+  ['journal','ugc','todo'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
   document.getElementById('tabJournal').style.display=tab==='journal'?'block':'none';
   document.getElementById('tabUgc').style.display=tab==='ugc'?'block':'none';
+  document.getElementById('tabTodo').style.display=tab==='todo'?'block':'none';
   document.getElementById('weekNav').style.display=tab==='journal'?'flex':'none';
   if(tab==='ugc')renderUgcTab();
+  if(tab==='todo')loadTodos();
+}
+
+// ─── TODO ───
+let todos=[];
+async function loadTodos(){
+  const{data}=await sb.from('admin_todos').select('*').order('created_at',{ascending:false});
+  todos=data||[];renderTodos();
+}
+function renderTodos(){
+  const el=document.getElementById('todoList');
+  if(!todos.length){el.innerHTML=`<div class="todo-empty">Nėra užduočių. Pridėk pirmą! 🎯</div>`;return;}
+  const open=todos.filter(t=>!t.done);
+  const done=todos.filter(t=>t.done);
+  let html='';
+  if(open.length){
+    html+=`<div class="todo-section-label" style="margin-bottom:6px">Laukia · ${open.length}</div><div class="todo-list" style="margin-bottom:16px">`;
+    html+=open.map(t=>todoItemHtml(t)).join('');
+    html+=`</div>`;
+  }
+  if(done.length){
+    html+=`<div class="todo-section-label" style="margin-bottom:6px">Atlikta · ${done.length}</div><div class="todo-list">`;
+    html+=done.map(t=>todoItemHtml(t)).join('');
+    html+=`</div>`;
+  }
+  el.innerHTML=html;
+}
+function todoItemHtml(t){
+  const d=new Date(t.created_at).toLocaleDateString('lt-LT',{month:'short',day:'numeric'});
+  return`<div class="todo-item${t.done?' done-item':''}">
+    <div class="todo-cb${t.done?' checked':''}" onclick="toggleTodo(${t.id},${t.done})">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <span class="todo-text${t.done?' striked':''}" onclick="toggleTodo(${t.id},${t.done})">${escHtml(t.text)}</span>
+    <span class="todo-date">${d}</span>
+    <button class="todo-del" onclick="deleteTodo(${t.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
+  </div>`;
+}
+async function addTodo(){
+  const inp=document.getElementById('todoInput');
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';
+  const{data,error}=await sb.from('admin_todos').insert([{text}]).select().single();
+  if(error){showToast('Klaida: '+error.message);return;}
+  todos.unshift(data);renderTodos();
+  showToast('Pridėta!');
+}
+async function toggleTodo(id,wasDone){
+  const{error}=await sb.from('admin_todos').update({done:!wasDone}).eq('id',id);
+  if(error){showToast('Klaida');return;}
+  const t=todos.find(x=>x.id===id);if(t)t.done=!wasDone;
+  renderTodos();
+}
+async function deleteTodo(id){
+  await sb.from('admin_todos').delete().eq('id',id);
+  todos=todos.filter(t=>t.id!==id);renderTodos();
 }
 
 // ─── CLIENTS ───
