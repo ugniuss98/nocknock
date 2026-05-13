@@ -172,6 +172,10 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .del-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:2px;border-radius:5px;transition:color .15s,background .15s;display:flex;align-items:center;justify-content:center;}
 .del-btn:hover{color:var(--red);background:var(--red-light);}
 .del-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.edit-task-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:2px;border-radius:5px;transition:color .15s,background .15s;display:flex;align-items:center;justify-content:center;}
+.edit-task-btn:hover{color:var(--accent);background:var(--accent-light);}
+.edit-task-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.task-row-btns{display:flex;align-items:center;gap:2px;}
 .empty-day{padding:16px;text-align:center;color:var(--text-faint);font-size:12px;}
 .no-client-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;text-align:center;color:var(--text-muted);gap:8px;padding:32px;}
 .no-client-msg svg{width:32px;height:32px;stroke:var(--text-faint);fill:none;stroke-width:1.5;}
@@ -573,6 +577,39 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     </div>
     <div class="todo-filters" id="todoFilters"></div>
     <div id="todoList"></div>
+  </div>
+</div>
+
+<!-- TASK EDIT MODAL -->
+<div class="modal-overlay hidden" id="editTaskModal">
+  <div class="modal" style="max-width:420px;gap:11px">
+    <div class="modal-title">Redaguoti užduotį</div>
+    <div><label>Užduoties pavadinimas</label><input type="text" id="etName" placeholder="Pavadinimas"></div>
+    <div><label>Pastaba</label><textarea id="etNote" placeholder="Pastaba (nebūtina)" style="min-height:54px"></textarea></div>
+    <div class="row2">
+      <div><label>Kiekis</label><input type="number" id="etQty" min="0.1" step="0.1" value="1"></div>
+      <div><label>Kaina (€)</label><input type="number" id="etPrice" min="0" step="0.01" value="0"></div>
+    </div>
+    <div class="row2">
+      <div>
+        <label>Statusas</label>
+        <select id="etStatus">
+          <option value="done">✅ Atlikta</option>
+          <option value="progress">🔄 Vykdoma</option>
+          <option value="wait">⏳ Laukia</option>
+        </select>
+      </div>
+      <div><label>Deadline</label><input type="date" id="etDeadline"></div>
+    </div>
+    <div>
+      <label>Kategorijos</label>
+      <div id="etCatPills" class="cat-pills-wrap" style="margin-top:4px"></div>
+    </div>
+    <input type="hidden" id="etId">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEditTask()">Atšaukti</button>
+      <button class="btn-confirm" onclick="saveEditTask()">Išsaugoti</button>
+    </div>
   </div>
 </div>
 
@@ -1107,6 +1144,51 @@ async function cycleStatus(id,current){
   const c=['done','progress','wait'],next=c[(c.indexOf(current)+1)%c.length];
   await sb.from('tasks').update({status:next}).eq('id',id);
 }
+
+let editTaskCats=[];
+function openEditTask(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  document.getElementById('etId').value=id;
+  document.getElementById('etName').value=t.name||'';
+  document.getElementById('etNote').value=t.note||'';
+  document.getElementById('etQty').value=t.qty||1;
+  document.getElementById('etPrice').value=t.price||0;
+  document.getElementById('etStatus').value=t.status||'done';
+  document.getElementById('etDeadline').value=t.deadline||'';
+  editTaskCats=t.categories&&t.categories.length?[...t.categories]:(t.cat?[t.cat]:[]);
+  renderEtCatPills();
+  document.getElementById('editTaskModal').classList.remove('hidden');
+}
+function closeEditTask(){document.getElementById('editTaskModal').classList.add('hidden');}
+function renderEtCatPills(){
+  const wrap=document.getElementById('etCatPills');
+  wrap.innerHTML=CATS.map(c=>`
+    <button class="cat-pill${editTaskCats.includes(c.code)?' sel':''}" data-cat="${c.code}"
+      onclick="toggleEtCat('${c.code}')">${c.label}</button>`).join('');
+}
+function toggleEtCat(key){
+  if(editTaskCats.includes(key))editTaskCats=editTaskCats.filter(x=>x!==key);
+  else editTaskCats.push(key);
+  renderEtCatPills();
+}
+async function saveEditTask(){
+  const id=parseInt(document.getElementById('etId').value);
+  const name=document.getElementById('etName').value.trim();
+  if(!name){showToast('Įrašyk pavadinimą!');return;}
+  const qty=parseFloat(document.getElementById('etQty').value)||1;
+  const price=parseFloat(document.getElementById('etPrice').value)||0;
+  const total=+(qty*price).toFixed(2);
+  const note=document.getElementById('etNote').value.trim();
+  const status=document.getElementById('etStatus').value;
+  const deadline=document.getElementById('etDeadline').value||null;
+  const categories=editTaskCats.length?editTaskCats:['other'];
+  const cat=categories[0];
+  const{error}=await sb.from('tasks').update({name,note,qty,price,total,status,deadline,categories,cat}).eq('id',id);
+  if(error){showToast('Klaida: '+error.message);return;}
+  const idx=tasks.findIndex(x=>x.id===id);
+  if(idx!==-1)tasks[idx]={...tasks[idx],name,note,qty,price,total,status,deadline,categories,cat};
+  closeEditTask();renderDays();showToast('Išsaugota!');
+}
 async function loadTasks(){
   fillDaySelect();if(!currentClient)return;
   const{data}=await sb.from('tasks').select('*').eq('client_id',currentClient.id).gte('day',currentDateFrom).lte('day',currentDateTo).order('created_at');
@@ -1155,7 +1237,10 @@ function renderDays(){
               ${t.price>0?`<span class="task-price">${t.total.toFixed(0)} €</span>`:''}
               ${deadlineBadge(t.deadline)}
               <button class="status-btn ${STATUS_CLASS[t.status]||'status-done'}" onclick="cycleStatus(${t.id},'${t.status}')">${STATUS_LABELS[t.status]||'✅ Atlikta'}</button>
-              <button class="del-btn" onclick="deleteTask(${t.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+              <div class="task-row-btns">
+                <button class="edit-task-btn" title="Redaguoti" onclick="openEditTask(${t.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button class="del-btn" onclick="deleteTask(${t.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+              </div>
             </div>
           </div>`).join('')}
       </div>`;
