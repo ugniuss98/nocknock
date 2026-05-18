@@ -222,8 +222,8 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .ugc-received-no{color:var(--text-faint);}
 .ugc-affil-btn{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;border:1.5px solid;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .ugc-affil-yes{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
-.ugc-affil-yes:hover{background:var(--green);color:white;}
-.ugc-affil-no{background:var(--bg);border-color:var(--border-strong);color:var(--text-faint);}
+.ugc-affil-yes:hover{opacity:.75;}
+.ugc-affil-no{background:transparent;border-color:var(--border);color:var(--text-faint);}
 .ugc-affil-no:hover{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
 .ugc-edit-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:4px;border-radius:5px;transition:all .15s;display:inline-flex;}
 .ugc-edit-btn:hover{background:var(--bg);color:var(--accent);}
@@ -1356,8 +1356,8 @@ function renderUgcTable(){
     const stLbl=UGC_STATUS_LABELS[e.video_status]||e.video_status||'—';
     const contacts=[e.contact_name,e.contact_country,e.contact_email].filter(Boolean).join(' · ');
     const affil=e.affiliate
-      ?`<button class="ugc-affil-btn ugc-affil-yes" onclick="toggleAffiliate('${e.id}',false)" title="Pažymėta — spausti norėdamas atšaukti">✓ Taip</button>`
-      :`<button class="ugc-affil-btn ugc-affil-no"  onclick="toggleAffiliate('${e.id}',true)"  title="Ne — spausti norėdamas pažymėti">— Ne</button>`;
+      ?`<button class="ugc-affil-btn ugc-affil-yes" onclick="toggleAffiliate('${e.id}',false)">Affiliate</button>`
+      :`<button class="ugc-affil-btn ugc-affil-no"  onclick="toggleAffiliate('${e.id}',true)">Affiliate</button>`;
     return`<tr>
       <td style="color:var(--text-faint);font-size:11px">${i+1}</td>
       <td><div class="ugc-creator">${escHtml(e.creator_name||'')}</div></td>
