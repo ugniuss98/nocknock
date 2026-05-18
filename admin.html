@@ -1357,7 +1357,7 @@ function renderUgcTable(){
     const contacts=[e.contact_name,e.contact_country,e.contact_email].filter(Boolean).join(' · ');
     const affil=e.affiliate
       ?`<button class="ugc-affil-btn ugc-affil-yes" onclick="toggleAffiliate('${e.id}',false)">Affiliate</button>`
-      :`<button class="ugc-affil-btn ugc-affil-no"  onclick="toggleAffiliate('${e.id}',true)">Affiliate</button>`;
+      :`<button class="ugc-affil-btn ugc-affil-no"  onclick="toggleAffiliate('${e.id}',true)">—</button>`;
     return`<tr>
       <td style="color:var(--text-faint);font-size:11px">${i+1}</td>
       <td><div class="ugc-creator">${escHtml(e.creator_name||'')}</div></td>
