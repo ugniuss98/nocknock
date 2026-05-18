@@ -1127,8 +1127,11 @@ async function addTask(){
   const file_name=files[0]?.name||null;
   const file_mime=files[0]?.mime||null;
 
+  const btn=document.querySelector('.btn-primary[onclick="addTask()"]');
+  if(btn){btn.disabled=true;btn.textContent='Saugoma...';}
   const{error}=await sb.from('tasks').insert([{day,cat,categories,name,note,qty,price,total,status,deadline,client_id:currentClient.id,files,file_url,file_name,file_mime}]);
-  if(error){showToast('Klaida: '+error.message);return;}
+  if(btn){btn.disabled=false;btn.innerHTML='<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti užduotį';}
+  if(error){showToast('❌ Klaida: '+error.message,5000);return;}
   sel.value='';
   document.getElementById('fCustom').value='';
   document.getElementById('fCustomWrap').style.display='none';
@@ -1137,7 +1140,8 @@ async function addTask(){
   document.getElementById('fPrice').value='';
   document.getElementById('fQty').value='1';
   selectedCats=[];renderCatPills();clearFiles();
-  showToast('Užduotis pridėta!');
+  showToast('✅ Užduotis pridėta!');
+  loadTasks();
 }
 async function deleteTask(id){if(!confirm('Ištrinti?'))return;await sb.from('tasks').delete().eq('id',id);}
 async function cycleStatus(id,current){
@@ -1459,7 +1463,7 @@ async function deleteUgcEntry(id){
 // ─── UTILS ───
 function fmtNum(n){if(!n||isNaN(n))return'0';n=parseInt(n);return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(1)+'K':String(n);}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function showToast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('show'),ms);}
 
 sb.channel('tasks-a').on('postgres_changes',{event:'*',schema:'public',table:'tasks'},()=>{if(currentClient&&currentTab==='journal')loadTasks();}).subscribe();
 sb.channel('reqs-a').on('postgres_changes',{event:'*',schema:'public',table:'client_requests'},()=>{if(currentClient)loadRequests();}).subscribe();
