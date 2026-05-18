@@ -220,6 +220,11 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .vs-paviešinta{background:var(--green-light);color:var(--green);}
 .ugc-received-yes{color:var(--green);font-weight:600;}
 .ugc-received-no{color:var(--text-faint);}
+.ugc-affil-btn{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;border:1.5px solid;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.ugc-affil-yes{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
+.ugc-affil-yes:hover{background:var(--green);color:white;}
+.ugc-affil-no{background:var(--bg);border-color:var(--border-strong);color:var(--text-faint);}
+.ugc-affil-no:hover{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
 .ugc-edit-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:4px;border-radius:5px;transition:all .15s;display:inline-flex;}
 .ugc-edit-btn:hover{background:var(--bg);color:var(--accent);}
 .ugc-edit-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
@@ -492,15 +497,16 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
       <table class="ugc-table" id="ugcTable">
         <thead>
           <tr>
-            <th style="width:32px">#</th>
-            <th>Kūrėjas / Pavadinimas</th>
-            <th>Platforma</th>
-            <th>Išsiuntimo data</th>
-            <th>Siunta gauta</th>
-            <th>Siuntos turinys</th>
-            <th>Kontaktai</th>
-            <th>Video statusas</th>
-            <th>Pastabos</th>
+            <th style="width:28px">#</th>
+            <th style="min-width:130px">Kūrėjas / Pavadinimas</th>
+            <th style="min-width:140px">Platforma</th>
+            <th style="width:90px">Išsiuntimo data</th>
+            <th style="width:80px">Siunta gauta</th>
+            <th style="width:80px">Affiliate</th>
+            <th style="min-width:110px">Siuntos turinys</th>
+            <th style="min-width:120px">Kontaktai</th>
+            <th style="width:110px">Video statusas</th>
+            <th style="min-width:260px">Pastabos</th>
             <th style="width:60px"></th>
           </tr>
         </thead>
@@ -523,10 +529,14 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
       </div>
       <div class="row2">
         <div><label>Išsiuntimo data</label><input type="date" id="ugcDate"></div>
-        <div style="display:flex;align-items:flex-end;gap:8px;padding-bottom:1px">
+        <div style="display:flex;align-items:flex-end;gap:16px;padding-bottom:1px;flex-wrap:wrap">
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;cursor:pointer">
             <input type="checkbox" id="ugcReceived" style="width:14px;height:14px;cursor:pointer">
             Siunta gauta
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;cursor:pointer">
+            <input type="checkbox" id="ugcAffiliate" style="width:14px;height:14px;cursor:pointer">
+            Affiliate
           </label>
         </div>
       </div>
@@ -1337,7 +1347,7 @@ const UGC_STATUS_CLS={laukiama:'vs-laukiama',filmuojama:'vs-filmuojama',atsiusta
 function renderUgcTable(){
   const tbody=document.getElementById('ugcTbody');
   if(!ugcEntries.length){
-    tbody.innerHTML=`<tr><td colspan="10" class="ugc-empty">Nėra įrašų. Spausk „Pridėti įrašą".</td></tr>`;return;
+    tbody.innerHTML=`<tr><td colspan="11" class="ugc-empty">Nėra įrašų. Spausk „Pridėti įrašą".</td></tr>`;return;
   }
   tbody.innerHTML=ugcEntries.map((e,i)=>{
     const platforms=(e.platforms||[]).map(p=>`<div class="ugc-plat">${escHtml(p.platform||'')} ${p.handle?`<span style="color:var(--text-muted)">@${escHtml(p.handle)}</span>`:''} ${p.followers?`<span class="ugc-followers">${escHtml(String(p.followers))}</span>`:''}</div>`).join('');
@@ -1345,16 +1355,20 @@ function renderUgcTable(){
     const stCls=UGC_STATUS_CLS[e.video_status]||'vs-laukiama';
     const stLbl=UGC_STATUS_LABELS[e.video_status]||e.video_status||'—';
     const contacts=[e.contact_name,e.contact_country,e.contact_email].filter(Boolean).join(' · ');
+    const affil=e.affiliate
+      ?`<button class="ugc-affil-btn ugc-affil-yes" onclick="toggleAffiliate('${e.id}',false)" title="Pažymėta — spausti norėdamas atšaukti">✓ Taip</button>`
+      :`<button class="ugc-affil-btn ugc-affil-no"  onclick="toggleAffiliate('${e.id}',true)"  title="Ne — spausti norėdamas pažymėti">— Ne</button>`;
     return`<tr>
       <td style="color:var(--text-faint);font-size:11px">${i+1}</td>
       <td><div class="ugc-creator">${escHtml(e.creator_name||'')}</div></td>
       <td><div class="ugc-platforms">${platforms||'—'}</div></td>
       <td style="white-space:nowrap;font-size:11px">${e.shipment_date?fmtNice(e.shipment_date):'—'}</td>
       <td>${recv}</td>
-      <td style="font-size:11px;max-width:120px">${escHtml(e.package_contents||'—')}</td>
-      <td style="font-size:11px;max-width:130px">${escHtml(contacts||'—')}</td>
+      <td>${affil}</td>
+      <td style="font-size:11px">${escHtml(e.package_contents||'—')}</td>
+      <td style="font-size:11px">${escHtml(contacts||'—')}</td>
       <td><span class="ugc-status ${stCls}">${stLbl}</span></td>
-      <td style="font-size:11px;max-width:150px;color:var(--text-muted)">${escHtml(e.notes||'')}</td>
+      <td style="font-size:12px;line-height:1.5;color:var(--text);white-space:pre-wrap;word-break:break-word">${escHtml(e.notes||'')}</td>
       <td style="white-space:nowrap">
         <button class="ugc-edit-btn" onclick="openUgcModal('${e.id}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
         <button class="ugc-del-btn" onclick="deleteUgcEntry('${e.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
@@ -1370,6 +1384,7 @@ function openUgcModal(editId){
   document.getElementById('ugcName').value='';
   document.getElementById('ugcDate').value='';
   document.getElementById('ugcReceived').checked=false;
+  document.getElementById('ugcAffiliate').checked=false;
   document.getElementById('ugcPackage').value='';
   document.getElementById('ugcContactName').value='';
   document.getElementById('ugcCountry').value='';
@@ -1383,6 +1398,7 @@ function openUgcModal(editId){
       document.getElementById('ugcName').value=e.creator_name||'';
       document.getElementById('ugcDate').value=e.shipment_date||'';
       document.getElementById('ugcReceived').checked=!!e.package_received;
+      document.getElementById('ugcAffiliate').checked=!!e.affiliate;
       document.getElementById('ugcPackage').value=e.package_contents||'';
       document.getElementById('ugcContactName').value=e.contact_name||'';
       document.getElementById('ugcCountry').value=e.contact_country||'';
@@ -1434,6 +1450,7 @@ async function saveUgcEntry(){
     platforms:ugcPlatforms.filter(p=>p.platform),
     shipment_date:document.getElementById('ugcDate').value||null,
     package_received:document.getElementById('ugcReceived').checked,
+    affiliate:document.getElementById('ugcAffiliate').checked,
     package_contents:document.getElementById('ugcPackage').value.trim()||null,
     contact_name:document.getElementById('ugcContactName').value.trim()||null,
     contact_country:document.getElementById('ugcCountry').value.trim()||null,
@@ -1451,6 +1468,13 @@ async function saveUgcEntry(){
   closeUgcModal();
   showToast(editingUgcId?'Atnaujinta!':'Įrašas pridėtas!');
   renderUgcTab();
+}
+
+async function toggleAffiliate(id,val){
+  const{error}=await sb.from('ugc_shipments').update({affiliate:val}).eq('id',id);
+  if(error){showToast('Klaida: '+error.message);return;}
+  const e=ugcEntries.find(x=>x.id===id);if(e)e.affiliate=val;
+  renderUgcTable();
 }
 
 async function deleteUgcEntry(id){
