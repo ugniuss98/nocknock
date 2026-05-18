@@ -1345,6 +1345,9 @@ const UGC_STATUS_LABELS={laukiama:'⏳ Laukiama',filmuojama:'🎬 Filmuojama',at
 const UGC_STATUS_CLS={laukiama:'vs-laukiama',filmuojama:'vs-filmuojama',atsiusta:'vs-atsiusta',paviešinta:'vs-paviešinta'};
 
 function renderUgcTable(){
+  const ORDER={laukiama:0,filmuojama:1,atsiusta:2,paviešinta:3};
+  const sorted=[...ugcEntries].sort((a,b)=>(ORDER[a.video_status]??0)-(ORDER[b.video_status]??0));
+  ugcEntries=sorted;
   const tbody=document.getElementById('ugcTbody');
   if(!ugcEntries.length){
     tbody.innerHTML=`<tr><td colspan="11" class="ugc-empty">Nėra įrašų. Spausk „Pridėti įrašą".</td></tr>`;return;
