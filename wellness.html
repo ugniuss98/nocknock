@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Wellness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg:#FAF9F7; --surface:#FFF; --border:#ECEAE5; --border-strong:#D8D5CE;
+  --text:#1C1A17; --text-muted:#8A877E; --text-faint:#C4C1BA;
+  --food:#0D9488; --food-light:#F0FDFA;
+  --period:#E11D48; --period-light:#FFF1F4;
+  --mood:#D97706; --mood-light:#FFFBEB;
+  --meds:#7C3AED; --meds-light:#F5F3FF;
+  --home:#2563EB; --home-light:#EFF6FF;
+  --radius:12px; --radius-lg:18px; --nav-h:68px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;overscroll-behavior:none;}
+
+/* ── APP SHELL ── */
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);}
+.tab-content{display:none;padding-bottom:calc(var(--nav-h) + 20px);}
+.tab-content.active{display:block;}
+
+/* ── SETUP SCREEN ── */
+#setup-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;text-align:center;}
+.setup-logo{font-size:64px;margin-bottom:16px;line-height:1;}
+.setup-title{font-size:26px;font-weight:700;letter-spacing:-.5px;}
+.setup-sub{font-size:14px;color:var(--text-muted);margin:8px 0 28px;line-height:1.55;}
+.setup-card{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;text-align:left;margin-bottom:16px;}
+.setup-card-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;}
+.setup-hint{font-size:12px;color:var(--text-faint);margin-top:6px;line-height:1.4;}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--nav-h);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom,0);}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:10px;font-weight:500;font-family:inherit;transition:color .15s;}
+.nav-btn .nav-icon{font-size:22px;line-height:1;}
+.nav-btn.active{color:var(--home);}
+.nav-btn[data-tab="food"].active{color:var(--food);}
+.nav-btn[data-tab="period"].active{color:var(--period);}
+.nav-btn[data-tab="mood"].active{color:var(--mood);}
+.nav-btn[data-tab="meds"].active{color:var(--meds);}
+
+/* ── SHARED ── */
+.page-header{padding:20px 18px 14px;background:var(--surface);border-bottom:1px solid var(--border);}
+.page-title{font-size:22px;font-weight:600;letter-spacing:-.5px;}
+.page-sub{font-size:13px;color:var(--text-muted);margin-top:3px;}
+.section-pad{padding:14px 18px;}
+.section-title{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;padding:14px 18px 6px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);}
+.divider{height:1px;background:var(--border);margin:0 18px;}
+
+/* ── HOME TAB ── */
+.home-top{padding:18px 18px 14px;}
+.home-greeting{font-size:13px;color:var(--text-muted);}
+.home-date{font-size:24px;font-weight:700;letter-spacing:-.5px;margin-top:2px;}
+
+.calorie-ring-card{margin:0 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;display:flex;align-items:center;gap:18px;}
+.ring-wrap{position:relative;flex-shrink:0;}
+.ring-wrap svg{display:block;}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.ring-kcal{font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--food);line-height:1;}
+.ring-lbl{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.ring-stats{flex:1;display:flex;flex-direction:column;gap:0;}
+.ring-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+.ring-stat:last-child{border-bottom:none;}
+.ring-stat-lbl{font-size:12px;color:var(--text-muted);}
+.ring-stat-val{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;}
+
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 18px;}
+.quick-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:transform .15s;}
+.quick-card:hover{transform:translateY(-1px);}
+.quick-icon{font-size:26px;}
+.quick-title{font-size:12px;font-weight:600;margin-top:6px;}
+.quick-val{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+.home-meds{margin:0 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.home-meds-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);}
+.home-meds-title{font-size:13px;font-weight:600;}
+.home-med-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);}
+.home-med-row:last-child{border-bottom:none;}
+.mini-check{width:22px;height:22px;border:2px solid var(--border-strong);border-radius:50%;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;background:var(--bg);}
+.mini-check.taken{background:var(--meds);border-color:var(--meds);color:white;}
+.home-med-name{font-size:13px;font-weight:500;flex:1;}
+.home-med-dose{font-size:11px;color:var(--text-muted);}
+
+/* ── FOOD TAB ── */
+.date-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--surface);border-bottom:1px solid var(--border);}
+.date-nav-btn{width:32px;height:32px;border:1px solid var(--border-strong);background:var(--bg);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:background .15s;}
+.date-nav-btn:hover{background:var(--border);}
+.date-nav-label{font-size:14px;font-weight:600;}
+.date-nav-today{font-size:11px;color:var(--food);font-weight:600;cursor:pointer;}
+
+.cal-bar-card{margin:12px 18px 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+.cal-bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.cal-bar-total{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--food);}
+.cal-bar-goal{font-size:12px;color:var(--text-muted);}
+.prog-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--food);border-radius:99px;transition:width .4s ease;max-width:100%;}
+.prog-fill.over{background:#EF4444;}
+.macro-row{display:flex;gap:8px;margin-top:10px;}
+.macro-chip{flex:1;text-align:center;background:var(--bg);border-radius:8px;padding:6px 4px;}
+.macro-val{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;}
+.macro-name{font-size:10px;color:var(--text-muted);}
+
+.meal-block{margin:12px 18px 0;}
+.meal-head{display:flex;align-items:center;justify-content:space-between;padding:0 0 8px;}
+.meal-title-wrap{display:flex;align-items:center;gap:7px;}
+.meal-icon{font-size:18px;}
+.meal-title{font-size:14px;font-weight:600;}
+.meal-kcal-badge{font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace;}
+.meal-add{width:28px;height:28px;background:var(--food);color:white;border:none;border-radius:7px;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.food-items{display:flex;flex-direction:column;gap:6px;}
+.food-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.food-thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+.food-thumb-placeholder{width:44px;height:44px;border-radius:8px;background:var(--food-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.food-info{flex:1;min-width:0;}
+.food-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.food-macros-line{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.food-kcal{font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:var(--food);white-space:nowrap;}
+.food-del{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:16px;padding:4px;border-radius:6px;transition:all .15s;}
+.food-del:hover{color:#EF4444;background:#FEE2E2;}
+.empty-meal{background:var(--bg);border:1px dashed var(--border-strong);border-radius:var(--radius);padding:14px;text-align:center;color:var(--text-faint);font-size:13px;}
+
+/* ── PERIOD TAB ── */
+.period-header{background:var(--period);color:white;padding:22px 18px;}
+.period-status-big{font-size:30px;font-weight:700;}
+.period-status-sub{font-size:13px;opacity:.85;margin-top:4px;}
+
+.cal-wrap{padding:16px 18px;}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-month-label{font-size:15px;font-weight:600;}
+.cal-nav{width:30px;height:30px;background:var(--bg);border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-day-name{text-align:center;font-size:10px;color:var(--text-muted);font-weight:700;padding:4px 0;}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.cal-day:hover:not(.empty){background:var(--period-light);}
+.cal-day.today{border-color:var(--period);font-weight:700;}
+.cal-day.period-day{background:var(--period);color:white;border-color:transparent;}
+.cal-day.predicted{background:var(--period-light);color:var(--period);}
+.cal-day.empty{cursor:default;opacity:0;}
+
+.period-log-card{margin:0 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;}
+.period-log-head{font-size:14px;font-weight:600;margin-bottom:12px;}
+.flow-btns{display:flex;gap:8px;margin-bottom:12px;}
+.flow-btn{flex:1;padding:8px 4px;border:2px solid var(--border);background:var(--bg);border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.flow-btn.active{border-color:var(--period);background:var(--period-light);color:var(--period);}
+.flow-icon{font-size:18px;}
+.symptom-label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;}
+.symptom-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.symptom-chip{padding:5px 10px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;background:var(--bg);font-family:inherit;transition:all .15s;}
+.symptom-chip.active{border-color:var(--period);background:var(--period-light);color:var(--period);}
+
+.cycle-stats{margin:12px 18px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cycle-stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+.cycle-stat-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--period);}
+.cycle-stat-lbl{font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+/* ── MOOD TAB ── */
+.mood-header{padding:22px 18px;background:var(--mood);color:white;}
+.mood-header-today{font-size:13px;opacity:.85;}
+.mood-header-val{font-size:28px;font-weight:700;margin-top:4px;display:flex;align-items:center;gap:10px;}
+
+.mood-faces-row{display:flex;justify-content:space-between;padding:14px 18px;}
+.mood-face-btn{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;margin:0 3px;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:10px 6px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.mood-face-btn:first-child{margin-left:0;}
+.mood-face-btn:last-child{margin-right:0;}
+.mood-face-btn.active{border-color:var(--mood);background:var(--mood-light);}
+.mood-emoji{font-size:28px;line-height:1;}
+.mood-face-lbl{font-size:9px;color:var(--text-muted);font-weight:600;text-align:center;}
+
+.energy-block{padding:0 18px;}
+.energy-lbl{font-size:13px;font-weight:500;margin-bottom:8px;}
+.energy-dots{display:flex;gap:8px;}
+.energy-dot{flex:1;height:8px;border-radius:4px;background:var(--border);cursor:pointer;transition:background .15s;}
+.energy-dot.active{background:var(--mood);}
+
+.emotion-chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 18px;}
+.emotion-chip{padding:6px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;background:var(--surface);font-family:inherit;transition:all .15s;}
+.emotion-chip.active{border-color:var(--mood);background:var(--mood-light);color:var(--mood);}
+
+.mood-history-bars{display:flex;align-items:flex-end;gap:5px;padding:0 18px;height:70px;}
+.mb-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.mb-bar{width:100%;border-radius:4px 4px 0 0;background:var(--mood);min-height:4px;transition:height .3s ease;}
+.mb-day{font-size:9px;color:var(--text-faint);}
+.mb-emoji{font-size:10px;}
+
+/* ── MEDS TAB ── */
+.meds-header{padding:22px 18px;background:var(--meds);color:white;}
+.meds-header-title{font-size:22px;font-weight:700;}
+.meds-header-sub{font-size:13px;opacity:.85;margin-top:4px;}
+
+.med-item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin:0 18px 8px;transition:opacity .2s;}
+.med-item.taken-item{opacity:.7;}
+.med-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.med-check{width:26px;height:26px;border:2px solid var(--border-strong);border-radius:50%;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;background:var(--bg);}
+.med-check.taken{background:var(--meds);border-color:var(--meds);color:white;}
+.med-info{flex:1;}
+.med-name{font-size:14px;font-weight:500;}
+.med-dose{font-size:12px;color:var(--text-muted);}
+.med-del{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:14px;padding:4px;border-radius:6px;transition:all .15s;}
+.med-del:hover{color:#EF4444;background:#FEE2E2;}
+
+.add-med-btn{margin:0 18px;width:calc(100% - 36px);padding:13px;background:var(--bg);border:1.5px dashed var(--border-strong);border-radius:var(--radius);cursor:pointer;font-size:13px;font-weight:500;color:var(--text-muted);font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.add-med-btn:hover{background:var(--meds-light);color:var(--meds);border-color:var(--meds);}
+
+/* ── MODALS ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{width:100%;max-width:430px;background:var(--surface);border-radius:22px 22px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0));max-height:92vh;overflow-y:auto;}
+.modal-handle{width:38px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 18px;}
+.modal-title{font-size:18px;font-weight:600;margin-bottom:16px;}
+.modal-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.modal-tab{flex:1;padding:8px 4px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:12px;font-weight:500;font-family:inherit;transition:all .15s;text-align:center;}
+.modal-tab.active{border-color:var(--food);background:var(--food-light);color:var(--food);}
+
+/* ── FORMS ── */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.fg-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;}
+.fg-input{padding:11px 13px;border:1.5px solid var(--border-strong);border-radius:var(--radius);font-size:15px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s;width:100%;}
+.fg-input:focus{border-color:var(--home);background:var(--surface);}
+textarea.fg-input{resize:vertical;min-height:70px;}
+select.fg-input{cursor:pointer;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+.photo-upload-area{border:2px dashed var(--border-strong);border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:all .15s;background:var(--bg);}
+.photo-upload-area:hover{border-color:var(--food);background:var(--food-light);}
+.photo-upload-area .pu-icon{font-size:30px;}
+.photo-upload-area .pu-text{font-size:13px;color:var(--text-muted);margin-top:6px;}
+.photo-preview-wrap{position:relative;margin-bottom:12px;}
+.photo-preview-img{width:100%;border-radius:var(--radius);max-height:220px;object-fit:cover;display:block;}
+.photo-preview-rm{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:white;border:none;border-radius:6px;cursor:pointer;padding:4px 8px;font-size:12px;}
+
+/* ── BUTTONS ── */
+.btn{width:100%;padding:14px;border:none;border-radius:var(--radius);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:opacity .15s;margin-top:4px;}
+.btn:hover{opacity:.88;}
+.btn-food{background:var(--food);color:white;}
+.btn-period{background:var(--period);color:white;}
+.btn-mood{background:var(--mood);color:white;}
+.btn-meds{background:var(--meds);color:white;}
+.btn-home{background:var(--home);color:white;}
+.btn-secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border-strong);}
+.btn-danger{background:#EF4444;color:white;}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%) translateY(12px);background:var(--text);color:white;padding:10px 18px;border-radius:22px;font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:400;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── MISC ── */
+.no-data{text-align:center;padding:28px 18px;color:var(--text-faint);}
+.no-data .nd-icon{font-size:36px;margin-bottom:8px;}
+.no-data p{font-size:13px;}
+.spacer{height:14px;}
+.tag-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.tag-food{background:var(--food-light);color:var(--food);}
+.tag-period{background:var(--period-light);color:var(--period);}
+.tag-mood{background:var(--mood-light);color:var(--mood);}
+.tag-meds{background:var(--meds-light);color:var(--meds);}
+
+.color-picker-row{display:flex;gap:8px;flex-wrap:wrap;}
+.color-swatch{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border-color .15s;}
+.color-swatch.selected{border-color:var(--text);}
+
+/* Water tracker */
+.water-row{display:flex;gap:6px;align-items:center;}
+.water-cup{font-size:22px;cursor:pointer;opacity:.3;transition:opacity .15s;user-select:none;}
+.water-cup.filled{opacity:1;}
+
+@media(min-width:431px){
+  .bottom-nav{border-left:1px solid var(--border);border-right:1px solid var(--border);}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     SETUP SCREEN
+══════════════════════════════════════ -->
+<div id="setup-screen" style="display:none;">
+  <div class="setup-logo">🌿</div>
+  <div class="setup-title">Wellness Hub</div>
+  <div class="setup-sub">Tik tau skirta sveikatingumo erdvė.<br>Prisijunk prie Supabase ir pradėk.</div>
+
+  <div class="setup-card">
+    <div class="setup-card-title">Supabase konfigūracija</div>
+    <div class="fg">
+      <label class="fg-label">Project URL</label>
+      <input id="setup-url" class="fg-input" type="url" placeholder="https://xyz.supabase.co">
+    </div>
+    <div class="fg">
+      <label class="fg-label">Anon Key</label>
+      <input id="setup-key" class="fg-input" type="text" placeholder="eyJhbGciOiJIUzI1NiIs...">
+      <div class="setup-hint">Rasi: Project Settings → API → anon public</div>
+    </div>
+    <div class="fg">
+      <label class="fg-label">Tavo vardas</label>
+      <input id="setup-name" class="fg-input" type="text" placeholder="Vardas" value="Mano">
+    </div>
+    <div class="fg">
+      <label class="fg-label">Dienos kalorių tikslas</label>
+      <input id="setup-goal" class="fg-input" type="number" placeholder="2000" value="2000">
+    </div>
+    <button class="btn btn-home" onclick="saveSetup()">Pradėti →</button>
+  </div>
+  <div class="setup-hint" style="padding:0 4px;">Taip pat reikia paleisti <strong>wellness-setup.sql</strong> Supabase SQL Editor ir sukurti storage bucket <strong>wellness-photos</strong>.</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="main-app" style="display:none;">
+<div class="app">
+
+  <!-- ── HOME TAB ── -->
+  <div id="tab-home" class="tab-content">
+    <div class="home-top">
+      <div class="home-greeting" id="home-greeting">Labas rytas</div>
+      <div class="home-date" id="home-date">—</div>
+    </div>
+
+    <!-- Calorie ring -->
+    <div class="calorie-ring-card">
+      <div class="ring-wrap">
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="46" fill="none" stroke="var(--border)" stroke-width="10"/>
+          <circle id="ring-fill" cx="55" cy="55" r="46" fill="none" stroke="var(--food)" stroke-width="10"
+            stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"
+            transform="rotate(-90 55 55)" style="transition:stroke-dashoffset .5s ease;"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-kcal" id="ring-remaining">0</div>
+          <div class="ring-lbl">liko kcal</div>
+        </div>
+      </div>
+      <div class="ring-stats">
+        <div class="ring-stat">
+          <span class="ring-stat-lbl">Suvalgyта</span>
+          <span class="ring-stat-val" id="ring-consumed">0</span>
+        </div>
+        <div class="ring-stat">
+          <span class="ring-stat-lbl">Tikslas</span>
+          <span class="ring-stat-val" id="ring-goal">2000</span>
+        </div>
+        <div class="ring-stat">
+          <span class="ring-stat-lbl">Vanduo</span>
+          <span class="ring-stat-val" id="ring-water">0/8</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Quick cards -->
+    <div class="quick-grid">
+      <div class="quick-card" onclick="switchTab('period')">
+        <div class="quick-icon">🩸</div>
+        <div class="quick-title">Periodas</div>
+        <div class="quick-val" id="home-period-val">—</div>
+      </div>
+      <div class="quick-card" onclick="switchTab('mood')">
+        <div class="quick-icon" id="home-mood-icon">😐</div>
+        <div class="quick-title">Nuotaika</div>
+        <div class="quick-val" id="home-mood-val">Nepažymėta</div>
+      </div>
+    </div>
+
+    <!-- Water tracker -->
+    <div class="section-title">Vanduo</div>
+    <div style="padding:0 18px 4px;">
+      <div class="water-row" id="water-cups"></div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;" id="water-label">0 / 8 stiklinių</div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Today's meds -->
+    <div class="section-title">Šiandienos vaistai</div>
+    <div class="home-meds" id="home-meds-list">
+      <div class="no-data" style="padding:16px;"><p style="font-size:13px;color:var(--text-faint);">Vaistų nėra</p></div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ── FOOD TAB ── -->
+  <div id="tab-food" class="tab-content">
+    <div class="date-nav">
+      <button class="date-nav-btn" onclick="foodDateShift(-1)">←</button>
+      <div>
+        <div class="date-nav-label" id="food-date-label">—</div>
+      </div>
+      <button class="date-nav-btn" onclick="foodDateShift(1)">→</button>
+    </div>
+
+    <!-- Calorie bar -->
+    <div class="cal-bar-card">
+      <div class="cal-bar-top">
+        <div>
+          <span class="cal-bar-total" id="food-kcal-total">0</span>
+          <span class="cal-bar-goal" id="food-kcal-goal"> / 2000 kcal</span>
+        </div>
+        <span id="food-kcal-remain" style="font-size:12px;color:var(--text-muted);"></span>
+      </div>
+      <div class="prog-bar">
+        <div class="prog-fill" id="food-prog-fill" style="width:0%"></div>
+      </div>
+      <div class="macro-row">
+        <div class="macro-chip">
+          <div class="macro-val" id="food-protein">0g</div>
+          <div class="macro-name">Baltymai</div>
+        </div>
+        <div class="macro-chip">
+          <div class="macro-val" id="food-carbs">0g</div>
+          <div class="macro-name">Angliavandeniai</div>
+        </div>
+        <div class="macro-chip">
+          <div class="macro-val" id="food-fat">0g</div>
+          <div class="macro-name">Riebalai</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meal sections -->
+    <div id="food-meals"></div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ── PERIOD TAB ── -->
+  <div id="tab-period" class="tab-content">
+    <div class="period-header">
+      <div class="period-status-big" id="period-status-big">🩸 Periodas</div>
+      <div class="period-status-sub" id="period-status-sub">Žymėk savo ciklą</div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="cal-wrap">
+      <div class="cal-head">
+        <button class="cal-nav" onclick="periodMonthShift(-1)">←</button>
+        <div class="cal-month-label" id="period-month-label">—</div>
+        <button class="cal-nav" onclick="periodMonthShift(1)">→</button>
+      </div>
+      <div class="cal-grid" id="period-cal-grid"></div>
+    </div>
+
+    <!-- Log form -->
+    <div class="period-log-card">
+      <div class="period-log-head" id="period-selected-date">Pasirink dieną kalendoriuje</div>
+      <div class="flow-btns">
+        <button class="flow-btn" data-flow="light" onclick="selectFlow(this)">
+          <span class="flow-icon">🩸</span><span>Lengvas</span>
+        </button>
+        <button class="flow-btn" data-flow="medium" onclick="selectFlow(this)">
+          <span class="flow-icon">🩸🩸</span><span>Vidutinis</span>
+        </button>
+        <button class="flow-btn" data-flow="heavy" onclick="selectFlow(this)">
+          <span class="flow-icon">🩸🩸🩸</span><span>Stiprus</span>
+        </button>
+      </div>
+      <div class="symptom-label">Simptomai</div>
+      <div class="symptom-chips">
+        <button class="symptom-chip" data-s="Skausmai" onclick="toggleSymptom(this)">Skausmai</button>
+        <button class="symptom-chip" data-s="Pūtimas" onclick="toggleSymptom(this)">Pūtimas</button>
+        <button class="symptom-chip" data-s="Nuovargis" onclick="toggleSymptom(this)">Nuovargis</button>
+        <button class="symptom-chip" data-s="Galvos skausmas" onclick="toggleSymptom(this)">Galvos skausmas</button>
+        <button class="symptom-chip" data-s="Nugaros skausmas" onclick="toggleSymptom(this)">Nugaros skausmas</button>
+        <button class="symptom-chip" data-s="Dirglumas" onclick="toggleSymptom(this)">Dirglumas</button>
+        <button class="symptom-chip" data-s="Pykinimas" onclick="toggleSymptom(this)">Pykinimas</button>
+        <button class="symptom-chip" data-s="Dėmės" onclick="toggleSymptom(this)">Dėmės</button>
+      </div>
+      <textarea class="fg-input" id="period-notes" placeholder="Pastabos..." rows="2" style="margin-top:4px;"></textarea>
+      <button class="btn btn-period" style="margin-top:10px;" onclick="savePeriodLog()">Išsaugoti</button>
+    </div>
+
+    <!-- Cycle stats -->
+    <div class="section-title">Ciklo statistika</div>
+    <div class="cycle-stats">
+      <div class="cycle-stat-card">
+        <div class="cycle-stat-val" id="cycle-length">—</div>
+        <div class="cycle-stat-lbl">Ciklo ilgis (d.)</div>
+      </div>
+      <div class="cycle-stat-card">
+        <div class="cycle-stat-val" id="cycle-next">—</div>
+        <div class="cycle-stat-lbl">Kitas periodas</div>
+      </div>
+      <div class="cycle-stat-card">
+        <div class="cycle-stat-val" id="cycle-duration">—</div>
+        <div class="cycle-stat-lbl">Trukmė (d.)</div>
+      </div>
+      <div class="cycle-stat-card">
+        <div class="cycle-stat-val" id="cycle-day">—</div>
+        <div class="cycle-stat-lbl">Ciklo diena</div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ── MOOD TAB ── -->
+  <div id="tab-mood" class="tab-content">
+    <div class="mood-header">
+      <div class="mood-header-today" id="mood-date-label">Šiandien</div>
+      <div class="mood-header-val" id="mood-header-val">😐 Nepažymėta</div>
+    </div>
+
+    <!-- Mood faces -->
+    <div class="section-title">Kaip jautiesi?</div>
+    <div class="mood-faces-row">
+      <button class="mood-face-btn" data-mood="1" onclick="selectMood(1)">
+        <span class="mood-emoji">😢</span><span class="mood-face-lbl">Blogai</span>
+      </button>
+      <button class="mood-face-btn" data-mood="2" onclick="selectMood(2)">
+        <span class="mood-emoji">😔</span><span class="mood-face-lbl">Nelabai</span>
+      </button>
+      <button class="mood-face-btn" data-mood="3" onclick="selectMood(3)">
+        <span class="mood-emoji">😐</span><span class="mood-face-lbl">Normaliai</span>
+      </button>
+      <button class="mood-face-btn" data-mood="4" onclick="selectMood(4)">
+        <span class="mood-emoji">😊</span><span class="mood-face-lbl">Gerai</span>
+      </button>
+      <button class="mood-face-btn" data-mood="5" onclick="selectMood(5)">
+        <span class="mood-emoji">😄</span><span class="mood-face-lbl">Puikiai</span>
+      </button>
+    </div>
+
+    <!-- Energy -->
+    <div class="section-title">Energija</div>
+    <div class="energy-block">
+      <div class="energy-dots" id="energy-dots">
+        <div class="energy-dot" onclick="selectEnergy(1)"></div>
+        <div class="energy-dot" onclick="selectEnergy(2)"></div>
+        <div class="energy-dot" onclick="selectEnergy(3)"></div>
+        <div class="energy-dot" onclick="selectEnergy(4)"></div>
+        <div class="energy-dot" onclick="selectEnergy(5)"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;" id="energy-label">Pasirink lygį</div>
+    </div>
+
+    <!-- Emotions -->
+    <div class="section-title">Emocijos</div>
+    <div class="emotion-chips">
+      <button class="emotion-chip" data-e="Laiminga" onclick="toggleEmotion(this)">😊 Laiminga</button>
+      <button class="emotion-chip" data-e="Liūdna" onclick="toggleEmotion(this)">😔 Liūdna</button>
+      <button class="emotion-chip" data-e="Nerimauju" onclick="toggleEmotion(this)">😰 Nerimauju</button>
+      <button class="emotion-chip" data-e="Rami" onclick="toggleEmotion(this)">😌 Rami</button>
+      <button class="emotion-chip" data-e="Pikta" onclick="toggleEmotion(this)">😤 Pikta</button>
+      <button class="emotion-chip" data-e="Pavargusi" onclick="toggleEmotion(this)">😴 Pavargusi</button>
+      <button class="emotion-chip" data-e="Motyvuota" onclick="toggleEmotion(this)">💪 Motyvuota</button>
+      <button class="emotion-chip" data-e="Dėkinga" onclick="toggleEmotion(this)">🙏 Dėkinga</button>
+      <button class="emotion-chip" data-e="Įsitempusi" onclick="toggleEmotion(this)">😬 Įsitempusi</button>
+      <button class="emotion-chip" data-e="Entuziastinga" onclick="toggleEmotion(this)">✨ Entuziastinga</button>
+    </div>
+
+    <!-- Notes -->
+    <div class="section-pad">
+      <div class="fg">
+        <label class="fg-label">Pastabos</label>
+        <textarea class="fg-input" id="mood-notes" placeholder="Kaip praėjo diena?" rows="3"></textarea>
+      </div>
+      <button class="btn btn-mood" onclick="saveMood()">Išsaugoti nuotaiką</button>
+    </div>
+
+    <!-- History -->
+    <div class="section-title">Paskutinės 7 dienos</div>
+    <div style="padding:0 18px 6px;">
+      <div class="mood-history-bars" id="mood-history-bars"></div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ── MEDS TAB ── -->
+  <div id="tab-meds" class="tab-content">
+    <div class="meds-header">
+      <div class="meds-header-title">💊 Vaistai</div>
+      <div class="meds-header-sub" id="meds-taken-label">—</div>
+    </div>
+
+    <div class="section-title">Šiandien</div>
+    <div id="meds-list"></div>
+    <button class="add-med-btn" onclick="openModal('modal-add-med')">＋ Pridėti vaistą</button>
+
+    <div class="spacer"></div>
+  </div>
+
+</div><!-- .app -->
+
+<!-- ── BOTTOM NAV ── -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+    <span class="nav-icon">🏠</span><span>Namai</span>
+  </button>
+  <button class="nav-btn" data-tab="food" onclick="switchTab('food')">
+    <span class="nav-icon">🍽️</span><span>Maistas</span>
+  </button>
+  <button class="nav-btn" data-tab="period" onclick="switchTab('period')">
+    <span class="nav-icon">🩸</span><span>Periodas</span>
+  </button>
+  <button class="nav-btn" data-tab="mood" onclick="switchTab('mood')">
+    <span class="nav-icon">💭</span><span>Nuotaika</span>
+  </button>
+  <button class="nav-btn" data-tab="meds" onclick="switchTab('meds')">
+    <span class="nav-icon">💊</span><span>Vaistai</span>
+  </button>
+</nav>
+</div><!-- #main-app -->
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- Add Food Modal -->
+<div class="overlay" id="modal-add-food" onclick="closeOnOverlay(event,'modal-add-food')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🍽️ Pridėti maistą</div>
+
+    <div class="modal-tabs" id="meal-type-tabs">
+      <button class="modal-tab active" data-meal="breakfast" onclick="selectMealTypeTab(this)">🌅 Pusryčiai</button>
+      <button class="modal-tab" data-meal="lunch" onclick="selectMealTypeTab(this)">☀️ Pietūs</button>
+      <button class="modal-tab" data-meal="dinner" onclick="selectMealTypeTab(this)">🌙 Vakarienė</button>
+      <button class="modal-tab" data-meal="snack" onclick="selectMealTypeTab(this)">🍎 Užkandis</button>
+    </div>
+
+    <div class="fg">
+      <label class="fg-label">Maisto pavadinimas</label>
+      <input class="fg-input" id="fi-name" type="text" placeholder="pvz. Avižinė košė">
+    </div>
+    <div class="form-row-2">
+      <div class="fg">
+        <label class="fg-label">Kalorijоs (kcal)</label>
+        <input class="fg-input" id="fi-kcal" type="number" placeholder="350">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Kiekis / porcija</label>
+        <input class="fg-input" id="fi-portion" type="text" placeholder="1 porcija">
+      </div>
+    </div>
+    <div class="form-row-3">
+      <div class="fg">
+        <label class="fg-label">Baltymai (g)</label>
+        <input class="fg-input" id="fi-protein" type="number" placeholder="0">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Angliavandeniai (g)</label>
+        <input class="fg-input" id="fi-carbs" type="number" placeholder="0">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Riebalai (g)</label>
+        <input class="fg-input" id="fi-fat" type="number" placeholder="0">
+      </div>
+    </div>
+
+    <!-- Photo upload -->
+    <div class="fg">
+      <label class="fg-label">Nuotrauka</label>
+      <input type="file" id="fi-photo-input" accept="image/*" capture="environment" style="display:none" onchange="handleFoodPhotoSelect(event)">
+      <div id="fi-photo-preview-wrap" style="display:none;" class="photo-preview-wrap">
+        <img id="fi-photo-preview" class="photo-preview-img">
+        <button class="photo-preview-rm" onclick="removeFoodPhoto()">✕ Pašalinti</button>
+      </div>
+      <div id="fi-photo-upload-area" class="photo-upload-area" onclick="document.getElementById('fi-photo-input').click()">
+        <div class="pu-icon">📷</div>
+        <div class="pu-text">Įkelk maisto nuotrauką<br><span style="font-size:11px;">arba spustelėk fotografuoti</span></div>
+      </div>
+    </div>
+
+    <div class="fg">
+      <label class="fg-label">Pastabos</label>
+      <textarea class="fg-input" id="fi-notes" placeholder="Papildoma informacija..." rows="2"></textarea>
+    </div>
+
+    <button class="btn btn-food" onclick="saveFoodItem()">Pridėti į žurnalą</button>
+  </div>
+</div>
+
+<!-- Add Medication Modal -->
+<div class="overlay" id="modal-add-med" onclick="closeOnOverlay(event,'modal-add-med')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">💊 Pridėti vaistą</div>
+
+    <div class="fg">
+      <label class="fg-label">Vaisto pavadinimas</label>
+      <input class="fg-input" id="med-name" type="text" placeholder="pvz. Vitaminas D">
+    </div>
+    <div class="form-row-2">
+      <div class="fg">
+        <label class="fg-label">Dozė</label>
+        <input class="fg-input" id="med-dose" type="text" placeholder="pvz. 1000 IU">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Dažnumas</label>
+        <select class="fg-input" id="med-freq">
+          <option value="Kasdien">Kasdien</option>
+          <option value="Ryte">Ryte</option>
+          <option value="Vakare">Vakare</option>
+          <option value="Du kartus">Du kartus per dieną</option>
+          <option value="Pagal poreikį">Pagal poreikį</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fg-label">Spalva</label>
+      <div class="color-picker-row" id="med-color-picker">
+        <div class="color-swatch selected" data-color="#7C3AED" style="background:#7C3AED;" onclick="selectMedColor(this)"></div>
+        <div class="color-swatch" data-color="#0D9488" style="background:#0D9488;" onclick="selectMedColor(this)"></div>
+        <div class="color-swatch" data-color="#E11D48" style="background:#E11D48;" onclick="selectMedColor(this)"></div>
+        <div class="color-swatch" data-color="#D97706" style="background:#D97706;" onclick="selectMedColor(this)"></div>
+        <div class="color-swatch" data-color="#2563EB" style="background:#2563EB;" onclick="selectMedColor(this)"></div>
+        <div class="color-swatch" data-color="#16A34A" style="background:#16A34A;" onclick="selectMedColor(this)"></div>
+        <div class="color-swatch" data-color="#EA580C" style="background:#EA580C;" onclick="selectMedColor(this)"></div>
+        <div class="color-swatch" data-color="#BE185D" style="background:#BE185D;" onclick="selectMedColor(this)"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-meds" onclick="saveMedication()">Pridėti vaistą</button>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="overlay" id="modal-settings" onclick="closeOnOverlay(event,'modal-settings')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ Nustatymai</div>
+
+    <div class="fg">
+      <label class="fg-label">Vardas</label>
+      <input class="fg-input" id="cfg-name" type="text">
+    </div>
+    <div class="fg">
+      <label class="fg-label">Kalorių tikslas per dieną</label>
+      <input class="fg-input" id="cfg-goal" type="number">
+    </div>
+    <div class="fg">
+      <label class="fg-label">Supabase URL</label>
+      <input class="fg-input" id="cfg-url" type="url">
+    </div>
+    <div class="fg">
+      <label class="fg-label">Supabase Anon Key</label>
+      <input class="fg-input" id="cfg-key" type="text">
+    </div>
+    <button class="btn btn-home" onclick="saveSettings()">Išsaugoti</button>
+    <div style="height:10px;"></div>
+    <button class="btn btn-secondary" onclick="closeModal('modal-settings')">Atšaukti</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let SB = null;
+let currentTab = 'home';
+let foodDate = todayStr();
+let periodYear, periodMonth;
+let selectedPeriodDate = null;
+let selectedFlow = null;
+let selectedSymptoms = [];
+let selectedMood = null;
+let selectedEnergy = null;
+let selectedEmotions = [];
+let selectedMedColor = '#7C3AED';
+let selectedMealType = 'breakfast';
+let foodPhotoFile = null;
+let allPeriodLogs = {};   // date → {flow, symptoms, notes}
+let allMoodHistory = [];  // last 14 days
+let medications = [];
+let medLogs = {};         // date → {med_id: boolean}
+let waterToday = 0;
+
+let CFG = {
+  url: '', key: '', name: 'Mano', goal: 2000
+};
+
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  const months = ['sausio','vasario','kovo','balandžio','gegužės','birželio','liepos','rugpjūčio','rugsėjo','spalio','lapkričio','gruodžio'];
+  return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+}
+function fmtDateShort(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${parseInt(day)}.${m}.${y}`;
+}
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Labas rytas ☀️';
+  if (h < 18) return 'Laba diena 🌤️';
+  return 'Labas vakaras 🌙';
+}
+function showToast(msg, duration=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function closeOnOverlay(e, id) {
+  if (e.target.classList.contains('overlay')) closeModal(id);
+}
+
+const MEAL_LABELS = {
+  breakfast: { icon: '🌅', label: 'Pusryčiai' },
+  lunch:     { icon: '☀️', label: 'Pietūs' },
+  dinner:    { icon: '🌙', label: 'Vakarienė' },
+  snack:     { icon: '🍎', label: 'Užkandžiai' }
+};
+const MOOD_EMOJIS = ['', '😢','😔','😐','😊','😄'];
+const MOOD_LABELS = ['', 'Blogai','Nelabai','Normaliai','Gerai','Puikiai'];
+const ENERGY_LABELS = ['', 'Labai žema','Žema','Vidutinė','Aukšta','Labai aukšta'];
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+async function init() {
+  const saved = localStorage.getItem('wellness_cfg');
+  if (saved) CFG = { ...CFG, ...JSON.parse(saved) };
+
+  const now = new Date();
+  periodYear = now.getFullYear();
+  periodMonth = now.getMonth();
+
+  if (!CFG.url || !CFG.key) {
+    document.getElementById('setup-screen').style.display = 'flex';
+    document.getElementById('main-app').style.display = 'none';
+    return;
+  }
+
+  initSupabase();
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+
+  await Promise.all([
+    loadTodayHome(),
+    loadMedications()
+  ]);
+
+  switchTab('home');
+}
+
+function initSupabase() {
+  SB = supabase.createClient(CFG.url, CFG.key);
+}
+
+// ══════════════════════════════════════════
+//  SETUP
+// ══════════════════════════════════════════
+function saveSetup() {
+  const url = document.getElementById('setup-url').value.trim();
+  const key = document.getElementById('setup-key').value.trim();
+  const name = document.getElementById('setup-name').value.trim() || 'Mano';
+  const goal = parseInt(document.getElementById('setup-goal').value) || 2000;
+
+  if (!url || !key) { showToast('Įvesk URL ir Key'); return; }
+
+  CFG = { url, key, name, goal };
+  localStorage.setItem('wellness_cfg', JSON.stringify(CFG));
+
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  initSupabase();
+  init();
+}
+
+function saveSettings() {
+  CFG.name  = document.getElementById('cfg-name').value.trim() || CFG.name;
+  CFG.goal  = parseInt(document.getElementById('cfg-goal').value) || CFG.goal;
+  CFG.url   = document.getElementById('cfg-url').value.trim() || CFG.url;
+  CFG.key   = document.getElementById('cfg-key').value.trim() || CFG.key;
+  localStorage.setItem('wellness_cfg', JSON.stringify(CFG));
+  if (CFG.url && CFG.key) initSupabase();
+  closeModal('modal-settings');
+  showToast('Nustatymai išsaugoti ✓');
+  loadTodayHome();
+}
+
+function openSettings() {
+  document.getElementById('cfg-name').value = CFG.name;
+  document.getElementById('cfg-goal').value = CFG.goal;
+  document.getElementById('cfg-url').value = CFG.url;
+  document.getElementById('cfg-key').value = CFG.key;
+  openModal('modal-settings');
+}
+
+// ══════════════════════════════════════════
+//  TAB NAVIGATION
+// ══════════════════════════════════════════
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector(`.nav-btn[data-tab="${tab}"]`).classList.add('active');
+
+  if (tab === 'home') loadTodayHome();
+  if (tab === 'food') loadFoodTab();
+  if (tab === 'period') loadPeriodTab();
+  if (tab === 'mood') loadMoodTab();
+  if (tab === 'meds') loadMedsTab();
+}
+
+// ══════════════════════════════════════════
+//  HOME
+// ══════════════════════════════════════════
+async function loadTodayHome() {
+  const today = todayStr();
+  document.getElementById('home-greeting').textContent = greeting();
+  document.getElementById('home-date').textContent = fmtDate(today);
+  document.getElementById('ring-goal').textContent = CFG.goal;
+  document.getElementById('food-kcal-goal').textContent = ` / ${CFG.goal} kcal`;
+
+  // Water
+  waterToday = parseInt(localStorage.getItem('wellness_water_' + today) || '0');
+  renderWaterCups();
+
+  if (!SB) return;
+
+  // Food totals
+  const { data: foods } = await SB.from('wellness_food_logs')
+    .select('calories,protein,carbs,fat')
+    .eq('log_date', today);
+
+  const totals = (foods||[]).reduce((a,f) => ({
+    kcal: a.kcal + (f.calories||0),
+    protein: a.protein + (f.protein||0),
+    carbs: a.carbs + (f.carbs||0),
+    fat: a.fat + (f.fat||0)
+  }), { kcal:0, protein:0, carbs:0, fat:0 });
+
+  updateCalorieRing(totals.kcal, CFG.goal);
+  document.getElementById('ring-consumed').textContent = totals.kcal;
+  document.getElementById('ring-water').textContent = waterToday + '/8';
+
+  // Mood
+  const { data: moodData } = await SB.from('wellness_mood_logs')
+    .select('mood,energy')
+    .eq('log_date', today)
+    .order('created_at', { ascending: false })
+    .limit(1);
+  if (moodData && moodData[0]) {
+    const m = moodData[0];
+    document.getElementById('home-mood-icon').textContent = MOOD_EMOJIS[m.mood];
+    document.getElementById('home-mood-val').textContent = MOOD_LABELS[m.mood];
+  } else {
+    document.getElementById('home-mood-icon').textContent = '😐';
+    document.getElementById('home-mood-val').textContent = 'Nepažymėta';
+  }
+
+  // Period
+  const { data: pLogs } = await SB.from('wellness_period_logs')
+    .select('log_date,flow')
+    .order('log_date', { ascending: false })
+    .limit(60);
+
+  const periodDates = new Set((pLogs||[]).map(p => p.log_date));
+  const todayPeriod = periodDates.has(today);
+  if (todayPeriod) {
+    document.getElementById('home-period-val').textContent = 'Aktyvus 🩸';
+  } else {
+    const lastPeriodDate = (pLogs||[])[0]?.log_date;
+    if (lastPeriodDate) {
+      const diff = Math.round((new Date(today) - new Date(lastPeriodDate)) / 86400000);
+      document.getElementById('home-period-val').textContent = diff + ' d. nuo paskutinio';
+    } else {
+      document.getElementById('home-period-val').textContent = 'Nepažymėta';
+    }
+  }
+
+  // Meds
+  await loadMedications();
+  renderHomeMeds(today);
+}
+
+function updateCalorieRing(consumed, goal) {
+  const pct = Math.min(consumed / goal, 1);
+  const circumference = 2 * Math.PI * 46;
+  const offset = circumference * (1 - pct);
+  const fill = document.getElementById('ring-fill');
+  fill.style.strokeDashoffset = offset;
+  fill.style.stroke = consumed > goal ? '#EF4444' : 'var(--food)';
+  document.getElementById('ring-remaining').textContent = Math.max(0, goal - consumed);
+}
+
+// Water
+function renderWaterCups() {
+  const container = document.getElementById('water-cups');
+  container.innerHTML = '';
+  for (let i = 1; i <= 8; i++) {
+    const cup = document.createElement('span');
+    cup.className = 'water-cup' + (i <= waterToday ? ' filled' : '');
+    cup.textContent = '💧';
+    cup.onclick = () => toggleWater(i);
+    container.appendChild(cup);
+  }
+  document.getElementById('water-label').textContent = waterToday + ' / 8 stiklinių';
+  document.getElementById('ring-water').textContent = waterToday + '/8';
+}
+
+function toggleWater(idx) {
+  waterToday = waterToday === idx ? idx - 1 : idx;
+  localStorage.setItem('wellness_water_' + todayStr(), waterToday);
+  renderWaterCups();
+}
+
+function renderHomeMeds(today) {
+  const container = document.getElementById('home-meds-list');
+  if (!medications.length) {
+    container.innerHTML = '<div style="padding:14px;text-align:center;color:var(--text-faint);font-size:13px;">Vaistų nėra</div>';
+    return;
+  }
+  const todayLogs = medLogs[today] || {};
+  const headHTML = `<div class="home-meds-head"><span class="home-meds-title">💊 Vaistai</span><button style="background:none;border:none;cursor:pointer;color:var(--meds);font-size:12px;font-weight:600;" onclick="switchTab('meds')">Visi →</button></div>`;
+  const rows = medications.map(m => {
+    const taken = !!todayLogs[m.id];
+    return `<div class="home-med-row">
+      <div class="mini-check ${taken?'taken':''}" onclick="toggleMed('${m.id}','${today}',this)">${taken?'✓':''}</div>
+      <div style="flex:1;"><div class="home-med-name">${m.name}</div><div class="home-med-dose">${m.dosage||''} · ${m.frequency||''}</div></div>
+      <div class="med-dot" style="background:${m.color||'var(--meds)'}"></div>
+    </div>`;
+  }).join('');
+  container.innerHTML = headHTML + rows;
+}
+
+// ══════════════════════════════════════════
+//  FOOD
+// ══════════════════════════════════════════
+async function loadFoodTab() {
+  renderFoodDateNav();
+  await loadFoodForDate(foodDate);
+}
+
+function renderFoodDateNav() {
+  const today = todayStr();
+  const label = foodDate === today ? 'Šiandien' : fmtDateShort(foodDate);
+  document.getElementById('food-date-label').textContent = label;
+}
+
+function foodDateShift(delta) {
+  const d = new Date(foodDate);
+  d.setDate(d.getDate() + delta);
+  const newDate = d.toISOString().split('T')[0];
+  if (newDate > todayStr()) return;
+  foodDate = newDate;
+  renderFoodDateNav();
+  loadFoodForDate(foodDate);
+}
+
+async function loadFoodForDate(date) {
+  if (!SB) return;
+
+  const { data: foods, error } = await SB.from('wellness_food_logs')
+    .select('*')
+    .eq('log_date', date)
+    .order('created_at', { ascending: true });
+
+  const items = foods || [];
+
+  // Totals
+  const totals = items.reduce((a,f) => ({
+    kcal: a.kcal + (f.calories||0),
+    protein: a.protein + parseFloat(f.protein||0),
+    carbs: a.carbs + parseFloat(f.carbs||0),
+    fat: a.fat + parseFloat(f.fat||0)
+  }), { kcal:0, protein:0, carbs:0, fat:0 });
+
+  document.getElementById('food-kcal-total').textContent = totals.kcal;
+  document.getElementById('food-kcal-remain').textContent = `liko ${Math.max(0, CFG.goal - totals.kcal)} kcal`;
+  document.getElementById('food-protein').textContent = Math.round(totals.protein) + 'g';
+  document.getElementById('food-carbs').textContent = Math.round(totals.carbs) + 'g';
+  document.getElementById('food-fat').textContent = Math.round(totals.fat) + 'g';
+
+  const pct = Math.min((totals.kcal / CFG.goal) * 100, 100);
+  const fill = document.getElementById('food-prog-fill');
+  fill.style.width = pct + '%';
+  fill.classList.toggle('over', totals.kcal > CFG.goal);
+
+  // Render meals
+  const mealsContainer = document.getElementById('food-meals');
+  const mealOrder = ['breakfast','lunch','dinner','snack'];
+  mealsContainer.innerHTML = mealOrder.map(meal => {
+    const mItems = items.filter(f => f.meal_type === meal);
+    const mKcal = mItems.reduce((a,f) => a + (f.calories||0), 0);
+    const { icon, label } = MEAL_LABELS[meal];
+
+    const itemsHTML = mItems.length
+      ? mItems.map(f => {
+          const photoEl = f.photo_url
+            ? `<img class="food-thumb" src="${f.photo_url}" alt="${f.food_name}" loading="lazy">`
+            : `<div class="food-thumb-placeholder">🍽️</div>`;
+          const macros = [
+            f.protein ? `B:${Math.round(f.protein)}g` : '',
+            f.carbs   ? `A:${Math.round(f.carbs)}g` : '',
+            f.fat     ? `R:${Math.round(f.fat)}g` : ''
+          ].filter(Boolean).join(' · ');
+          return `<div class="food-item">
+            ${photoEl}
+            <div class="food-info">
+              <div class="food-name">${f.food_name}</div>
+              ${macros ? `<div class="food-macros-line">${macros}${f.portion ? ' · ' + f.portion : ''}</div>` : ''}
+            </div>
+            <div class="food-kcal">${f.calories||0}</div>
+            <button class="food-del" onclick="deleteFoodItem('${f.id}')">✕</button>
+          </div>`;
+        }).join('')
+      : `<div class="empty-meal">Nieko nėra — spustelėk ＋</div>`;
+
+    return `<div class="meal-block">
+      <div class="meal-head">
+        <div class="meal-title-wrap">
+          <span class="meal-icon">${icon}</span>
+          <span class="meal-title">${label}</span>
+          ${mKcal ? `<span class="meal-kcal-badge">${mKcal} kcal</span>` : ''}
+        </div>
+        <button class="meal-add" onclick="openAddFood('${meal}')">＋</button>
+      </div>
+      <div class="food-items">${itemsHTML}</div>
+    </div>`;
+  }).join('<div class="spacer"></div>');
+}
+
+function openAddFood(mealType) {
+  selectedMealType = mealType;
+  // Reset form
+  ['fi-name','fi-kcal','fi-portion','fi-protein','fi-carbs','fi-fat','fi-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  removeFoodPhoto();
+  // Set active tab
+  document.querySelectorAll('#meal-type-tabs .modal-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.meal === mealType);
+  });
+  openModal('modal-add-food');
+}
+
+function selectMealTypeTab(btn) {
+  document.querySelectorAll('#meal-type-tabs .modal-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedMealType = btn.dataset.meal;
+}
+
+function handleFoodPhotoSelect(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  foodPhotoFile = file;
+  const url = URL.createObjectURL(file);
+  document.getElementById('fi-photo-preview').src = url;
+  document.getElementById('fi-photo-preview-wrap').style.display = 'block';
+  document.getElementById('fi-photo-upload-area').style.display = 'none';
+}
+
+function removeFoodPhoto() {
+  foodPhotoFile = null;
+  document.getElementById('fi-photo-input').value = '';
+  document.getElementById('fi-photo-preview-wrap').style.display = 'none';
+  document.getElementById('fi-photo-upload-area').style.display = 'block';
+}
+
+async function uploadFoodPhoto(file) {
+  if (!file || !SB) return null;
+  try {
+    const ext = file.name.split('.').pop();
+    const fileName = `food-${Date.now()}.${ext}`;
+    const { error } = await SB.storage.from('wellness-photos').upload(fileName, file, { cacheControl:'3600' });
+    if (error) return null;
+    const { data } = SB.storage.from('wellness-photos').getPublicUrl(fileName);
+    return data.publicUrl;
+  } catch { return null; }
+}
+
+async function saveFoodItem() {
+  const name = document.getElementById('fi-name').value.trim();
+  const kcal = parseInt(document.getElementById('fi-kcal').value) || 0;
+  if (!name) { showToast('Įvesk maisto pavadinimą'); return; }
+
+  showToast('Saugoma...');
+  let photoUrl = null;
+  if (foodPhotoFile) {
+    photoUrl = await uploadFoodPhoto(foodPhotoFile);
+  }
+
+  const { error } = await SB.from('wellness_food_logs').insert({
+    log_date: foodDate,
+    meal_type: selectedMealType,
+    food_name: name,
+    calories: kcal,
+    portion: document.getElementById('fi-portion').value.trim() || null,
+    protein: parseFloat(document.getElementById('fi-protein').value) || 0,
+    carbs: parseFloat(document.getElementById('fi-carbs').value) || 0,
+    fat: parseFloat(document.getElementById('fi-fat').value) || 0,
+    photo_url: photoUrl,
+    notes: document.getElementById('fi-notes').value.trim() || null
+  });
+
+  if (error) { showToast('Klaida: ' + error.message); return; }
+
+  closeModal('modal-add-food');
+  showToast(name + ' pridėta ✓');
+  loadFoodForDate(foodDate);
+  if (currentTab === 'home') loadTodayHome();
+}
+
+async function deleteFoodItem(id) {
+  if (!confirm('Ištrinti šį maistą?')) return;
+  await SB.from('wellness_food_logs').delete().eq('id', id);
+  loadFoodForDate(foodDate);
+  if (currentTab === 'home') loadTodayHome();
+}
+
+// ══════════════════════════════════════════
+//  PERIOD
+// ══════════════════════════════════════════
+async function loadPeriodTab() {
+  if (!SB) return;
+
+  // Load all period logs
+  const { data } = await SB.from('wellness_period_logs')
+    .select('*')
+    .order('log_date', { ascending: true });
+
+  allPeriodLogs = {};
+  (data||[]).forEach(r => { allPeriodLogs[r.log_date] = r; });
+
+  renderPeriodCalendar();
+  updatePeriodStats();
+  updatePeriodHeader();
+}
+
+function periodMonthShift(delta) {
+  periodMonth += delta;
+  if (periodMonth < 0) { periodMonth = 11; periodYear--; }
+  if (periodMonth > 11) { periodMonth = 0; periodYear++; }
+  renderPeriodCalendar();
+}
+
+function renderPeriodCalendar() {
+  const monthNames = ['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
+  document.getElementById('period-month-label').textContent = `${monthNames[periodMonth]} ${periodYear}`;
+
+  const grid = document.getElementById('period-cal-grid');
+  const dayNames = ['Pr','An','Tr','Kt','Pn','Št','Sk'];
+  let html = dayNames.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+
+  const firstDay = new Date(periodYear, periodMonth, 1).getDay();
+  const offset = (firstDay + 6) % 7; // Mon=0
+  const daysInMonth = new Date(periodYear, periodMonth + 1, 0).getDate();
+  const today = todayStr();
+
+  // Predict next period
+  const predictedDates = getPredictedPeriodDates();
+
+  for (let i = 0; i < offset; i++) html += `<div class="cal-day empty"></div>`;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${periodYear}-${String(periodMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isPeriod = !!allPeriodLogs[dateStr];
+    const isToday = dateStr === today;
+    const isPredicted = predictedDates.has(dateStr) && !isPeriod && dateStr > today;
+    const isSelected = dateStr === selectedPeriodDate;
+
+    let cls = 'cal-day';
+    if (isPeriod) cls += ' period-day';
+    else if (isPredicted) cls += ' predicted';
+    if (isToday) cls += ' today';
+
+    html += `<div class="${cls}" onclick="selectPeriodDate('${dateStr}')" style="${isSelected?'box-shadow:0 0 0 2px var(--period);':''}">
+      ${d}
+    </div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function getPredictedPeriodDates() {
+  const dates = Object.keys(allPeriodLogs).sort();
+  if (dates.length < 2) return new Set();
+
+  // Find period start dates (days preceded by non-period days)
+  const startDates = [];
+  for (let i = 0; i < dates.length; i++) {
+    if (i === 0) { startDates.push(dates[i]); continue; }
+    const prev = new Date(dates[i-1]);
+    const curr = new Date(dates[i]);
+    const diff = (curr - prev) / 86400000;
+    if (diff > 2) startDates.push(dates[i]);
+  }
+
+  if (startDates.length < 2) return new Set();
+
+  // Average cycle length
+  let totalGap = 0;
+  for (let i = 1; i < startDates.length; i++) {
+    totalGap += (new Date(startDates[i]) - new Date(startDates[i-1])) / 86400000;
+  }
+  const avgCycle = Math.round(totalGap / (startDates.length - 1));
+
+  // Average duration
+  let totalDuration = 0;
+  let count = 0;
+  // Find each period run length
+  for (const start of startDates) {
+    let len = 0;
+    let d = new Date(start);
+    while (allPeriodLogs[d.toISOString().split('T')[0]]) {
+      len++;
+      d.setDate(d.getDate() + 1);
+    }
+    totalDuration += len;
+    count++;
+  }
+  const avgDuration = Math.round(totalDuration / count) || 5;
+
+  const lastStart = new Date(startDates[startDates.length - 1]);
+  const nextStart = new Date(lastStart);
+  nextStart.setDate(nextStart.getDate() + avgCycle);
+
+  const predicted = new Set();
+  for (let i = 0; i < avgDuration; i++) {
+    const d = new Date(nextStart);
+    d.setDate(d.getDate() + i);
+    predicted.add(d.toISOString().split('T')[0]);
+  }
+  return predicted;
+}
+
+function updatePeriodStats() {
+  const dates = Object.keys(allPeriodLogs).sort();
+  const startDates = [];
+  for (let i = 0; i < dates.length; i++) {
+    if (i === 0) { startDates.push(dates[i]); continue; }
+    const diff = (new Date(dates[i]) - new Date(dates[i-1])) / 86400000;
+    if (diff > 2) startDates.push(dates[i]);
+  }
+
+  let avgCycle = '—';
+  if (startDates.length >= 2) {
+    let total = 0;
+    for (let i = 1; i < startDates.length; i++) {
+      total += (new Date(startDates[i]) - new Date(startDates[i-1])) / 86400000;
+    }
+    avgCycle = Math.round(total / (startDates.length - 1));
+  }
+
+  let avgDur = '—';
+  if (startDates.length) {
+    let totD = 0;
+    for (const s of startDates) {
+      let len = 0;
+      let d = new Date(s);
+      while (allPeriodLogs[d.toISOString().split('T')[0]]) {
+        len++;
+        d.setDate(d.getDate() + 1);
+      }
+      totD += len;
+    }
+    avgDur = Math.round(totD / startDates.length);
+  }
+
+  let nextStr = '—';
+  if (startDates.length >= 1 && avgCycle !== '—') {
+    const last = new Date(startDates[startDates.length - 1]);
+    last.setDate(last.getDate() + avgCycle);
+    const diff = Math.round((last - new Date()) / 86400000);
+    nextStr = diff > 0 ? `po ${diff} d.` : (diff === 0 ? 'Šiandien' : 'Praėjo');
+  }
+
+  // Current cycle day
+  let cycleDay = '—';
+  if (startDates.length) {
+    const lastStart = new Date(startDates[startDates.length - 1]);
+    const today = new Date();
+    const d = Math.round((today - lastStart) / 86400000) + 1;
+    cycleDay = d;
+  }
+
+  document.getElementById('cycle-length').textContent = avgCycle;
+  document.getElementById('cycle-next').textContent = nextStr;
+  document.getElementById('cycle-duration').textContent = avgDur;
+  document.getElementById('cycle-day').textContent = cycleDay;
+}
+
+function updatePeriodHeader() {
+  const today = todayStr();
+  if (allPeriodLogs[today]) {
+    document.getElementById('period-status-big').textContent = '🩸 Periodas aktyvus';
+    document.getElementById('period-status-sub').textContent = 'Šiandien periodas';
+  } else {
+    const dates = Object.keys(allPeriodLogs).sort().reverse();
+    if (dates.length) {
+      const last = dates[0];
+      const diff = Math.round((new Date(today) - new Date(last)) / 86400000);
+      document.getElementById('period-status-big').textContent = '🩸 Periodas';
+      document.getElementById('period-status-sub').textContent = `Paskutinis prieš ${diff} d.`;
+    } else {
+      document.getElementById('period-status-big').textContent = '🩸 Periodas';
+      document.getElementById('period-status-sub').textContent = 'Pradėk žymėti';
+    }
+  }
+}
+
+function selectPeriodDate(dateStr) {
+  selectedPeriodDate = dateStr;
+  selectedFlow = null;
+  selectedSymptoms = [];
+
+  // Update form title
+  document.getElementById('period-selected-date').textContent = fmtDate(dateStr);
+
+  // Pre-fill if exists
+  const existing = allPeriodLogs[dateStr];
+  if (existing) {
+    selectedFlow = existing.flow;
+    selectedSymptoms = existing.symptoms || [];
+    document.getElementById('period-notes').value = existing.notes || '';
+  } else {
+    document.getElementById('period-notes').value = '';
+  }
+
+  // Update flow buttons
+  document.querySelectorAll('.flow-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.flow === selectedFlow);
+  });
+
+  // Update symptom chips
+  document.querySelectorAll('.symptom-chip').forEach(chip => {
+    chip.classList.toggle('active', selectedSymptoms.includes(chip.dataset.s));
+  });
+
+  renderPeriodCalendar();
+}
+
+function selectFlow(btn) {
+  const flow = btn.dataset.flow;
+  selectedFlow = selectedFlow === flow ? null : flow;
+  document.querySelectorAll('.flow-btn').forEach(b => b.classList.remove('active'));
+  if (selectedFlow) btn.classList.add('active');
+}
+
+function toggleSymptom(chip) {
+  const s = chip.dataset.s;
+  if (selectedSymptoms.includes(s)) {
+    selectedSymptoms = selectedSymptoms.filter(x => x !== s);
+    chip.classList.remove('active');
+  } else {
+    selectedSymptoms.push(s);
+    chip.classList.add('active');
+  }
+}
+
+async function savePeriodLog() {
+  if (!selectedPeriodDate) { showToast('Pasirink dieną'); return; }
+  if (!SB) return;
+
+  const notes = document.getElementById('period-notes').value.trim();
+
+  if (!selectedFlow && !selectedSymptoms.length && !notes) {
+    // Delete if empty
+    await SB.from('wellness_period_logs').delete().eq('log_date', selectedPeriodDate);
+    delete allPeriodLogs[selectedPeriodDate];
+    showToast('Pašalinta ✓');
+  } else {
+    const { error } = await SB.from('wellness_period_logs').upsert({
+      log_date: selectedPeriodDate,
+      flow: selectedFlow,
+      symptoms: selectedSymptoms,
+      notes: notes || null
+    }, { onConflict: 'log_date' });
+    if (error) { showToast('Klaida: ' + error.message); return; }
+    allPeriodLogs[selectedPeriodDate] = { log_date: selectedPeriodDate, flow: selectedFlow, symptoms: selectedSymptoms, notes };
+    showToast('Išsaugota ✓');
+  }
+
+  renderPeriodCalendar();
+  updatePeriodStats();
+  updatePeriodHeader();
+}
+
+// ══════════════════════════════════════════
+//  MOOD
+// ══════════════════════════════════════════
+async function loadMoodTab() {
+  const today = todayStr();
+  document.getElementById('mood-date-label').textContent = fmtDate(today);
+
+  if (!SB) return;
+
+  // Today's mood
+  const { data: todayMood } = await SB.from('wellness_mood_logs')
+    .select('*')
+    .eq('log_date', today)
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  selectedMood = null;
+  selectedEnergy = null;
+  selectedEmotions = [];
+
+  if (todayMood && todayMood[0]) {
+    const m = todayMood[0];
+    selectedMood = m.mood;
+    selectedEnergy = m.energy;
+    selectedEmotions = m.emotions || [];
+    document.getElementById('mood-notes').value = m.notes || '';
+  } else {
+    document.getElementById('mood-notes').value = '';
+  }
+
+  renderMoodUI();
+
+  // History (7 days)
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 6);
+  const fromDate = weekAgo.toISOString().split('T')[0];
+
+  const { data: hist } = await SB.from('wellness_mood_logs')
+    .select('log_date,mood')
+    .gte('log_date', fromDate)
+    .order('log_date', { ascending: true });
+
+  renderMoodHistory(hist || []);
+}
+
+function renderMoodUI() {
+  // Faces
+  document.querySelectorAll('.mood-face-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.mood) === selectedMood);
+  });
+
+  // Energy dots
+  const dots = document.querySelectorAll('#energy-dots .energy-dot');
+  dots.forEach((d, i) => d.classList.toggle('active', selectedEnergy && i < selectedEnergy));
+  document.getElementById('energy-label').textContent = selectedEnergy ? ENERGY_LABELS[selectedEnergy] : 'Pasirink lygį';
+
+  // Emotion chips
+  document.querySelectorAll('.emotion-chip').forEach(chip => {
+    chip.classList.toggle('active', selectedEmotions.includes(chip.dataset.e));
+  });
+
+  // Header
+  if (selectedMood) {
+    document.getElementById('mood-header-val').innerHTML = `${MOOD_EMOJIS[selectedMood]} ${MOOD_LABELS[selectedMood]}`;
+  } else {
+    document.getElementById('mood-header-val').innerHTML = '😐 Nepažymėta';
+  }
+}
+
+function selectMood(val) {
+  selectedMood = selectedMood === val ? null : val;
+  renderMoodUI();
+}
+
+function selectEnergy(val) {
+  selectedEnergy = selectedEnergy === val ? null : val;
+  const dots = document.querySelectorAll('#energy-dots .energy-dot');
+  dots.forEach((d, i) => d.classList.toggle('active', selectedEnergy && i < selectedEnergy));
+  document.getElementById('energy-label').textContent = selectedEnergy ? ENERGY_LABELS[selectedEnergy] : 'Pasirink lygį';
+}
+
+function toggleEmotion(chip) {
+  const e = chip.dataset.e;
+  if (selectedEmotions.includes(e)) {
+    selectedEmotions = selectedEmotions.filter(x => x !== e);
+    chip.classList.remove('active');
+  } else {
+    selectedEmotions.push(e);
+    chip.classList.add('active');
+  }
+}
+
+async function saveMood() {
+  if (!SB) return;
+  if (!selectedMood) { showToast('Pasirink nuotaiką'); return; }
+  const today = todayStr();
+  const { error } = await SB.from('wellness_mood_logs').upsert({
+    log_date: today,
+    mood: selectedMood,
+    energy: selectedEnergy,
+    emotions: selectedEmotions,
+    notes: document.getElementById('mood-notes').value.trim() || null
+  }, { onConflict: 'log_date' });
+
+  if (error) { showToast('Klaida: ' + error.message); return; }
+  showToast('Nuotaika išsaugota ✓');
+  renderMoodUI();
+  if (currentTab === 'home') loadTodayHome();
+}
+
+function renderMoodHistory(hist) {
+  // Build 7-day map
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+
+  const moodMap = {};
+  hist.forEach(h => { moodMap[h.log_date] = h.mood; });
+
+  const dayLetters = ['Pr','An','Tr','Kt','Pn','Št','Sk'];
+
+  const container = document.getElementById('mood-history-bars');
+  container.innerHTML = days.map(date => {
+    const mood = moodMap[date];
+    const pct = mood ? (mood / 5) * 100 : 0;
+    const d = new Date(date + 'T00:00:00');
+    const dayLetter = dayLetters[d.getDay() === 0 ? 6 : d.getDay() - 1];
+    return `<div class="mb-wrap">
+      <div class="mb-emoji" style="height:14px;">${mood ? MOOD_EMOJIS[mood] : ''}</div>
+      <div class="mb-bar" style="height:${pct}%;"></div>
+      <div class="mb-day">${dayLetter}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  MEDICATIONS
+// ══════════════════════════════════════════
+async function loadMedications() {
+  if (!SB) return;
+  const { data } = await SB.from('wellness_medications')
+    .select('*')
+    .eq('active', true)
+    .order('created_at', { ascending: true });
+  medications = data || [];
+
+  // Load today's logs
+  const today = todayStr();
+  const { data: logs } = await SB.from('wellness_medication_logs')
+    .select('*')
+    .eq('log_date', today);
+
+  medLogs[today] = {};
+  (logs||[]).forEach(l => { medLogs[today][l.medication_id] = l.taken; });
+}
+
+async function loadMedsTab() {
+  await loadMedications();
+  renderMedsTab();
+}
+
+function renderMedsTab() {
+  const today = todayStr();
+  const todayLogs = medLogs[today] || {};
+  const takenCount = Object.values(todayLogs).filter(Boolean).length;
+
+  document.getElementById('meds-taken-label').textContent =
+    medications.length ? `${takenCount} / ${medications.length} paimta` : 'Nėra vaistų';
+
+  const container = document.getElementById('meds-list');
+  if (!medications.length) {
+    container.innerHTML = `<div class="no-data"><div class="nd-icon">💊</div><p>Vaistų nėra.<br>Pridėk savo vaistus.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = medications.map(m => {
+    const taken = !!todayLogs[m.id];
+    return `<div class="med-item ${taken?'taken-item':''}" id="med-item-${m.id}">
+      <div class="med-dot" style="background:${m.color||'var(--meds)'}"></div>
+      <div class="med-check ${taken?'taken':''}" id="med-check-${m.id}" onclick="toggleMed('${m.id}','${today}',this)">${taken?'✓':''}</div>
+      <div class="med-info">
+        <div class="med-name">${m.name}</div>
+        <div class="med-dose">${m.dosage||''}${m.dosage&&m.frequency?' · ':''}${m.frequency||''}</div>
+      </div>
+      <button class="med-del" onclick="deleteMedication('${m.id}','${m.name}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function toggleMed(medId, date, el) {
+  if (!SB) return;
+  const current = medLogs[date]?.[medId] ?? false;
+  const newVal = !current;
+
+  const { error } = await SB.from('wellness_medication_logs').upsert({
+    medication_id: medId,
+    log_date: date,
+    taken: newVal,
+    taken_at: newVal ? new Date().toISOString() : null
+  }, { onConflict: 'medication_id,log_date' });
+
+  if (error) { showToast('Klaida'); return; }
+
+  if (!medLogs[date]) medLogs[date] = {};
+  medLogs[date][medId] = newVal;
+
+  el.classList.toggle('taken', newVal);
+  el.textContent = newVal ? '✓' : '';
+
+  const item = document.getElementById('med-item-' + medId);
+  if (item) item.classList.toggle('taken-item', newVal);
+
+  // Update home
+  renderHomeMeds(date);
+
+  // Update header count
+  const today = todayStr();
+  if (date === today) {
+    const todayLogs = medLogs[today] || {};
+    const takenCount = Object.values(todayLogs).filter(Boolean).length;
+    const el2 = document.getElementById('meds-taken-label');
+    if (el2) el2.textContent = `${takenCount} / ${medications.length} paimta`;
+  }
+}
+
+function selectMedColor(el) {
+  selectedMedColor = el.dataset.color;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function saveMedication() {
+  const name = document.getElementById('med-name').value.trim();
+  if (!name) { showToast('Įvesk vaisto pavadinimą'); return; }
+  if (!SB) return;
+
+  const { error } = await SB.from('wellness_medications').insert({
+    name,
+    dosage: document.getElementById('med-dose').value.trim() || null,
+    frequency: document.getElementById('med-freq').value,
+    color: selectedMedColor,
+    active: true
+  });
+
+  if (error) { showToast('Klaida: ' + error.message); return; }
+
+  document.getElementById('med-name').value = '';
+  document.getElementById('med-dose').value = '';
+  closeModal('modal-add-med');
+  showToast(name + ' pridėtas ✓');
+  await loadMedications();
+  renderMedsTab();
+  renderHomeMeds(todayStr());
+}
+
+async function deleteMedication(id, name) {
+  if (!confirm(`Ištrinti "${name}"?`)) return;
+  await SB.from('wellness_medications').update({ active: false }).eq('id', id);
+  showToast(name + ' pašalintas');
+  await loadMedications();
+  renderMedsTab();
+  renderHomeMeds(todayStr());
+}
+
+// ══════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
