@@ -1074,7 +1074,9 @@ function onTaskSelect(){
     selectedCats=[];
   }else{
     document.getElementById('fCustomWrap').style.display='none';
-    document.getElementById('fPrice').value=task.price||0;
+    const cp=currentClient&&currentClient.custom_prices;
+    const price=(cp&&cp[task.name]!==undefined)?cp[task.name]:(task.price||0);
+    document.getElementById('fPrice').value=price;
     selectedCats=task.cat?[task.cat]:[];
   }
   renderCatPills();
