@@ -200,6 +200,36 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .deadline-soon{background:var(--orange-light);color:var(--orange);}
 .deadline-over{background:var(--red-light);color:var(--red);}
 
+/* SĄMATA */
+.samata-modal{max-width:680px;gap:0;padding:0;overflow:hidden;}
+.samata-head{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.samata-title{font-size:16px;font-weight:700;letter-spacing:-.3px;}
+.samata-sub{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.samata-body{padding:0 0 8px;max-height:65vh;overflow-y:auto;}
+.samata-cat-block{border-bottom:1px solid var(--border);}
+.samata-cat-head{padding:10px 24px 8px;background:var(--bg);display:flex;align-items:center;justify-content:space-between;}
+.samata-cat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);}
+.samata-cat-sum{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text-muted);}
+.samata-row{display:grid;grid-template-columns:1fr 52px 62px 72px;gap:0;padding:8px 24px;border-bottom:1px solid var(--border);align-items:center;}
+.samata-row:last-child{border-bottom:none;}
+.samata-row:hover{background:#FAFAF8;}
+.samata-row-name{font-size:13px;font-weight:400;line-height:1.35;}
+.samata-row-qty{font-size:12px;color:var(--text-muted);text-align:center;font-family:'DM Mono',monospace;}
+.samata-row-unit{font-size:12px;color:var(--text-muted);text-align:right;font-family:'DM Mono',monospace;}
+.samata-row-total{font-size:13px;font-weight:600;text-align:right;font-family:'DM Mono',monospace;}
+.samata-row-hd{background:var(--bg);font-size:10px;font-weight:600;color:var(--text-faint);text-transform:uppercase;letter-spacing:.5px;padding:6px 24px;}
+.samata-row-hd span:last-child,.samata-row-hd span:nth-child(3),.samata-row-hd span:nth-child(2){text-align:right;}
+.samata-row-hd span:nth-child(2){text-align:center;}
+.samata-footer{padding:14px 24px;border-top:2px solid var(--border-strong);display:flex;align-items:center;justify-content:space-between;background:var(--surface);}
+.samata-total-label{font-size:13px;font-weight:600;}
+.samata-total-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:-.5px;color:var(--accent);}
+.samata-actions{padding:12px 24px;border-top:1px solid var(--border);display:flex;gap:7px;}
+@media print{
+  body>*:not(#samataPrint){display:none!important;}
+  #samataPrint{display:block!important;position:fixed;inset:0;background:white;padding:40px 48px;z-index:9999;}
+}
+#samataPrint{display:none;}
+
 /* UGC */
 .ugc-wrapper{padding:20px 24px;max-width:100%;}
 .ugc-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
@@ -324,7 +354,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 /* Client select in form */
 .todo-client-sel{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 26px 5px 9px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--bg);color:var(--text);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;max-width:140px;}
 
-@media print{#loginScreen,.header,.sidebar,.modal-overlay,.toast{display:none!important;}.layout{grid-template-columns:1fr!important;}.s-main{padding:0!important;}.day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}.del-btn,.status-btn{display:none!important;}.tasks-body.hidden{display:block!important;}}
+@media print{body:not(.print-samata) #loginScreen,body:not(.print-samata) .header,body:not(.print-samata) .sidebar,body:not(.print-samata) .modal-overlay,body:not(.print-samata) .toast{display:none!important;}body:not(.print-samata) .layout{grid-template-columns:1fr!important;}body:not(.print-samata) .s-main{padding:0!important;}body:not(.print-samata) .day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}body:not(.print-samata) .del-btn,body:not(.print-samata) .status-btn{display:none!important;}body:not(.print-samata) .tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.header{padding:10px 14px;flex-wrap:wrap;}.s-main,.meta-wrapper{padding:14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-grid{grid-template-columns:1fr;}.page-kpi-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr;}.period-tabs{width:100%;}}
@@ -461,6 +491,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
           <div class="sec-title">Ataskaita</div>
           <button class="btn-sec" onclick="copyReport()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Kopijuoti savaitę</button>
           <button class="btn-sec" onclick="printReport()"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Spausdinti / PDF</button>
+          <button class="btn-sec" onclick="openSamata()" style="border-color:#C5D4FA;color:var(--accent)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>Sąmata</button>
         </div>
       </aside>
 
@@ -634,6 +665,30 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     <div class="modal-actions"><button class="btn-cancel" onclick="closeAddClient()">Atšaukti</button><button class="btn-confirm" onclick="confirmAddClient()">Pridėti</button></div>
   </div>
 </div>
+<!-- SĄMATA MODAL -->
+<div class="modal-overlay hidden" id="samataModal">
+  <div class="modal samata-modal">
+    <div class="samata-head">
+      <div>
+        <div class="samata-title" id="samataTitle"></div>
+        <div class="samata-sub" id="samataSub"></div>
+      </div>
+      <button onclick="closeSamata()" style="background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:20px;line-height:1;padding:0 2px">✕</button>
+    </div>
+    <div class="samata-body" id="samataBody"></div>
+    <div class="samata-footer">
+      <span class="samata-total-label">Bendra suma</span>
+      <span class="samata-total-val" id="samataTotal"></span>
+    </div>
+    <div class="samata-actions">
+      <button class="btn-cancel" style="flex:none;padding:8px 16px" onclick="copySamata()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Kopijuoti</button>
+      <button class="btn-confirm" style="flex:none;padding:8px 18px" onclick="printSamata()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Spausdinti / PDF</button>
+    </div>
+  </div>
+</div>
+<!-- PRINT LAYER -->
+<div id="samataPrint"></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1314,6 +1369,120 @@ function copyReport(){
   navigator.clipboard.writeText(txt).then(()=>showToast('Nukopijuota!')).catch(()=>showToast('Klaida'));
 }
 function printReport(){collapsed={};renderDays();setTimeout(()=>window.print(),100);}
+
+// ─── SĄMATA ───
+function buildSamataData(){
+  // Aggregate tasks: group by category, then by task name
+  const catOrder=['ig','ugc','meta','design','extra','other','youtube','tiktok'];
+  const groups={};
+  tasks.forEach(t=>{
+    const cats=t.categories&&t.categories.length?t.categories:(t.cat?[t.cat]:['other']);
+    const mainCat=cats[0]||'other';
+    if(!groups[mainCat])groups[mainCat]=[];
+    // Find existing row with same name
+    const existing=groups[mainCat].find(r=>r.name===t.name);
+    if(existing){existing.qty+=t.qty||1;existing.total+=t.total||0;}
+    else{groups[mainCat].push({name:t.name,qty:t.qty||1,price:t.price||0,total:t.total||0});}
+  });
+  // Sort categories by order
+  const sorted=catOrder.filter(c=>groups[c]).concat(Object.keys(groups).filter(c=>!catOrder.includes(c)));
+  return sorted.map(c=>({cat:c,label:CAT_MAP[c]?.label||c,rows:groups[c]}));
+}
+
+function openSamata(){
+  if(!currentClient){showToast('Pirma pasirink klientą!');return;}
+  if(!tasks.length){showToast('Nėra užduočių pasirinktam laikotarpiui.');return;}
+  const periodLabel=currentDateFrom===currentDateTo?fmtNice(currentDateFrom):`${fmtNice(currentDateFrom)} – ${fmtNice(currentDateTo)}`;
+  document.getElementById('samataTitle').textContent=currentClient.name;
+  document.getElementById('samataSub').textContent=periodLabel;
+  const data=buildSamataData();
+  const grandTotal=tasks.reduce((a,t)=>a+(t.total||0),0);
+  document.getElementById('samataTotal').textContent=grandTotal.toFixed(0)+' €';
+  const body=document.getElementById('samataBody');
+  body.innerHTML=`
+    <div class="samata-row samata-row-hd" style="display:grid;grid-template-columns:1fr 52px 62px 72px">
+      <span>Darbas</span><span style="text-align:center">Kiekis</span><span style="text-align:right">Vnt. kaina</span><span style="text-align:right">Suma</span>
+    </div>`+
+  data.map(g=>{
+    const catSum=g.rows.reduce((a,r)=>a+r.total,0);
+    const rows=g.rows.map(r=>`
+      <div class="samata-row">
+        <span class="samata-row-name">${escHtml(r.name)}</span>
+        <span class="samata-row-qty">${r.qty!==1?r.qty+'×':'1×'}</span>
+        <span class="samata-row-unit">${r.price>0?r.price.toFixed(0)+' €':'—'}</span>
+        <span class="samata-row-total">${r.total>0?r.total.toFixed(0)+' €':'—'}</span>
+      </div>`).join('');
+    return`<div class="samata-cat-block">
+      <div class="samata-cat-head">
+        <span class="samata-cat-label">${escHtml(g.label)}</span>
+        <span class="samata-cat-sum">${catSum.toFixed(0)} €</span>
+      </div>${rows}
+    </div>`;
+  }).join('');
+  document.getElementById('samataModal').classList.remove('hidden');
+}
+
+function closeSamata(){document.getElementById('samataModal').classList.add('hidden');}
+
+function copySamata(){
+  if(!currentClient||!tasks.length)return;
+  const periodLabel=currentDateFrom===currentDateTo?fmtNice(currentDateFrom):`${fmtNice(currentDateFrom)} – ${fmtNice(currentDateTo)}`;
+  const data=buildSamataData();
+  const grandTotal=tasks.reduce((a,t)=>a+(t.total||0),0);
+  let txt=`SĄMATA — ${currentClient.name}\n${periodLabel}\n${'─'.repeat(52)}\n`;
+  data.forEach(g=>{
+    const catSum=g.rows.reduce((a,r)=>a+r.total,0);
+    txt+=`\n${g.label.toUpperCase()}\n`;
+    g.rows.forEach(r=>{
+      const qty=r.qty!==1?`${r.qty}× `:'';
+      const price=r.price>0?` × ${r.price.toFixed(0)} €`:'';
+      txt+=`  • ${r.name}${price ? ' ('+qty.trim()+price+')' : ''} — ${r.total>0?r.total.toFixed(0)+' €':'—'}\n`;
+    });
+    txt+=`  Iš viso: ${catSum.toFixed(0)} €\n`;
+  });
+  txt+=`\n${'─'.repeat(52)}\nBENDRA SUMA: ${grandTotal.toFixed(0)} €`;
+  navigator.clipboard.writeText(txt).then(()=>showToast('Nukopijuota!')).catch(()=>showToast('Klaida'));
+}
+
+function printSamata(){
+  if(!currentClient||!tasks.length)return;
+  const periodLabel=currentDateFrom===currentDateTo?fmtNice(currentDateFrom):`${fmtNice(currentDateFrom)} – ${fmtNice(currentDateTo)}`;
+  const data=buildSamataData();
+  const grandTotal=tasks.reduce((a,t)=>a+(t.total||0),0);
+  const rows=data.map(g=>{
+    const catSum=g.rows.reduce((a,r)=>a+r.total,0);
+    return`<tr style="background:#F7F6F3"><td colspan="4" style="padding:10px 16px 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#8A877E;border-bottom:1px solid #E8E5DF">${g.label}<span style="float:right;color:#2D5BE3">${catSum.toFixed(0)} €</span></td></tr>`+
+      g.rows.map(r=>`<tr>
+        <td style="padding:7px 16px;font-size:13px;border-bottom:1px solid #F2F1EE">${escHtml(r.name)}</td>
+        <td style="padding:7px 16px;text-align:center;font-size:12px;color:#8A877E;border-bottom:1px solid #F2F1EE;font-family:monospace">${r.qty}×</td>
+        <td style="padding:7px 16px;text-align:right;font-size:12px;color:#8A877E;border-bottom:1px solid #F2F1EE;font-family:monospace">${r.price>0?r.price.toFixed(0)+' €':'—'}</td>
+        <td style="padding:7px 16px;text-align:right;font-size:13px;font-weight:600;border-bottom:1px solid #F2F1EE;font-family:monospace">${r.total>0?r.total.toFixed(0)+' €':'—'}</td>
+      </tr>`).join('');
+  }).join('');
+  document.body.classList.add('print-samata');
+  document.getElementById('samataPrint').innerHTML=`
+    <div style="max-width:640px;margin:0 auto;font-family:'DM Sans',sans-serif,Arial">
+      <div style="margin-bottom:24px">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:#8A877E;margin-bottom:4px">Sąmata</div>
+        <div style="font-size:22px;font-weight:700;letter-spacing:-.5px">${escHtml(currentClient.name)}</div>
+        <div style="font-size:13px;color:#8A877E;margin-top:3px">${periodLabel}</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #E8E5DF;border-radius:10px;overflow:hidden;font-size:13px">
+        <thead><tr style="background:#F7F6F3">
+          <th style="padding:9px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#8A877E;border-bottom:1px solid #E8E5DF">Darbas</th>
+          <th style="padding:9px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#8A877E;border-bottom:1px solid #E8E5DF">Kiekis</th>
+          <th style="padding:9px 16px;text-align:right;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#8A877E;border-bottom:1px solid #E8E5DF">Vnt. kaina</th>
+          <th style="padding:9px 16px;text-align:right;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#8A877E;border-bottom:1px solid #E8E5DF">Suma</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="margin-top:20px;padding:14px 16px;background:#EEF2FD;border-radius:10px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:14px;font-weight:600">Bendra suma</span>
+        <span style="font-size:24px;font-weight:700;font-family:monospace;color:#2D5BE3">${grandTotal.toFixed(0)} €</span>
+      </div>
+    </div>`;
+  setTimeout(()=>{window.print();setTimeout(()=>document.body.classList.remove('print-samata'),500);},80);
+}
 
 // ─── DEADLINE ───
 function deadlineBadge(dl){
