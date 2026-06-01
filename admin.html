@@ -682,6 +682,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     </div>
     <div class="samata-actions">
       <button class="btn-cancel" style="flex:none;padding:8px 16px" onclick="copySamata()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Kopijuoti</button>
+      <button class="btn-cancel" style="flex:none;padding:8px 16px" onclick="exportSamataCSV()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
       <button class="btn-confirm" style="flex:none;padding:8px 18px" onclick="printSamata()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Spausdinti / PDF</button>
     </div>
   </div>
@@ -1442,6 +1443,37 @@ function copySamata(){
   });
   txt+=`\n${'─'.repeat(52)}\nBENDRA SUMA: ${grandTotal.toFixed(0)} €`;
   navigator.clipboard.writeText(txt).then(()=>showToast('Nukopijuota!')).catch(()=>showToast('Klaida'));
+}
+
+function exportSamataCSV(){
+  if(!currentClient||!tasks.length)return;
+  const periodLabel=currentDateFrom===currentDateTo?fmtNice(currentDateFrom):`${fmtNice(currentDateFrom)} – ${fmtNice(currentDateTo)}`;
+  const data=buildSamataData();
+  const grandTotal=tasks.reduce((a,t)=>a+(t.total||0),0);
+  const csvEsc=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  const lines=[
+    [csvEsc('Klientas'),csvEsc(currentClient.name)].join(';'),
+    [csvEsc('Laikotarpis'),csvEsc(periodLabel)].join(';'),
+    '',
+    ['Kategorija','Darbas','Kiekis','Vnt. kaina (€)','Suma (€)'].map(csvEsc).join(';'),
+  ];
+  data.forEach(g=>{
+    g.rows.forEach(r=>{
+      lines.push([csvEsc(g.label),csvEsc(r.name),r.qty,r.price.toFixed(2),r.total.toFixed(2)].join(';'));
+    });
+    const catSum=g.rows.reduce((a,r)=>a+r.total,0);
+    lines.push([csvEsc(g.label+' — iš viso'),csvEsc(''),csvEsc(''),csvEsc(''),catSum.toFixed(2)].join(';'));
+    lines.push('');
+  });
+  lines.push(['BENDRA SUMA','','','',grandTotal.toFixed(2)].map(csvEsc).join(';'));
+  const bom='﻿'; // UTF-8 BOM so Excel opens correctly
+  const blob=new Blob([bom+lines.join('\n')],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const fileName=`samata_${currentClient.slug||currentClient.name.toLowerCase().replace(/\s+/g,'_')}_${currentDateFrom}.csv`;
+  a.href=url;a.download=fileName;a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV atsisiųstas!');
 }
 
 function printSamata(){
