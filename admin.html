@@ -6,6 +6,7 @@
 <title>Darbo Žurnalas — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <style>
 :root{--bg:#F7F6F3;--surface:#FFF;--border:#E8E5DF;--border-strong:#D0CCC3;--text:#1A1916;--text-muted:#8A877E;--text-faint:#B5B2AA;--accent:#2D5BE3;--accent-light:#EEF2FD;--green:#1A7A4A;--green-light:#E8F5EE;--orange:#C4590A;--orange-light:#FEF0E6;--gray:#6B6862;--gray-light:#F2F1EE;--red:#C0392B;--red-light:#FDE8ED;--radius:10px;--radius-lg:16px;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -683,6 +684,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     <div class="samata-actions">
       <button class="btn-cancel" style="flex:none;padding:8px 16px" onclick="copySamata()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Kopijuoti</button>
       <button class="btn-cancel" style="flex:none;padding:8px 16px" onclick="exportSamataCSV()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
+      <button class="btn-cancel" style="flex:none;padding:8px 16px;border-color:#A8DFC0;color:#1A7A4A" onclick="exportSamataXLSX()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Excel</button>
       <button class="btn-confirm" style="flex:none;padding:8px 18px" onclick="printSamata()"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;display:inline;vertical-align:-2px;margin-right:5px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Spausdinti / PDF</button>
     </div>
   </div>
@@ -1474,6 +1476,185 @@ function exportSamataCSV(){
   a.href=url;a.download=fileName;a.click();
   URL.revokeObjectURL(url);
   showToast('CSV atsisiųstas!');
+}
+
+async function exportSamataXLSX(){
+  if(!currentClient||!tasks.length)return;
+  const periodLabel=currentDateFrom===currentDateTo?fmtNice(currentDateFrom):`${fmtNice(currentDateFrom)} – ${fmtNice(currentDateTo)}`;
+  const data=buildSamataData();
+  const grandTotal=tasks.reduce((a,t)=>a+(t.total||0),0);
+
+  const wb=new ExcelJS.Workbook();
+  wb.creator='Darbo Žurnalas';
+  wb.created=new Date();
+
+  const ws=wb.addWorksheet('Sąmata',{pageSetup:{paperSize:9,orientation:'portrait',fitToPage:true,fitToWidth:1,margins:{left:.5,right:.5,top:.75,bottom:.75,header:.3,footer:.3}}});
+
+  // Column widths
+  ws.columns=[
+    {width:28}, // A – Kategorija / Darbas
+    {width:36}, // B – Darbas
+    {width:10}, // C – Kiekis
+    {width:14}, // D – Vnt. kaina
+    {width:14}, // E – Suma
+  ];
+
+  // ── Helpers ──
+  const ACCENT='FF2D5BE3', ACCENT_LIGHT='FFEEF2FD';
+  const GREEN='FF1A7A4A', GREEN_LIGHT='FFE8F5EE';
+  const DARK='FF1A1916', MUTED='FF8A877E', FAINT='FFB5B2AA';
+  const BG='FFF7F6F3', WHITE='FFFFFFFF', BORDER='FFE8E5DF', BORDER_STRONG='FFD0CCC3';
+
+  const catColors={
+    ig:{bg:'FFEDE8FD',fg:'FF4A3AAA'},
+    ugc:{bg:'FFE6F5EE',fg:'FF1A5C38'},
+    meta:{bg:'FFE8F0FD',fg:'FF1A4098'},
+    design:{bg:'FFFEF3E7',fg:'FF9C4A10'},
+    extra:{bg:'FFFDE8ED',fg:'FF9C1A36'},
+    youtube:{bg:'FFFFE8E8',fg:'FFCC0000'},
+    tiktok:{bg:'FFE8E8E8',fg:'FF161616'},
+    other:{bg:'FFF2F1EE',fg:'FF6B6862'},
+  };
+
+  function thin(color=BORDER){return{style:'thin',color:{argb:color}};}
+  function cellBorder(t=BORDER,b=BORDER,l=BORDER,r=BORDER){return{top:thin(t),bottom:thin(b),left:thin(l),right:thin(r)};}
+
+  function applyFont(row,opts={}){row.eachCell({includeEmpty:true},c=>{c.font={name:'Calibri',...opts};});}
+  function applyFill(row,argb){row.eachCell({includeEmpty:true},c=>{c.fill={type:'pattern',pattern:'solid',fgColor:{argb}};});}
+  function applyBorder(row,top=BORDER,bottom=BORDER){row.eachCell({includeEmpty:true},c=>{c.border=cellBorder(top,bottom);});}
+  function alignRight(cell){cell.alignment={horizontal:'right',vertical:'middle'};}
+  function alignCenter(cell){cell.alignment={horizontal:'center',vertical:'middle'};}
+
+  let r=1;
+
+  // ── Logo / Title block ──
+  ws.mergeCells(`A${r}:E${r}`);
+  const titleCell=ws.getCell(`A${r}`);
+  titleCell.value='SĄMATA';
+  titleCell.font={name:'Calibri',bold:true,size:20,color:{argb:WHITE}};
+  titleCell.fill={type:'pattern',pattern:'solid',fgColor:{argb:ACCENT}};
+  titleCell.alignment={horizontal:'left',vertical:'middle',indent:1};
+  ws.getRow(r).height=36;
+  r++;
+
+  // Client + period
+  ws.mergeCells(`A${r}:E${r}`);
+  const clientCell=ws.getCell(`A${r}`);
+  clientCell.value=currentClient.name;
+  clientCell.font={name:'Calibri',bold:true,size:14,color:{argb:WHITE}};
+  clientCell.fill={type:'pattern',pattern:'solid',fgColor:{argb:ACCENT}};
+  clientCell.alignment={horizontal:'left',vertical:'middle',indent:1};
+  ws.getRow(r).height=22;
+  r++;
+
+  ws.mergeCells(`A${r}:E${r}`);
+  const periodCell=ws.getCell(`A${r}`);
+  periodCell.value=periodLabel;
+  periodCell.font={name:'Calibri',size:11,color:{argb:ACCENT_LIGHT.replace('FF','FF')}};
+  periodCell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF233FA0'}};
+  periodCell.alignment={horizontal:'left',vertical:'middle',indent:1};
+  ws.getRow(r).height=18;
+  r++;
+
+  // Spacer
+  ws.mergeCells(`A${r}:E${r}`);
+  ws.getRow(r).height=8;
+  ws.getCell(`A${r}`).fill={type:'pattern',pattern:'solid',fgColor:{argb:ACCENT}};
+  r++;
+
+  // ── Column headers ──
+  const hdrRow=ws.getRow(r);
+  hdrRow.values=['','Darbas','Kiekis','Vnt. kaina (€)','Suma (€)'];
+  hdrRow.height=22;
+  hdrRow.eachCell({includeEmpty:true},(c,col)=>{
+    c.font={name:'Calibri',bold:true,size:9,color:{argb:MUTED}};
+    c.fill={type:'pattern',pattern:'solid',fgColor:{argb:BG}};
+    c.border=cellBorder(BORDER_STRONG,BORDER_STRONG);
+    if(col>=3)c.alignment={horizontal:'right',vertical:'middle'};
+    else c.alignment={horizontal:'left',vertical:'middle',indent:col===2?1:0};
+  });
+  r++;
+
+  // ── Category blocks ──
+  data.forEach(g=>{
+    const colors=catColors[g.cat]||{bg:'FFF2F1EE',fg:'FF6B6862'};
+
+    // Category header
+    const catRow=ws.getRow(r);
+    catRow.height=20;
+    catRow.getCell(1).value=g.label.toUpperCase();
+    catRow.getCell(1).font={name:'Calibri',bold:true,size:10,color:{argb:colors.fg}};
+    catRow.getCell(1).alignment={horizontal:'left',vertical:'middle',indent:1};
+    ws.mergeCells(`A${r}:B${r}`);
+    // Empty C, D, subtotal in E
+    const catSum=g.rows.reduce((a,rw)=>a+rw.total,0);
+    catRow.getCell(5).value=catSum;
+    catRow.getCell(5).numFmt='#,##0.00 "€"';
+    catRow.getCell(5).font={name:'Calibri',bold:true,size:10,color:{argb:colors.fg}};
+    alignRight(catRow.getCell(5));
+    catRow.eachCell({includeEmpty:true},c=>{
+      c.fill={type:'pattern',pattern:'solid',fgColor:{argb:colors.bg}};
+      c.border=cellBorder(BORDER,BORDER);
+    });
+    r++;
+
+    // Task rows
+    g.rows.forEach(rw=>{
+      const taskRow=ws.getRow(r);
+      taskRow.height=18;
+      taskRow.getCell(2).value=rw.name;
+      taskRow.getCell(2).font={name:'Calibri',size:11,color:{argb:DARK}};
+      taskRow.getCell(2).alignment={horizontal:'left',vertical:'middle',indent:1};
+      taskRow.getCell(3).value=rw.qty;
+      taskRow.getCell(3).font={name:'Calibri',size:11,color:{argb:MUTED}};
+      alignCenter(taskRow.getCell(3));
+      taskRow.getCell(4).value=rw.price||null;
+      taskRow.getCell(4).numFmt='#,##0.00 "€"';
+      taskRow.getCell(4).font={name:'Calibri',size:11,color:{argb:MUTED}};
+      alignRight(taskRow.getCell(4));
+      taskRow.getCell(5).value=rw.total||null;
+      taskRow.getCell(5).numFmt='#,##0.00 "€"';
+      taskRow.getCell(5).font={name:'Calibri',bold:true,size:11,color:{argb:DARK}};
+      alignRight(taskRow.getCell(5));
+      taskRow.eachCell({includeEmpty:true},c=>{
+        c.fill={type:'pattern',pattern:'solid',fgColor:{argb:WHITE}};
+        c.border=cellBorder(BORDER,'FFFAF9F7');
+      });
+      r++;
+    });
+
+    // Spacer between categories
+    ws.mergeCells(`A${r}:E${r}`);
+    ws.getRow(r).height=5;
+    ws.getCell(`A${r}`).fill={type:'pattern',pattern:'solid',fgColor:{argb:BG}};
+    r++;
+  });
+
+  // ── Grand Total ──
+  const totRow=ws.getRow(r);
+  totRow.height=28;
+  ws.mergeCells(`A${r}:D${r}`);
+  totRow.getCell(1).value='BENDRA SUMA';
+  totRow.getCell(1).font={name:'Calibri',bold:true,size:13,color:{argb:WHITE}};
+  totRow.getCell(1).alignment={horizontal:'left',vertical:'middle',indent:1};
+  totRow.getCell(5).value=grandTotal;
+  totRow.getCell(5).numFmt='#,##0.00 "€"';
+  totRow.getCell(5).font={name:'Calibri',bold:true,size:14,color:{argb:WHITE}};
+  alignRight(totRow.getCell(5));
+  totRow.eachCell({includeEmpty:true},c=>{
+    c.fill={type:'pattern',pattern:'solid',fgColor:{argb:ACCENT}};
+    c.border=cellBorder(ACCENT,ACCENT,ACCENT,ACCENT);
+  });
+
+  // ── Download ──
+  const buf=await wb.xlsx.writeBuffer();
+  const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const slug=currentClient.slug||currentClient.name.toLowerCase().replace(/\s+/g,'_');
+  a.href=url;a.download=`samata_${slug}_${currentDateFrom}.xlsx`;a.click();
+  URL.revokeObjectURL(url);
+  showToast('Excel failas atsisiųstas!');
 }
 
 function printSamata(){
