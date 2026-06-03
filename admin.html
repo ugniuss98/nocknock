@@ -539,6 +539,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
             <th style="width:80px">Affiliate</th>
             <th style="min-width:110px">Siuntos turinys</th>
             <th style="min-width:120px">Kontaktai</th>
+            <th style="min-width:140px">Siuntos kodas</th>
             <th style="width:110px">Video statusas</th>
             <th style="min-width:260px">Pastabos</th>
             <th style="width:60px"></th>
@@ -575,6 +576,10 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
         </div>
       </div>
       <div><label>Siuntos turinys</label><input type="text" id="ugcPackage" placeholder="pvz. 3 x F03, 2 x F09"></div>
+      <div class="row2">
+        <div><label>Siuntos kodas</label><input type="text" id="ugcTrackingCode" placeholder="pvz. LT123456789DE"></div>
+        <div><label>Siuntos sekimo nuoroda</label><input type="url" id="ugcTrackingLink" placeholder="https://track.example.com/..."></div>
+      </div>
       <div class="row2">
         <div><label>Kontakto vardas</label><input type="text" id="ugcContactName" placeholder="Vardas"></div>
         <div><label>Šalis</label><input type="text" id="ugcCountry" placeholder="pvz. Germany"></div>
@@ -1738,7 +1743,7 @@ function renderUgcTable(){
   ugcEntries=sorted;
   const tbody=document.getElementById('ugcTbody');
   if(!ugcEntries.length){
-    tbody.innerHTML=`<tr><td colspan="11" class="ugc-empty">Nėra įrašų. Spausk „Pridėti įrašą".</td></tr>`;return;
+    tbody.innerHTML=`<tr><td colspan="12" class="ugc-empty">Nėra įrašų. Spausk „Pridėti įrašą".</td></tr>`;return;
   }
   tbody.innerHTML=ugcEntries.map((e,i)=>{
     const platforms=(e.platforms||[]).map(p=>`<div class="ugc-plat">${escHtml(p.platform||'')} ${p.handle?`<span style="color:var(--text-muted)">@${escHtml(p.handle)}</span>`:''} ${p.followers?`<span class="ugc-followers">${escHtml(String(p.followers))}</span>`:''}</div>`).join('');
@@ -1758,6 +1763,13 @@ function renderUgcTable(){
       <td>${affil}</td>
       <td style="font-size:11px">${escHtml(e.package_contents||'—')}</td>
       <td style="font-size:11px">${escHtml(contacts||'—')}</td>
+      <td style="font-size:11px">${e.tracking_code
+        ?`<div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.3px">${escHtml(e.tracking_code)}</span>
+            ${e.tracking_link?`<a href="${escHtml(e.tracking_link)}" target="_blank" style="font-size:10px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:3px">
+              <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Sekti siuntą</a>`:''}
+          </div>`
+        :`<span style="color:var(--text-faint)">—</span>`}</td>
       <td><span class="ugc-status ${stCls}">${stLbl}</span></td>
       <td style="font-size:12px;line-height:1.5;color:var(--text);white-space:pre-wrap;word-break:break-word">${escHtml(e.notes||'')}</td>
       <td style="white-space:nowrap">
@@ -1777,6 +1789,8 @@ function openUgcModal(editId){
   document.getElementById('ugcReceived').checked=false;
   document.getElementById('ugcAffiliate').checked=false;
   document.getElementById('ugcPackage').value='';
+  document.getElementById('ugcTrackingCode').value='';
+  document.getElementById('ugcTrackingLink').value='';
   document.getElementById('ugcContactName').value='';
   document.getElementById('ugcCountry').value='';
   document.getElementById('ugcEmail').value='';
@@ -1791,6 +1805,8 @@ function openUgcModal(editId){
       document.getElementById('ugcReceived').checked=!!e.package_received;
       document.getElementById('ugcAffiliate').checked=!!e.affiliate;
       document.getElementById('ugcPackage').value=e.package_contents||'';
+      document.getElementById('ugcTrackingCode').value=e.tracking_code||'';
+      document.getElementById('ugcTrackingLink').value=e.tracking_link||'';
       document.getElementById('ugcContactName').value=e.contact_name||'';
       document.getElementById('ugcCountry').value=e.contact_country||'';
       document.getElementById('ugcEmail').value=e.contact_email||'';
@@ -1843,6 +1859,8 @@ async function saveUgcEntry(){
     package_received:document.getElementById('ugcReceived').checked,
     affiliate:document.getElementById('ugcAffiliate').checked,
     package_contents:document.getElementById('ugcPackage').value.trim()||null,
+    tracking_code:document.getElementById('ugcTrackingCode').value.trim()||null,
+    tracking_link:document.getElementById('ugcTrackingLink').value.trim()||null,
     contact_name:document.getElementById('ugcContactName').value.trim()||null,
     contact_country:document.getElementById('ugcCountry').value.trim()||null,
     contact_email:document.getElementById('ugcEmail').value.trim()||null,
