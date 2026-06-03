@@ -251,6 +251,8 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .vs-paviešinta{background:var(--green-light);color:var(--green);}
 .vs-veluoja{background:var(--red-light);color:var(--red);}
 .vs-pradzia{background:#F0EBF8;color:#6B35B8;}
+.vs-nustota{background:#F2F1EE;color:#4A4744;border:1px solid #D0CCC3;}
+.vs-komplikuota{background:#FFF4D6;color:#92600A;}
 .ugc-received-yes{color:var(--green);font-weight:600;}
 .ugc-received-no{color:var(--text-faint);}
 .ugc-affil-btn{cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
@@ -589,6 +591,8 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
         <label>Video statusas</label>
         <select id="ugcVideoStatus">
           <option value="veluoja">⚠ Vėluoja</option>
+          <option value="komplikuota">💬 Komplikuota komunikacija</option>
+          <option value="nustota">🚫 Nustota dirbti</option>
           <option value="pradzia">🌱 Pradžia</option>
           <option value="laukiama">⏳ Laukiama</option>
           <option value="filmuojama">🎬 Filmuojama</option>
@@ -1734,11 +1738,11 @@ async function renderUgcTab(){
   renderUgcTable();
 }
 
-const UGC_STATUS_LABELS={pradzia:'🌱 Pradžia',laukiama:'⏳ Laukiama',filmuojama:'🎬 Filmuojama',atsiusta:'📨 Atsiųsta',paviešinta:'✅ Paviešinta',veluoja:'⚠ Vėluoja'};
-const UGC_STATUS_CLS={pradzia:'vs-pradzia',laukiama:'vs-laukiama',filmuojama:'vs-filmuojama',atsiusta:'vs-atsiusta',paviešinta:'vs-paviešinta',veluoja:'vs-veluoja'};
+const UGC_STATUS_LABELS={veluoja:'⚠ Vėluoja',komplikuota:'💬 Komplikuota komunikacija',nustota:'🚫 Nustota dirbti',pradzia:'🌱 Pradžia',laukiama:'⏳ Laukiama',filmuojama:'🎬 Filmuojama',atsiusta:'📨 Atsiųsta',paviešinta:'✅ Paviešinta'};
+const UGC_STATUS_CLS={veluoja:'vs-veluoja',komplikuota:'vs-komplikuota',nustota:'vs-nustota',pradzia:'vs-pradzia',laukiama:'vs-laukiama',filmuojama:'vs-filmuojama',atsiusta:'vs-atsiusta',paviešinta:'vs-paviešinta'};
 
 function renderUgcTable(){
-  const ORDER={veluoja:0,pradzia:1,laukiama:2,filmuojama:3,atsiusta:4,paviešinta:5};
+  const ORDER={veluoja:0,komplikuota:1,nustota:2,pradzia:3,laukiama:4,filmuojama:5,atsiusta:6,paviešinta:7};
   const sorted=[...ugcEntries].sort((a,b)=>(ORDER[a.video_status]??0)-(ORDER[b.video_status]??0));
   ugcEntries=sorted;
   const tbody=document.getElementById('ugcTbody');
