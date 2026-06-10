@@ -820,6 +820,10 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
         <button class="m-pill ms-paskelbta"  data-calst="paskelbta"  onclick="calSelStatus('paskelbta')">🚀 Paskelbta</button>
       </div>
     </div>
+    <div id="calAdminComments" style="display:none;border-top:1px solid var(--border);padding-top:12px;margin-top:2px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px">Komentarai</div>
+      <div id="calAdminCommentsList" style="display:flex;flex-direction:column;gap:7px;max-height:200px;overflow-y:auto"></div>
+    </div>
     <input type="hidden" id="calMId">
     <div class="modal-actions">
       <button class="btn-del" id="calMDelBtn" onclick="calDeletePost()" style="display:none">Ištrinti</button>
@@ -2124,7 +2128,7 @@ async function calLoad(){
   document.getElementById('calMonthLabel').textContent=`${CAL_MONTHS[calMonth]} ${calYear}`;
   const from=calFmt(new Date(calYear,calMonth-1,24));
   const to=calFmt(new Date(calYear,calMonth+1,7));
-  const{data,error}=await sb.from('content_plans').select('*').gte('date',from).lte('date',to).order('date').order('created_at');
+  const{data,error}=await sb.from('content_plans').select('*,calendar_comments(count)').gte('date',from).lte('date',to).order('date').order('created_at');
   if(error){showToast('Klaida: '+error.message);return;}
   calPlans=data||[];
   calLoaded=true;
@@ -2148,11 +2152,13 @@ function calRenderCal(){
     const ds=calFmt(d),isToday=ds===todayStr,isOther=d.getMonth()!==calMonth;
     const dp=calPlans.filter(p=>p.date===ds&&calActiveF.has(p.platform));
     const imgEntry=dp.find(p=>p.image_url);
-    const pills=dp.slice(0,3).map(p=>`
-      <div class="cal-pp c-${p.platform}" onclick="event.stopPropagation();calOpenModal(${p.id})">
+    const pills=dp.slice(0,3).map(p=>{
+      const cmtCount=p.calendar_comments?.[0]?.count||0;
+      return`<div class="cal-pp c-${p.platform}" onclick="event.stopPropagation();calOpenModal(${p.id})">
         <span class="dot d-${p.platform}"></span>
         <span class="lbl">${escHtml(p.title||CAL_TYPE_L[p.content_type]||CAL_PLAT_L[p.platform]||'')}</span>
-      </div>`).join('');
+        ${cmtCount>0?`<span style="margin-left:auto;font-size:9px;opacity:.7">💬${cmtCount}</span>`:''}
+      </div>`;}).join('');
     const more=dp.length>3?`<div class="cal-pp-more">+${dp.length-3} daugiau</div>`:'';
     const thumb=imgEntry?`<img class="cal-cell-img" src="${escHtml(imgEntry.image_url)}" alt="" loading="lazy" onclick="event.stopPropagation();calOpenModal(${imgEntry.id})">`:'';
     return`<div class="cal-cell${isToday?' cal-today':''}${isOther?' cal-other-month':''}" onclick="calOpenModal(null,'${ds}')">
@@ -2223,10 +2229,28 @@ function calOpenModal(id=null,dateStr=null){
       document.getElementById('calMNotes').value=p.notes||'';
       if(p.image_url){calExistingImgUrl=p.image_url;calSetImgPreview(p.image_url);}
       calApplyPlatUI();calApplyStatusUI();
+      calLoadAdminComments(id);
     }
   }
+  if(!id){document.getElementById('calAdminComments').style.display='none';}
   document.getElementById('calPostModal').classList.remove('hidden');
   setTimeout(()=>document.getElementById('calMTitle').focus(),60);
+}
+
+async function calLoadAdminComments(planId){
+  const wrap=document.getElementById('calAdminComments');
+  const list=document.getElementById('calAdminCommentsList');
+  wrap.style.display='block';list.innerHTML='<span style="font-size:12px;color:var(--text-faint)">Kraunama...</span>';
+  const{data}=await sb.from('calendar_comments').select('*,clients(name)').eq('plan_id',planId).order('created_at');
+  if(!data||data.length===0){list.innerHTML='<span style="font-size:12px;color:var(--text-faint)">Komentarų nėra.</span>';return;}
+  list.innerHTML=data.map(c=>{
+    const name=c.clients?.name||'—';
+    const time=new Date(c.created_at).toLocaleString('lt-LT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return`<div style="background:var(--bg);border-radius:8px;padding:8px 10px">
+      <div style="font-size:11px;font-weight:600;margin-bottom:2px">${escHtml(name)} <span style="font-size:10px;color:var(--text-faint);font-weight:400">${time}</span></div>
+      <div style="font-size:12px;line-height:1.45">${escHtml(c.text)}</div>
+    </div>`;
+  }).join('');
 }
 function calCloseModal(){document.getElementById('calPostModal').classList.add('hidden');calEditingId=null;calPendingImgFile=null;calExistingImgUrl=null;}
 

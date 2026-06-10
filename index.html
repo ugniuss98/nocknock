@@ -232,6 +232,66 @@
     .main{padding:14px;}
     .week-label{min-width:120px;}
   }
+/* ── CLIENT CALENDAR ── */
+.cl-cal-wrap{max-width:860px;margin:0 auto;padding:16px 20px;}
+.cl-cal-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.cl-nav-btn{width:32px;height:32px;border:1px solid var(--border-strong);background:var(--surface);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;}
+.cl-nav-btn:hover{background:var(--bg);}.cl-nav-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.cl-month-lbl{font-size:16px;font-weight:600;letter-spacing:-.3px;min-width:170px;text-align:center;}
+.cl-today-btn{font-size:12px;font-weight:500;background:none;border:1px solid var(--border-strong);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--text-muted);transition:all .15s;}
+.cl-today-btn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.cl-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-faint);}
+.cl-wknd{color:var(--red);}
+.cl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cl-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:90px;padding:7px;cursor:pointer;transition:border-color .15s,background .1s;display:flex;flex-direction:column;gap:3px;}
+.cl-cell:hover{border-color:var(--accent);background:var(--accent-light);}
+.cl-cell.cl-today{border-color:var(--accent);border-width:2px;}
+.cl-cell.cl-other{opacity:.35;}
+.cl-cell-num{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:1px;}
+.cl-today-num{width:19px;height:19px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;margin-bottom:1px;}
+.cl-cell-img{width:100%;height:32px;object-fit:cover;border-radius:5px;}
+.cl-entry{display:flex;align-items:center;gap:4px;padding:2px 5px;border-radius:5px;font-size:10px;font-weight:500;overflow:hidden;}
+.cl-entry .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.cl-entry .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cl-more{font-size:10px;color:var(--text-faint);padding:1px 3px;}
+/* Detail panel */
+.cl-detail-panel{max-width:560px;margin:16px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.cl-detail-panel.hidden{display:none;}
+.cl-detail-inner{padding:20px;}
+.cl-detail-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+.cl-detail-plat{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.cl-detail-title{font-size:15px;font-weight:600;flex:1;line-height:1.3;}
+.cl-detail-meta{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.cl-close-btn{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-faint);padding:0 2px;flex-shrink:0;line-height:1;}
+.cl-close-btn:hover{color:var(--text);}
+.cl-detail-notes{background:var(--bg);border-radius:var(--radius);padding:12px;margin-bottom:14px;font-size:13px;line-height:1.55;color:var(--text-muted);}
+.cl-detail-notes.hidden,.cl-detail-img-wrap.hidden{display:none;}
+.cl-detail-img-wrap{margin-bottom:14px;}
+/* Comments */
+.cl-comments-section{border-top:1px solid var(--border);padding-top:14px;margin-top:14px;}
+.cl-comments-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:10px;}
+.cl-comments-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.cl-comment{display:flex;gap:9px;align-items:flex-start;}
+.cl-comment-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-light);border:1.5px solid #C5D4FA;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.cl-comment-body{flex:1;background:var(--bg);border-radius:8px;padding:8px 11px;}
+.cl-comment-who{font-size:11px;font-weight:600;margin-bottom:2px;}
+.cl-comment-txt{font-size:13px;line-height:1.45;}
+.cl-comment-time{font-size:10px;color:var(--text-faint);margin-top:3px;}
+.cl-no-comments{font-size:13px;color:var(--text-faint);padding:4px 0 8px;}
+.cl-comment-form{display:flex;flex-direction:column;gap:7px;}
+.cl-comment-input{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px;color:var(--text);outline:none;resize:none;transition:border-color .15s;}
+.cl-comment-input:focus{border-color:var(--accent);background:white;}
+.cl-comment-send{align-self:flex-end;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
+.cl-comment-send:hover{opacity:.85;}
+.cl-comment-send svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.cl-comment-send:disabled{opacity:.45;cursor:default;}
+/* Platform colors (shared with calendar cells) */
+.c-ig{background:#EDE8FD;color:#4A3AAA;}.d-ig{background:#4A3AAA;}
+.c-tiktok{background:#E8E8E8;color:#161616;}.d-tiktok{background:#161616;}
+.c-fb{background:#E8F0FD;color:#1A4098;}.d-fb{background:#1A4098;}
+.c-youtube{background:#FFE8E8;color:#CC0000;}.d-youtube{background:#CC0000;}
+.c-linkedin{background:#E8F4FD;color:#0A66C2;}.d-linkedin{background:#0A66C2;}
+.c-other{background:var(--gray-light);color:var(--gray);}.d-other{background:var(--gray);}
 </style>
 </head>
 <body>
@@ -276,6 +336,9 @@
   </button>
   <button class="c-tab-btn" id="ctab-ugc" onclick="setClientTab('ugc')">
     <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>UGC Siuntos
+  </button>
+  <button class="c-tab-btn" id="ctab-calendar" onclick="setClientTab('calendar')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Turinio planas
   </button>
 </div>
 
@@ -369,6 +432,56 @@
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeUgcModal()">Atšaukti</button>
       <button class="btn-send" onclick="saveUgcEntry()">Išsaugoti</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR TAB (CLIENT) -->
+<div id="calendarTab" style="display:none">
+  <div class="cl-cal-wrap">
+    <!-- Month nav -->
+    <div class="cl-cal-toolbar">
+      <button class="cl-nav-btn" onclick="clCalChangeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <span class="cl-month-lbl" id="clMonthLabel"></span>
+      <button class="cl-nav-btn" onclick="clCalChangeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <button class="cl-today-btn" onclick="clCalGoToday()">Šiandien</button>
+    </div>
+    <!-- Grid -->
+    <div class="cl-cal-dow">
+      <div>Pr</div><div>An</div><div>Tr</div><div>Kt</div><div>Pn</div>
+      <div class="cl-wknd">Št</div><div class="cl-wknd">Sk</div>
+    </div>
+    <div class="cl-cal-grid" id="clCalGrid"></div>
+  </div>
+  <!-- Entry detail panel -->
+  <div class="cl-detail-panel hidden" id="clDetailPanel">
+    <div class="cl-detail-inner">
+      <div class="cl-detail-head">
+        <div class="cl-detail-plat" id="clDetailPlat"></div>
+        <div>
+          <div class="cl-detail-title" id="clDetailTitle"></div>
+          <div class="cl-detail-meta" id="clDetailMeta"></div>
+        </div>
+        <button class="cl-close-btn" onclick="clCloseDetail()">✕</button>
+      </div>
+      <div class="cl-detail-img-wrap hidden" id="clDetailImgWrap">
+        <img id="clDetailImg" src="" alt="" style="width:100%;border-radius:10px;display:block;max-height:220px;object-fit:cover">
+      </div>
+      <div class="cl-detail-notes hidden" id="clDetailNotesWrap">
+        <div class="cl-detail-notes-txt" id="clDetailNotes"></div>
+      </div>
+      <!-- Comments -->
+      <div class="cl-comments-section">
+        <div class="cl-comments-title">Komentarai</div>
+        <div class="cl-comments-list" id="clCommentsList"></div>
+        <div class="cl-comment-form">
+          <textarea class="cl-comment-input" id="clCommentInput" placeholder="Rašyk komentarą..." rows="2"></textarea>
+          <button class="cl-comment-send" onclick="clSendComment()">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Siųsti
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -642,18 +755,21 @@ async function deleteClientTask(id){
 let clientTab='journal';
 function setClientTab(tab){
   clientTab=tab;
-  ['journal','ugc'].forEach(t=>{
+  ['journal','ugc','calendar'].forEach(t=>{
     document.getElementById('ctab-'+t).classList.toggle('active',t===tab);
   });
   const isJournal=tab==='journal';
+  const isCal=tab==='calendar';
   document.getElementById('topBar').style.display=isJournal?'flex':'none';
   document.getElementById('mainArea').style.display=isJournal?'flex':'none';
   document.getElementById('footerEl').style.display=isJournal?'block':'none';
   document.getElementById('reqFab').style.display=isJournal?'flex':'none';
   document.getElementById('weekNav').style.display=isJournal?'flex':'none';
   document.getElementById('pdfBtnEl').style.display=isJournal?'flex':'none';
-  document.getElementById('ugcTab').style.display=isJournal?'none':'block';
+  document.getElementById('ugcTab').style.display=tab==='ugc'?'block':'none';
+  document.getElementById('calendarTab').style.display=isCal?'block':'none';
   if(tab==='ugc')renderUgcTab();
+  if(isCal)clCalLoad();
 }
 
 // ─── UGC ───
@@ -915,6 +1031,143 @@ async function generatePdf(){
     area.appendChild(card);
   });
   setTimeout(()=>{window.print();setTimeout(()=>{tasks=savedTasks;collapsed=savedCollapsed;renderMain();},400);},150);
+}
+
+// ─── CLIENT CALENDAR ───
+let clCalYear=new Date().getFullYear(),clCalMonth=new Date().getMonth();
+let clPlans=[],clActivePlanId=null;
+
+const CL_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
+const CL_PLAT_L={ig:'📷 Instagram',tiktok:'🎵 TikTok',fb:'📘 Facebook',youtube:'▶ YouTube',linkedin:'💼 LinkedIn',other:'🔗 Kita'};
+const CL_TYPE_L={reels:'🎬 Reels',post:'🖼 Post',carousel:'🎠 Karuselė',story:'📱 Story',ugc:'📦 UGC',live:'🔴 Live',other:'📌 Kita'};
+const CL_PLAT_CLS={ig:'c-ig',tiktok:'c-tiktok',fb:'c-fb',youtube:'c-youtube',linkedin:'c-linkedin',other:'c-other'};
+const CL_DOT_CLS={ig:'d-ig',tiktok:'d-tiktok',fb:'d-fb',youtube:'d-youtube',linkedin:'d-linkedin',other:'d-other'};
+
+function clFmt(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function clEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function clCalChangeMonth(d){clCalMonth+=d;if(clCalMonth>11){clCalMonth=0;clCalYear++;}if(clCalMonth<0){clCalMonth=11;clCalYear--;}clCalLoad();}
+function clCalGoToday(){const n=new Date();clCalYear=n.getFullYear();clCalMonth=n.getMonth();clCalLoad();}
+
+async function clCalLoad(){
+  document.getElementById('clMonthLabel').textContent=`${CL_MONTHS[clCalMonth]} ${clCalYear}`;
+  const from=clFmt(new Date(clCalYear,clCalMonth-1,24));
+  const to=clFmt(new Date(clCalYear,clCalMonth+1,7));
+  const{data,error}=await sb.from('content_plans').select('*').gte('date',from).lte('date',to).order('date').order('created_at');
+  if(error){console.error(error);return;}
+  clPlans=data||[];
+  clRenderCalGrid();
+  if(clActivePlanId){
+    const p=clPlans.find(x=>x.id===clActivePlanId);
+    if(p)clShowDetail(p);
+  }
+}
+
+function clGetDays(){
+  const first=new Date(clCalYear,clCalMonth,1);
+  let dow=first.getDay();if(dow===0)dow=7;
+  const start=new Date(first);start.setDate(1-(dow-1));
+  const days=[];
+  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
+  while(days.slice(-7).every(d=>d.getMonth()!==clCalMonth))days.splice(-7);
+  return days;
+}
+
+function clRenderCalGrid(){
+  const grid=document.getElementById('clCalGrid');
+  const todayStr=clFmt(new Date());
+  grid.innerHTML=clGetDays().map(d=>{
+    const ds=clFmt(d),isToday=ds===todayStr,isOther=d.getMonth()!==clCalMonth;
+    const dp=clPlans.filter(p=>p.date===ds);
+    const imgEntry=dp.find(p=>p.image_url);
+    const entries=dp.slice(0,3).map(p=>`
+      <div class="cl-entry ${CL_PLAT_CLS[p.platform]||'c-other'}" onclick="event.stopPropagation();clShowDetail(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+        <span class="dot ${CL_DOT_CLS[p.platform]||'d-other'}"></span>
+        <span class="lbl">${clEsc(p.title||CL_TYPE_L[p.content_type]||CL_PLAT_L[p.platform]||'')}</span>
+      </div>`).join('');
+    const more=dp.length>3?`<div class="cl-more">+${dp.length-3}</div>`:'';
+    const thumb=imgEntry?`<img class="cl-cell-img" src="${clEsc(imgEntry.image_url)}" alt="" loading="lazy">`:'';
+    return`<div class="cl-cell${isToday?' cl-today':''}${isOther?' cl-other':''}" onclick="clOpenDay('${ds}')">
+      ${isToday?`<div class="cl-today-num">${d.getDate()}</div>`:`<div class="cl-cell-num">${d.getDate()}</div>`}
+      ${thumb}${entries}${more}
+    </div>`;
+  }).join('');
+}
+
+function clOpenDay(ds){
+  const dp=clPlans.filter(p=>p.date===ds);
+  if(dp.length===1)clShowDetail(dp[0]);
+  else if(dp.length>1)clShowDetail(dp[0]);
+  // if 0, do nothing
+}
+
+async function clShowDetail(plan){
+  if(typeof plan==='string')plan=JSON.parse(plan);
+  if(typeof plan!=='object')return;
+  clActivePlanId=plan.id;
+  const panel=document.getElementById('clDetailPanel');
+  panel.classList.remove('hidden');
+  // Platform badge
+  const platEl=document.getElementById('clDetailPlat');
+  platEl.textContent=CL_PLAT_L[plan.platform]||plan.platform||'';
+  platEl.className='cl-detail-plat '+(CL_PLAT_CLS[plan.platform]||'c-other');
+  // Title
+  document.getElementById('clDetailTitle').textContent=plan.title||CL_TYPE_L[plan.content_type]||'—';
+  // Meta
+  const d=new Date(plan.date+'T00:00:00');
+  document.getElementById('clDetailMeta').textContent=`${CL_MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} · ${CL_TYPE_L[plan.content_type]||plan.content_type||''}`;
+  // Image
+  const imgWrap=document.getElementById('clDetailImgWrap');
+  if(plan.image_url){imgWrap.classList.remove('hidden');document.getElementById('clDetailImg').src=plan.image_url;}
+  else imgWrap.classList.add('hidden');
+  // Notes
+  const notesWrap=document.getElementById('clDetailNotesWrap');
+  if(plan.notes){notesWrap.classList.remove('hidden');document.getElementById('clDetailNotes').textContent=plan.notes;}
+  else notesWrap.classList.add('hidden');
+  // Comments
+  document.getElementById('clCommentInput').value='';
+  await clLoadComments(plan.id);
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function clCloseDetail(){
+  document.getElementById('clDetailPanel').classList.add('hidden');
+  clActivePlanId=null;
+}
+
+async function clLoadComments(planId){
+  const list=document.getElementById('clCommentsList');
+  list.innerHTML='<div class="cl-no-comments">Kraunama...</div>';
+  const{data,error}=await sb.from('calendar_comments').select('*,clients(name)').eq('plan_id',planId).order('created_at');
+  if(error){list.innerHTML='<div class="cl-no-comments">Klaida.</div>';return;}
+  if(!data||data.length===0){list.innerHTML='<div class="cl-no-comments">Kol kas komentarų nėra.</div>';return;}
+  list.innerHTML=data.map(c=>{
+    const name=c.clients?.name||'Admin';
+    const initials=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const time=new Date(c.created_at).toLocaleString('lt-LT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return`<div class="cl-comment">
+      <div class="cl-comment-avatar">${clEsc(initials)}</div>
+      <div class="cl-comment-body">
+        <div class="cl-comment-who">${clEsc(name)}</div>
+        <div class="cl-comment-txt">${clEsc(c.text)}</div>
+        <div class="cl-comment-time">${time}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function clSendComment(){
+  if(!clActivePlanId||!currentClient)return;
+  const inp=document.getElementById('clCommentInput');
+  const text=inp.value.trim();
+  if(!text)return;
+  const btn=document.querySelector('.cl-comment-send');
+  btn.disabled=true;
+  const{error}=await sb.from('calendar_comments').insert([{plan_id:clActivePlanId,client_id:currentClient.id,text}]);
+  btn.disabled=false;
+  if(error){alert('Nepavyko išsiųsti: '+error.message);return;}
+  inp.value='';
+  await clLoadComments(clActivePlanId);
 }
 
 init();
