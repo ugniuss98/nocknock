@@ -2080,7 +2080,7 @@ sb.channel('cal-a').on('postgres_changes',{event:'*',schema:'public',table:'cont
 // ─── CALENDAR ───
 let calPlans=[],calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let calActiveF=new Set(['ig','tiktok','fb','youtube','linkedin','other']);
-let calEditingId=null,calCurPlat='ig',calCurStatus='planuojama';
+let calEditingId=null,calCurPlats=['ig'],calCurStatus='planuojama';
 let calLoaded=false;
 
 const CAL_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
@@ -2177,7 +2177,7 @@ function calOpenModal(id=null,dateStr=null){
   document.getElementById('calMId').value=id||'';
   document.getElementById('calMDelBtn').style.display=id?'':'none';
   document.getElementById('calModalTitle').textContent=id?'Redaguoti įrašą':'Naujas įrašas';
-  calCurPlat='ig';calCurStatus='planuojama';
+  calCurPlats=['ig'];calCurStatus='planuojama';
   document.getElementById('calMDate').value=dateStr||calFmt(new Date());
   document.getElementById('calMType').value='reels';
   document.getElementById('calMTitle').value='';
@@ -2186,7 +2186,7 @@ function calOpenModal(id=null,dateStr=null){
   if(id){
     const p=calPlans.find(x=>x.id===id||String(x.id)===String(id));
     if(p){
-      calCurPlat=p.platform||'ig';calCurStatus=p.status||'planuojama';
+      calCurPlats=[p.platform||'ig'];calCurStatus=p.status||'planuojama';
       document.getElementById('calMDate').value=p.date||'';
       document.getElementById('calMType').value=p.content_type||'reels';
       document.getElementById('calMTitle').value=p.title||'';
@@ -2198,21 +2198,30 @@ function calOpenModal(id=null,dateStr=null){
   setTimeout(()=>document.getElementById('calMTitle').focus(),60);
 }
 function calCloseModal(){document.getElementById('calPostModal').classList.add('hidden');calEditingId=null;}
-function calSelPlat(p){calCurPlat=p;calApplyPlatUI();}
-function calApplyPlatUI(){document.querySelectorAll('#calPlatPills .m-pill').forEach(b=>b.classList.toggle('sel',b.dataset.calpl===calCurPlat));}
+function calSelPlat(p){
+  if(calCurPlats.includes(p)){
+    if(calCurPlats.length>1)calCurPlats=calCurPlats.filter(x=>x!==p);
+  }else{calCurPlats.push(p);}
+  calApplyPlatUI();
+}
+function calApplyPlatUI(){document.querySelectorAll('#calPlatPills .m-pill').forEach(b=>b.classList.toggle('sel',calCurPlats.includes(b.dataset.calpl)));}
 function calSelStatus(s){calCurStatus=s;calApplyStatusUI();}
 function calApplyStatusUI(){document.querySelectorAll('#calStatusPills .m-pill').forEach(b=>b.classList.toggle('sel',b.dataset.calst===calCurStatus));}
 
 async function calSavePost(){
   const date=document.getElementById('calMDate').value;
   if(!date){showToast('Pasirink datą!');return;}
-  const payload={date,platform:calCurPlat,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus};
+  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus};
   const id=document.getElementById('calMId').value;
   let error;
-  if(id){({error}=await sb.from('content_plans').update(payload).eq('id',id));}
-  else{({error}=await sb.from('content_plans').insert([payload]));}
+  if(id){
+    ({error}=await sb.from('content_plans').update({...base,platform:calCurPlats[0]}).eq('id',id));
+  }else{
+    const rows=calCurPlats.map(p=>({...base,platform:p}));
+    ({error}=await sb.from('content_plans').insert(rows));
+  }
   if(error){showToast('Klaida: '+error.message,5000);return;}
-  calCloseModal();showToast(id?'Atnaujinta!':'Įrašas pridėtas!');calLoad();
+  calCloseModal();showToast(id?'Atnaujinta!':calCurPlats.length>1?`Pridėta ${calCurPlats.length} įrašai!`:'Įrašas pridėtas!');calLoad();
 }
 async function calDeletePost(){
   const id=document.getElementById('calMId').value;
