@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turinio Kalendorius</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#F7F6F3;--surface:#FFF;--border:#E8E5DF;--border-strong:#D0CCC3;
+  --text:#1A1916;--text-muted:#8A877E;--text-faint:#B5B2AA;
+  --accent:#2D5BE3;--accent-light:#EEF2FD;
+  --green:#1A7A4A;--green-light:#E8F5EE;
+  --orange:#C4590A;--orange-light:#FEF0E6;
+  --gray:#6B6862;--gray-light:#F2F1EE;
+  --red:#C0392B;--red-light:#FDE8ED;
+  --radius:10px;--radius-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:16px;}
+.login-head{display:flex;align-items:center;gap:12px;}
+.login-logo{width:38px;height:38px;background:var(--text);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.login-logo svg{width:18px;height:18px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.login-title{font-size:17px;font-weight:600;}.login-sub{font-size:12px;color:var(--text-muted);}
+.l-label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;}
+.l-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;color:var(--text);outline:none;transition:border-color .15s;}
+.l-input:focus{border-color:var(--accent);background:white;}
+.l-btn{width:100%;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;}
+.l-btn:hover{opacity:.85;}.l-btn:disabled{opacity:.5;cursor:default;}
+.l-err{font-size:13px;color:var(--red);min-height:18px;}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;}
+.h-left{display:flex;align-items:center;gap:11px;}
+.logo{width:33px;height:33px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo svg{width:15px;height:15px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.app-title{font-size:14px;font-weight:600;}
+.badge{font-size:10px;font-weight:600;background:#1A1916;color:white;padding:2px 7px;border-radius:20px;}
+.h-nav{display:flex;align-items:center;gap:8px;}
+.nav-btn{width:30px;height:30px;border:1px solid var(--border-strong);background:var(--surface);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;}
+.nav-btn:hover{background:var(--bg);color:var(--text);}
+.nav-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.month-label{font-size:15px;font-weight:600;min-width:170px;text-align:center;letter-spacing:-.3px;}
+.today-btn{font-size:12px;font-weight:500;background:none;border:1px solid var(--border-strong);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--text-muted);transition:all .15s;}
+.today-btn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+.h-right{display:flex;align-items:center;gap:9px;}
+.logout-btn{font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:7px;padding:6px 10px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.logout-btn:hover{background:var(--red-light);border-color:#F5A8B0;color:var(--red);}
+.logout-btn svg,.h-link svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.h-link{font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:7px;padding:6px 10px;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .15s;}
+.h-link:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+
+/* FILTERS BAR */
+.filters-bar{padding:10px 24px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap;}
+.f-label{font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;margin-right:2px;}
+.fp{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;border:1.5px solid var(--border-strong);cursor:pointer;transition:all .15s;background:var(--bg);color:var(--text-muted);}
+.fp:hover{opacity:.8;}
+.fp.sel{color:white;border-color:transparent;}
+.fp.sel.fp-ig{background:#4A3AAA;}.fp.sel.fp-tiktok{background:#161616;}
+.fp.sel.fp-fb{background:#1A4098;}.fp.sel.fp-youtube{background:#CC0000;}
+.fp.sel.fp-linkedin{background:#0A66C2;}.fp.sel.fp-other{background:var(--gray);}
+.f-sep{width:1px;height:18px;background:var(--border-strong);flex-shrink:0;}
+.add-btn{margin-left:auto;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:7px 15px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;white-space:nowrap;}
+.add-btn:hover{opacity:.85;}
+.add-btn svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:2.5;}
+
+/* LAYOUT */
+.page-layout{display:grid;grid-template-columns:1fr 272px;}
+.cal-main{padding:16px 20px;}
+.week-side{background:var(--surface);border-left:1px solid var(--border);padding:16px;overflow-y:auto;height:calc(100vh - 112px);position:sticky;top:112px;}
+
+/* CALENDAR */
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;}
+.cal-dow-cell{text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-faint);padding:3px 0;}
+.cal-dow-cell.weekend{color:#C0392B;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:108px;padding:8px 8px 6px;cursor:pointer;transition:border-color .15s,background .1s;display:flex;flex-direction:column;gap:2px;position:relative;}
+.cal-cell:hover{border-color:var(--border-strong);background:#FAFAF8;}
+.cal-cell:hover .cell-plus{opacity:1;}
+.cal-cell.today{border-color:var(--accent);border-width:1.5px;}
+.cal-cell.other-month{opacity:.4;}
+.cell-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.cell-num{font-size:12px;font-weight:600;color:var(--text-muted);line-height:1;}
+.cell-today-badge{width:20px;height:20px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;}
+.cell-plus{opacity:0;font-size:15px;font-weight:300;color:var(--text-faint);background:none;border:none;cursor:pointer;line-height:1;padding:0 1px;transition:opacity .15s,color .1s;}
+.cell-plus:hover{color:var(--accent);}
+.cell-posts{display:flex;flex-direction:column;gap:2px;flex:1;}
+.pp{display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;transition:opacity .15s;overflow:hidden;}
+.pp:hover{opacity:.7;}
+.pp .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.pp .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pp-more{font-size:10px;color:var(--text-faint);padding:1px 4px;cursor:pointer;}
+.pp-more:hover{color:var(--accent);}
+
+/* platform colours */
+.c-ig{background:#EDE8FD;color:#4A3AAA;}.d-ig{background:#4A3AAA;}
+.c-tiktok{background:#E8E8E8;color:#161616;}.d-tiktok{background:#161616;}
+.c-fb{background:#E8F0FD;color:#1A4098;}.d-fb{background:#1A4098;}
+.c-youtube{background:#FFE8E8;color:#CC0000;}.d-youtube{background:#CC0000;}
+.c-linkedin{background:#E8F4FD;color:#0A66C2;}.d-linkedin{background:#0A66C2;}
+.c-other{background:var(--gray-light);color:var(--gray);}.d-other{background:var(--gray);}
+
+/* WEEK SIDEBAR */
+.ws-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:14px;}
+.ws-day{margin-bottom:16px;}
+.ws-day-hd{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.ws-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.ws-item{display:flex;align-items:flex-start;gap:7px;padding:6px 8px;border-radius:8px;background:var(--bg);margin-bottom:3px;cursor:pointer;transition:background .1s;}
+.ws-item:hover{background:var(--border);}
+.ws-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.ws-txt{font-size:11px;font-weight:500;flex:1;min-width:0;word-break:break-word;line-height:1.35;}
+.ws-st{font-size:10px;flex-shrink:0;margin-top:1px;}
+.ws-empty{font-size:11px;color:var(--text-faint);padding:2px 0;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.hidden{display:none;}
+.modal{background:var(--surface);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:430px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:15px;font-weight:600;}
+.modal-actions{display:flex;gap:7px;margin-top:2px;}
+.btn-del{background:var(--red-light);color:var(--red);border:1px solid #F5A8B0;border-radius:var(--radius);padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;flex:none;}
+.btn-del:hover{background:var(--red);color:white;}
+.btn-cancel{flex:1;background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius);padding:9px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.btn-cancel:hover{background:var(--bg);}
+.btn-ok{flex:2;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.btn-ok:hover{opacity:.85;}
+select,input:not([type="checkbox"]):not([type="radio"]),textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 11px;color:var(--text);outline:none;transition:border-color .15s;appearance:none;-webkit-appearance:none;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:28px;}
+select:focus,input:not([type="checkbox"]):not([type="radio"]):focus,textarea:focus{border-color:var(--accent);background:white;}
+textarea{resize:vertical;min-height:72px;}
+label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;font-weight:500;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+.pill-group{display:flex;gap:5px;flex-wrap:wrap;}
+.m-pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid var(--border-strong);cursor:pointer;transition:all .15s;background:var(--bg);color:var(--text-muted);}
+.m-pill:hover{opacity:.8;}
+.m-pill.sel.mp-ig{background:#EDE8FD;color:#4A3AAA;border-color:#C5BCEE;}
+.m-pill.sel.mp-tiktok{background:#E8E8E8;color:#161616;border-color:#C0BDB9;}
+.m-pill.sel.mp-fb{background:#E8F0FD;color:#1A4098;border-color:#B8CEEE;}
+.m-pill.sel.mp-youtube{background:#FFE8E8;color:#CC0000;border-color:#EEC0C0;}
+.m-pill.sel.mp-linkedin{background:#E8F4FD;color:#0A66C2;border-color:#B0D4EE;}
+.m-pill.sel.mp-other{background:var(--gray-light);color:var(--gray);border-color:var(--border-strong);}
+.m-pill.sel.ms-planuojama{background:var(--gray-light);color:var(--gray);border-color:var(--border-strong);}
+.m-pill.sel.ms-ruosiama{background:var(--orange-light);color:var(--orange);border-color:#F5C89A;}
+.m-pill.sel.ms-paruosta{background:var(--accent-light);color:var(--accent);border-color:#C5D4FA;}
+.m-pill.sel.ms-paskelbta{background:var(--green-light);color:var(--green);border-color:#A8DFC0;}
+
+.toast{position:fixed;bottom:22px;right:22px;background:var(--text);color:white;padding:10px 15px;border-radius:var(--radius);font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:1000;}
+.toast.show{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-head">
+      <div class="login-logo"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <div><div class="login-title">Turinio Kalendorius</div><div class="login-sub">Privatus turinio planavimas</div></div>
+    </div>
+    <div><div class="l-label">El. paštas</div><input class="l-input" type="email" id="lEmail" placeholder="admin@example.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div><div class="l-label">Slaptažodis</div><input class="l-input" type="password" id="lPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="l-err" id="loginErr"></div>
+    <button class="l-btn" id="loginBtn" onclick="doLogin()">Prisijungti</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="mainApp" style="display:none">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="h-left">
+      <div class="logo"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+      <span class="app-title">Turinio Kalendorius</span>
+      <span class="badge">Privatus</span>
+    </div>
+    <div class="h-nav">
+      <button class="nav-btn" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <span class="month-label" id="monthLabel"></span>
+      <button class="nav-btn" onclick="changeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <button class="today-btn" onclick="goToday()">Šiandien</button>
+    </div>
+    <div class="h-right">
+      <a class="h-link" href="admin.html"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Admin</a>
+      <button class="logout-btn" onclick="doLogout()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Atsijungti</button>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <span class="f-label">Platforma:</span>
+    <button class="fp sel fp-ig"       data-p="ig"       onclick="toggleF('ig')">📷 Instagram</button>
+    <button class="fp sel fp-tiktok"   data-p="tiktok"   onclick="toggleF('tiktok')">🎵 TikTok</button>
+    <button class="fp sel fp-fb"       data-p="fb"       onclick="toggleF('fb')">📘 Facebook</button>
+    <button class="fp sel fp-youtube"  data-p="youtube"  onclick="toggleF('youtube')">▶ YouTube</button>
+    <button class="fp sel fp-linkedin" data-p="linkedin" onclick="toggleF('linkedin')">💼 LinkedIn</button>
+    <button class="fp sel fp-other"    data-p="other"    onclick="toggleF('other')">🔗 Kita</button>
+    <div class="f-sep"></div>
+    <button class="fp" onclick="toggleAllF()" style="border-color:var(--border)">Visos / Jokios</button>
+    <button class="add-btn" onclick="openModal()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Naujas įrašas
+    </button>
+  </div>
+
+  <!-- BODY -->
+  <div class="page-layout">
+    <!-- CALENDAR -->
+    <div class="cal-main">
+      <div class="cal-dow">
+        <div class="cal-dow-cell">Pr</div>
+        <div class="cal-dow-cell">An</div>
+        <div class="cal-dow-cell">Tr</div>
+        <div class="cal-dow-cell">Kt</div>
+        <div class="cal-dow-cell">Pn</div>
+        <div class="cal-dow-cell weekend">Št</div>
+        <div class="cal-dow-cell weekend">Sk</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+
+    <!-- WEEK SIDEBAR -->
+    <aside class="week-side">
+      <div class="ws-title">Šios savaitės planas</div>
+      <div id="weekList"></div>
+    </aside>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay hidden" id="postModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Naujas įrašas</div>
+
+    <div>
+      <label>Platforma</label>
+      <div class="pill-group" id="platPills">
+        <button class="m-pill mp-ig"       data-pl="ig"       onclick="selPlat('ig')">📷 Instagram</button>
+        <button class="m-pill mp-tiktok"   data-pl="tiktok"   onclick="selPlat('tiktok')">🎵 TikTok</button>
+        <button class="m-pill mp-fb"       data-pl="fb"       onclick="selPlat('fb')">📘 Facebook</button>
+        <button class="m-pill mp-youtube"  data-pl="youtube"  onclick="selPlat('youtube')">▶ YouTube</button>
+        <button class="m-pill mp-linkedin" data-pl="linkedin" onclick="selPlat('linkedin')">💼 LinkedIn</button>
+        <button class="m-pill mp-other"    data-pl="other"    onclick="selPlat('other')">🔗 Kita</button>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div><label>Data</label><input type="date" id="mDate"></div>
+      <div>
+        <label>Turinio tipas</label>
+        <select id="mType">
+          <option value="reels">🎬 Reels / Video</option>
+          <option value="post">🖼 Statinis įrašas</option>
+          <option value="carousel">🎠 Karuselė</option>
+          <option value="story">📱 Story</option>
+          <option value="ugc">📦 UGC</option>
+          <option value="live">🔴 Live</option>
+          <option value="other">📌 Kita</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label>Pavadinimas / tema</label>
+      <input type="text" id="mTitle" placeholder="pvz. Produkto pristatymas, Savaitės patarimai...">
+    </div>
+
+    <div>
+      <label>Idėja / pastabos</label>
+      <textarea id="mNotes" placeholder="Hook'as, idėja, aprašymas, tekstas..."></textarea>
+    </div>
+
+    <div>
+      <label>Statusas</label>
+      <div class="pill-group" id="statusPills">
+        <button class="m-pill ms-planuojama" data-st="planuojama" onclick="selStatus('planuojama')">📋 Planuojama</button>
+        <button class="m-pill ms-ruosiama"   data-st="ruosiama"   onclick="selStatus('ruosiama')">✏️ Ruošiama</button>
+        <button class="m-pill ms-paruosta"   data-st="paruosta"   onclick="selStatus('paruosta')">✅ Paruošta</button>
+        <button class="m-pill ms-paskelbta"  data-st="paskelbta"  onclick="selStatus('paskelbta')">🚀 Paskelbta</button>
+      </div>
+    </div>
+
+    <input type="hidden" id="mId">
+    <div class="modal-actions">
+      <button class="btn-del" id="mDelBtn" onclick="deletePost()" style="display:none">Ištrinti</button>
+      <button class="btn-cancel" onclick="closeModal()">Atšaukti</button>
+      <button class="btn-ok" onclick="savePost()">Išsaugoti</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL='https://oslhylezbyvgesnybtlj.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zbGh5bGV6Ynl2Z2VzbnlidGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3NjM4MTYsImV4cCI6MjA1OTMzOTgxNn0.XKZL0rjxqvzI3jLhMfRNGkHMIwVFkA2NbXIKByFT-FE';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+let year=new Date().getFullYear(),month=new Date().getMonth();
+let plans=[];
+let activeF=new Set(['ig','tiktok','fb','youtube','linkedin','other']);
+let editingId=null,curPlat='ig',curStatus='planuojama';
+
+const MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
+const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
+const PLAT_L={ig:'Instagram',tiktok:'TikTok',fb:'Facebook',youtube:'YouTube',linkedin:'LinkedIn',other:'Kita'};
+const PLAT_E={ig:'📷',tiktok:'🎵',fb:'📘',youtube:'▶',linkedin:'💼',other:'🔗'};
+const TYPE_L={reels:'🎬 Reels',post:'🖼 Post',carousel:'🎠 Karuselė',story:'📱 Story',ugc:'📦 UGC',live:'🔴 Live',other:'📌 Kita'};
+const ST_E={planuojama:'📋',ruosiama:'✏️',paruosta:'✅',paskelbta:'🚀'};
+
+/* AUTH */
+async function initAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session)showApp();
+  else{document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
+  sb.auth.onAuthStateChange((e,s)=>{if(e==='SIGNED_IN')showApp();if(e==='SIGNED_OUT')showLogin();});
+}
+function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';load();}
+function showLogin(){document.getElementById('loginScreen').style.display='flex';document.getElementById('mainApp').style.display='none';}
+async function doLogin(){
+  const email=document.getElementById('lEmail').value.trim(),pass=document.getElementById('lPass').value;
+  const btn=document.getElementById('loginBtn'),err=document.getElementById('loginErr');
+  if(!email||!pass){err.textContent='Įvesk el. paštą ir slaptažodį.';return;}
+  btn.disabled=true;btn.textContent='Jungiamasi...';err.textContent='';
+  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){err.textContent='Neteisingi duomenys.';btn.disabled=false;btn.textContent='Prisijungti';}
+}
+async function doLogout(){await sb.auth.signOut();}
+
+/* UTILS */
+function fmt(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),ms);}
+
+/* MONTH NAV */
+function changeMonth(d){month+=d;if(month>11){month=0;year++;}if(month<0){month=11;year--;}load();}
+function goToday(){const n=new Date();year=n.getFullYear();month=n.getMonth();load();}
+
+/* LOAD */
+async function load(){
+  document.getElementById('monthLabel').textContent=`${MONTHS[month]} ${year}`;
+  const from=fmt(new Date(year,month-1,24));
+  const to=fmt(new Date(year,month+1,7));
+  const{data,error}=await sb.from('content_plans').select('*').gte('date',from).lte('date',to).order('date').order('created_at');
+  if(error){toast('Klaida: '+error.message);return;}
+  plans=data||[];
+  renderCal();renderWeek();
+}
+
+/* CALENDAR */
+function calDays(){
+  const first=new Date(year,month,1);
+  let dow=first.getDay();if(dow===0)dow=7;
+  const start=new Date(first);start.setDate(1-(dow-1));
+  const days=[];
+  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
+  while(days.slice(-7).every(d=>d.getMonth()!==month))days.splice(-7);
+  return days;
+}
+
+function renderCal(){
+  const grid=document.getElementById('calGrid');
+  const todayStr=fmt(new Date());
+  grid.innerHTML=calDays().map(d=>{
+    const ds=fmt(d),isToday=ds===todayStr,isOther=d.getMonth()!==month;
+    const dp=plans.filter(p=>p.date===ds&&activeF.has(p.platform));
+    const pills=dp.slice(0,4).map(p=>`
+      <div class="pp c-${p.platform}" onclick="event.stopPropagation();openModal(${p.id})">
+        <span class="dot d-${p.platform}"></span>
+        <span class="lbl">${esc(p.title||TYPE_L[p.content_type]||PLAT_L[p.platform])}</span>
+      </div>`).join('');
+    const more=dp.length>4?`<div class="pp-more">+${dp.length-4} daugiau</div>`:'';
+    return`<div class="cal-cell${isToday?' today':''}${isOther?' other-month':''}" onclick="openModal(null,'${ds}')">
+      <div class="cell-top">
+        ${isToday?`<span class="cell-today-badge">${d.getDate()}</span>`:`<span class="cell-num">${d.getDate()}</span>`}
+        <button class="cell-plus" onclick="event.stopPropagation();openModal(null,'${ds}')">+</button>
+      </div>
+      <div class="cell-posts">${pills}${more}</div>
+    </div>`;
+  }).join('');
+}
+
+/* WEEK SIDEBAR */
+function renderWeek(){
+  const today=new Date();
+  let dow=today.getDay();if(dow===0)dow=7;
+  const mon=new Date(today);mon.setDate(today.getDate()-(dow-1));
+  const weekDays=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
+  const list=document.getElementById('weekList');
+  list.innerHTML=weekDays.map((d,i)=>{
+    const ds=fmt(d),dp=plans.filter(p=>p.date===ds&&activeF.has(p.platform));
+    const mn=`${MONTHS[d.getMonth()].slice(0,3).toLowerCase()}.`;
+    return`<div class="ws-day">
+      <div class="ws-day-hd">${dp.length?'<span class="ws-dot"></span>':''}<span>${DAYS[i].slice(0,2)}, ${d.getDate()} ${mn}</span></div>
+      ${dp.length?dp.map(p=>`
+        <div class="ws-item" onclick="openModal(${p.id})">
+          <span class="ws-badge c-${p.platform}">${PLAT_E[p.platform]} ${PLAT_L[p.platform]}</span>
+          <span class="ws-txt">${esc(p.title||TYPE_L[p.content_type]||'—')}</span>
+          <span class="ws-st">${ST_E[p.status]||'📋'}</span>
+        </div>`).join(''):`<div class="ws-empty">Nieko</div>`}
+    </div>`;
+  }).join('');
+}
+
+/* FILTERS */
+function toggleF(p){
+  const btn=document.querySelector(`.fp[data-p="${p}"]`);
+  if(activeF.has(p)){activeF.delete(p);btn.classList.remove('sel');}
+  else{activeF.add(p);btn.classList.add('sel');}
+  renderCal();renderWeek();
+}
+function toggleAllF(){
+  const all=['ig','tiktok','fb','youtube','linkedin','other'];
+  if(activeF.size===all.length){activeF.clear();document.querySelectorAll('.fp[data-p]').forEach(b=>b.classList.remove('sel'));}
+  else{all.forEach(p=>{activeF.add(p);document.querySelector(`.fp[data-p="${p}"]`).classList.add('sel');});}
+  renderCal();renderWeek();
+}
+
+/* MODAL */
+function openModal(id=null,dateStr=null){
+  editingId=id;
+  document.getElementById('mId').value=id||'';
+  document.getElementById('mDelBtn').style.display=id?'':'none';
+  document.getElementById('modalTitle').textContent=id?'Redaguoti įrašą':'Naujas įrašas';
+  curPlat='ig';curStatus='planuojama';
+  document.getElementById('mDate').value=dateStr||fmt(new Date());
+  document.getElementById('mType').value='reels';
+  document.getElementById('mTitle').value='';
+  document.getElementById('mNotes').value='';
+  applyPlatUI();applyStatusUI();
+  if(id){
+    const p=plans.find(x=>x.id===id||String(x.id)===String(id));
+    if(p){
+      curPlat=p.platform||'ig';curStatus=p.status||'planuojama';
+      document.getElementById('mDate').value=p.date||'';
+      document.getElementById('mType').value=p.content_type||'reels';
+      document.getElementById('mTitle').value=p.title||'';
+      document.getElementById('mNotes').value=p.notes||'';
+      applyPlatUI();applyStatusUI();
+    }
+  }
+  document.getElementById('postModal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('mTitle').focus(),60);
+}
+function closeModal(){document.getElementById('postModal').classList.add('hidden');editingId=null;}
+
+function selPlat(p){curPlat=p;applyPlatUI();}
+function applyPlatUI(){document.querySelectorAll('#platPills .m-pill').forEach(b=>b.classList.toggle('sel',b.dataset.pl===curPlat));}
+function selStatus(s){curStatus=s;applyStatusUI();}
+function applyStatusUI(){document.querySelectorAll('#statusPills .m-pill').forEach(b=>b.classList.toggle('sel',b.dataset.st===curStatus));}
+
+async function savePost(){
+  const date=document.getElementById('mDate').value;
+  if(!date){toast('Pasirink datą!');return;}
+  const payload={date,platform:curPlat,content_type:document.getElementById('mType').value,title:document.getElementById('mTitle').value.trim()||null,notes:document.getElementById('mNotes').value.trim()||null,status:curStatus};
+  const id=document.getElementById('mId').value;
+  let error;
+  if(id){({error}=await sb.from('content_plans').update(payload).eq('id',id));}
+  else{({error}=await sb.from('content_plans').insert([payload]));}
+  if(error){toast('Klaida: '+error.message,5000);return;}
+  closeModal();toast(id?'Atnaujinta!':'Įrašas pridėtas!');load();
+}
+async function deletePost(){
+  const id=document.getElementById('mId').value;
+  if(!id||!confirm('Ištrinti šį įrašą?'))return;
+  const{error}=await sb.from('content_plans').delete().eq('id',id);
+  if(error){toast('Klaida: '+error.message);return;}
+  closeModal();toast('Ištrinta.');load();
+}
+
+sb.channel('cal').on('postgres_changes',{event:'*',schema:'public',table:'content_plans'},()=>load()).subscribe();
+initAuth();
+</script>
+</body>
+</html>
