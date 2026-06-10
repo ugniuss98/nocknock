@@ -430,6 +430,16 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .btn-del{background:var(--red-light);color:var(--red);border:1px solid #F5A8B0;border-radius:var(--radius);padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;flex:none;}
 .btn-del:hover{background:var(--red);color:white;}
 .modal-actions{display:flex;gap:7px;margin-top:2px;}
+.cal-img-wrap{position:relative;}
+.cal-img-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:18px 12px;cursor:pointer;transition:border-color .15s,background .15s;text-align:center;color:var(--text-muted);font-size:12px;}
+.cal-img-drop:hover{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
+.cal-img-drop svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:2px;}
+.cal-img-drop.drag-over{border-color:var(--accent);background:var(--accent-light);}
+.cal-img-preview{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);}
+.cal-img-preview img{width:100%;max-height:180px;object-fit:cover;display:block;cursor:pointer;}
+.cal-img-rm{position:absolute;top:6px;right:6px;width:22px;height:22px;background:rgba(0,0,0,.55);color:white;border:none;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.cal-img-rm:hover{background:var(--red);}
+.cal-cell-img{width:100%;height:36px;object-fit:cover;border-radius:4px;margin-top:2px;}
 @media print{body:not(.print-samata) #loginScreen,body:not(.print-samata) .header,body:not(.print-samata) .sidebar,body:not(.print-samata) .modal-overlay,body:not(.print-samata) .toast{display:none!important;}body:not(.print-samata) .layout{grid-template-columns:1fr!important;}body:not(.print-samata) .s-main{padding:0!important;}body:not(.print-samata) .day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}body:not(.print-samata) .del-btn,body:not(.print-samata) .status-btn{display:none!important;}body:not(.print-samata) .tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.header{padding:10px 14px;flex-wrap:wrap;}.s-main,.meta-wrapper{padding:14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-grid{grid-template-columns:1fr;}.page-kpi-grid{grid-template-columns:repeat(2,1fr);}}
@@ -786,6 +796,21 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     </div>
     <div><label>Pavadinimas / tema</label><input type="text" id="calMTitle" placeholder="pvz. Produkto pristatymas, Savaitės patarimai..."></div>
     <div><label>Idėja / pastabos</label><textarea id="calMNotes" placeholder="Hook'as, idėja, aprašymas..." style="min-height:72px"></textarea></div>
+    <div>
+      <label>Nuotrauka / vizualas</label>
+      <div class="cal-img-wrap" id="calImgWrap">
+        <div class="cal-img-preview" id="calImgPreview" style="display:none">
+          <img id="calImgThumb" src="" alt="preview" onclick="document.getElementById('calImgInput').click()">
+          <button class="cal-img-rm" onclick="calRemoveImg()" title="Ištrinti nuotrauką">✕</button>
+        </div>
+        <label class="cal-img-drop" id="calImgDrop" for="calImgInput">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Spustelėk arba tempk nuotrauką</span>
+          <span style="font-size:10px;color:var(--text-faint)">JPG, PNG, WEBP · maks. 10 MB</span>
+        </label>
+        <input type="file" id="calImgInput" accept="image/*" style="display:none" onchange="calOnImgPick(event)">
+      </div>
+    </div>
     <div>
       <label>Statusas</label>
       <div class="pill-group" id="calStatusPills">
@@ -2080,7 +2105,7 @@ sb.channel('cal-a').on('postgres_changes',{event:'*',schema:'public',table:'cont
 // ─── CALENDAR ───
 let calPlans=[],calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let calActiveF=new Set(['ig','tiktok','fb','youtube','linkedin','other']);
-let calEditingId=null,calCurPlats=['ig'],calCurStatus='planuojama';
+let calEditingId=null,calCurPlats=['ig'],calCurStatus='planuojama',calPendingImgFile=null,calExistingImgUrl=null;
 let calLoaded=false;
 
 const CAL_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
@@ -2122,17 +2147,20 @@ function calRenderCal(){
   grid.innerHTML=calGetDays().map(d=>{
     const ds=calFmt(d),isToday=ds===todayStr,isOther=d.getMonth()!==calMonth;
     const dp=calPlans.filter(p=>p.date===ds&&calActiveF.has(p.platform));
-    const pills=dp.slice(0,4).map(p=>`
+    const imgEntry=dp.find(p=>p.image_url);
+    const pills=dp.slice(0,3).map(p=>`
       <div class="cal-pp c-${p.platform}" onclick="event.stopPropagation();calOpenModal(${p.id})">
         <span class="dot d-${p.platform}"></span>
         <span class="lbl">${escHtml(p.title||CAL_TYPE_L[p.content_type]||CAL_PLAT_L[p.platform]||'')}</span>
       </div>`).join('');
-    const more=dp.length>4?`<div class="cal-pp-more">+${dp.length-4} daugiau</div>`:'';
+    const more=dp.length>3?`<div class="cal-pp-more">+${dp.length-3} daugiau</div>`:'';
+    const thumb=imgEntry?`<img class="cal-cell-img" src="${escHtml(imgEntry.image_url)}" alt="" loading="lazy" onclick="event.stopPropagation();calOpenModal(${imgEntry.id})">`:'';
     return`<div class="cal-cell${isToday?' cal-today':''}${isOther?' cal-other-month':''}" onclick="calOpenModal(null,'${ds}')">
       <div class="cal-cell-top">
         ${isToday?`<span class="cal-today-badge">${d.getDate()}</span>`:`<span class="cal-cell-num">${d.getDate()}</span>`}
         <button class="cal-plus" onclick="event.stopPropagation();calOpenModal(null,'${ds}')">+</button>
       </div>
+      ${thumb}
       <div class="cal-posts">${pills}${more}</div>
     </div>`;
   }).join('');
@@ -2173,7 +2201,7 @@ function calToggleAllF(){
 }
 
 function calOpenModal(id=null,dateStr=null){
-  calEditingId=id;
+  calEditingId=id;calPendingImgFile=null;calExistingImgUrl=null;
   document.getElementById('calMId').value=id||'';
   document.getElementById('calMDelBtn').style.display=id?'':'none';
   document.getElementById('calModalTitle').textContent=id?'Redaguoti įrašą':'Naujas įrašas';
@@ -2182,6 +2210,8 @@ function calOpenModal(id=null,dateStr=null){
   document.getElementById('calMType').value='reels';
   document.getElementById('calMTitle').value='';
   document.getElementById('calMNotes').value='';
+  document.getElementById('calImgInput').value='';
+  calSetImgPreview(null);
   calApplyPlatUI();calApplyStatusUI();
   if(id){
     const p=calPlans.find(x=>x.id===id||String(x.id)===String(id));
@@ -2191,13 +2221,38 @@ function calOpenModal(id=null,dateStr=null){
       document.getElementById('calMType').value=p.content_type||'reels';
       document.getElementById('calMTitle').value=p.title||'';
       document.getElementById('calMNotes').value=p.notes||'';
+      if(p.image_url){calExistingImgUrl=p.image_url;calSetImgPreview(p.image_url);}
       calApplyPlatUI();calApplyStatusUI();
     }
   }
   document.getElementById('calPostModal').classList.remove('hidden');
   setTimeout(()=>document.getElementById('calMTitle').focus(),60);
 }
-function calCloseModal(){document.getElementById('calPostModal').classList.add('hidden');calEditingId=null;}
+function calCloseModal(){document.getElementById('calPostModal').classList.add('hidden');calEditingId=null;calPendingImgFile=null;calExistingImgUrl=null;}
+
+function calSetImgPreview(url){
+  const prev=document.getElementById('calImgPreview'),drop=document.getElementById('calImgDrop');
+  if(url){prev.style.display='block';drop.style.display='none';document.getElementById('calImgThumb').src=url;}
+  else{prev.style.display='none';drop.style.display='flex';}
+}
+function calOnImgPick(e){
+  const file=e.target.files[0];if(!file)return;
+  calPendingImgFile=file;
+  const url=URL.createObjectURL(file);calSetImgPreview(url);
+}
+function calRemoveImg(){
+  calPendingImgFile=null;calExistingImgUrl=null;
+  document.getElementById('calImgInput').value='';
+  calSetImgPreview(null);
+}
+// drag & drop
+document.addEventListener('DOMContentLoaded',()=>{
+  const drop=document.getElementById('calImgDrop');
+  if(!drop)return;
+  drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag-over');});
+  drop.addEventListener('dragleave',()=>drop.classList.remove('drag-over'));
+  drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')){calPendingImgFile=f;calSetImgPreview(URL.createObjectURL(f));}});
+});
 function calSelPlat(p){
   if(calCurPlats.includes(p)){
     if(calCurPlats.length>1)calCurPlats=calCurPlats.filter(x=>x!==p);
@@ -2208,10 +2263,22 @@ function calApplyPlatUI(){document.querySelectorAll('#calPlatPills .m-pill').for
 function calSelStatus(s){calCurStatus=s;calApplyStatusUI();}
 function calApplyStatusUI(){document.querySelectorAll('#calStatusPills .m-pill').forEach(b=>b.classList.toggle('sel',b.dataset.calst===calCurStatus));}
 
+async function calUploadImg(){
+  if(!calPendingImgFile)return calExistingImgUrl;
+  const ext=calPendingImgFile.name.split('.').pop()||'jpg';
+  const path=`${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const{error}=await sb.storage.from('calendar-images').upload(path,calPendingImgFile,{cacheControl:'3600',upsert:false});
+  if(error){showToast('Nuotraukos klaida: '+error.message,5000);return null;}
+  const{data}=sb.storage.from('calendar-images').getPublicUrl(path);
+  return data.publicUrl;
+}
 async function calSavePost(){
   const date=document.getElementById('calMDate').value;
   if(!date){showToast('Pasirink datą!');return;}
-  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus};
+  const saveBtn=document.querySelector('#calPostModal .btn-confirm');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Saugoma...';}
+  const image_url=await calUploadImg();
+  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null};
   const id=document.getElementById('calMId').value;
   let error;
   if(id){
@@ -2220,6 +2287,7 @@ async function calSavePost(){
     const rows=calCurPlats.map(p=>({...base,platform:p}));
     ({error}=await sb.from('content_plans').insert(rows));
   }
+  if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='Išsaugoti';}
   if(error){showToast('Klaida: '+error.message,5000);return;}
   calCloseModal();showToast(id?'Atnaujinta!':calCurPlats.length>1?`Pridėta ${calCurPlats.length} įrašai!`:'Įrašas pridėtas!');calLoad();
 }
