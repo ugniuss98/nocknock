@@ -10,6 +10,28 @@ Agentūros savaitinių darbų sekimo įrankis. Adminas įveda užduotis, klienta
 - **Savaitės navigacija** — peržiūra pagal savaitę
 - **PDF / spausdinimas** — savaitės ataskaita vienu paspaudimu
 - **Kopijuoti ataskaitą** — teksto formatas el. paštui ar žinutei
+- **Facebook & Instagram ataskaitos** — praėjusio mėnesio statistika su palyginimu prieš tai buvusį mėnesį (Graph API)
+
+## Facebook & Instagram ataskaitos
+
+Admin skiltis **Ataskaitos** sugeneruoja kliento FB puslapio ir IG verslo paskyros
+mėnesio ataskaitą ir automatiškai palygina praėjusį mėnesį su dar prieš tai buvusiu
+(pvz. Birželis vs Gegužė) — kiekvienai metrikai parodo pokytį %.
+
+### Nustatymas
+
+1. Eik į [Graph API Explorer](https://developers.facebook.com/tools/explorer/) ir
+   sugeneruok prieigos raktą (token) su teisėmis:
+   `pages_read_engagement`, `read_insights`, `instagram_basic`, `instagram_manage_insights`.
+2. Admin → **Ataskaitos** tab → pasirink klientą → įklijuok tokeną → **Įkelti puslapius**.
+3. Pasirink kliento Facebook puslapį (susietas Instagram paskyros ID paimamas automatiškai) →
+   **Išsaugoti prisijungimą** (įrašoma į `fb_report_settings` lentelę kiekvienam klientui).
+4. **Generuoti ataskaitą** — duomenys traukiami tiesiai iš Facebook Graph API naršyklėje.
+   **Kopijuoti tekstą** paruošia ataskaitą siuntimui klientui.
+
+> Graph API Explorer tokenai trumpaamžiai (~1–2 val.). Ilgalaikiam naudojimui
+> iškeisk jį į „long-lived" tokeną (Access Token Tool) ir įklijuok iš naujo, kai baigsis.
+> Metrikos, kurių paskyra ar API versija nepalaiko, tyliai praleidžiamos.
 
 ## Supabase setup
 
