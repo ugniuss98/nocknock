@@ -72,6 +72,19 @@ CREATE TABLE IF NOT EXISTS meta_stats (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 6. Facebook / Instagram ataskaitų prisijungimas (TIK adminui)
+--    Saugo Graph API tokeną ir pasirinktą puslapį/IG paskyrą kiekvienam klientui.
+CREATE TABLE IF NOT EXISTS fb_report_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID UNIQUE REFERENCES clients(id) ON DELETE CASCADE NOT NULL,
+  access_token TEXT,          -- Graph API (User) prieigos raktas
+  fb_page_id TEXT,
+  fb_page_name TEXT,
+  ig_user_id TEXT,
+  ig_username TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================================
 -- RLS politikos
 -- ============================================================
@@ -81,6 +94,7 @@ ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE client_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE meta_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE meta_stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE fb_report_settings ENABLE ROW LEVEL SECURITY;
 
 -- Klientai
 DROP POLICY IF EXISTS "clients_read_all" ON clients;
@@ -112,6 +126,10 @@ DROP POLICY IF EXISTS "meta_stats_read_all" ON meta_stats;
 DROP POLICY IF EXISTS "meta_stats_write_auth" ON meta_stats;
 CREATE POLICY "meta_stats_read_all" ON meta_stats FOR SELECT USING (true);
 CREATE POLICY "meta_stats_write_auth" ON meta_stats FOR ALL USING (auth.role() = 'authenticated');
+
+-- FB/IG ataskaitų nustatymai: TIK auth (juose saugomas tokenas)
+DROP POLICY IF EXISTS "fb_report_settings_auth" ON fb_report_settings;
+CREATE POLICY "fb_report_settings_auth" ON fb_report_settings FOR ALL USING (auth.role() = 'authenticated');
 
 -- ============================================================
 -- Supabase Storage: sukurk "client-files" bucket

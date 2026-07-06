@@ -234,6 +234,44 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 /* UGC */
 .ugc-wrapper{padding:20px 24px;max-width:100%;}
 .ugc-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+
+/* ── ATASKAITOS (FB/IG) TAB ── */
+.rep-wrapper{padding:20px 24px;max-width:1100px;margin:0 auto;}
+.rep-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.rep-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:16px;}
+.rep-card-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.rep-field{margin-bottom:11px;}
+.rep-field label{display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:5px;}
+.rep-input,.rep-select{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;color:var(--text);outline:none;transition:border-color .15s;}
+.rep-input:focus,.rep-select:focus{border-color:var(--accent);background:white;}
+.rep-btn{font-size:13px;font-weight:600;padding:9px 16px;border-radius:var(--radius);border:none;background:var(--accent);color:white;cursor:pointer;transition:opacity .15s;display:inline-flex;align-items:center;gap:6px;}
+.rep-btn:hover{opacity:.88;}.rep-btn:disabled{opacity:.5;cursor:default;}
+.rep-btn.sec{background:var(--surface);color:var(--text);border:1px solid var(--border-strong);}
+.rep-btn.sec:hover{background:var(--bg);}
+.rep-btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.rep-hint{font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.5;}
+.rep-conn-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--green-light);color:var(--green);display:inline-flex;align-items:center;gap:5px;}
+.rep-platform{margin-bottom:22px;}
+.rep-plat-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap;}
+.rep-plat-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.rep-plat-icon.fb{background:#E8F0FD;}.rep-plat-icon.ig{background:#FCE8F3;}
+.rep-plat-name{font-size:15px;font-weight:700;}
+.rep-plat-sub{font-size:12px;color:var(--text-muted);}
+.rep-period-note{font-size:12px;color:var(--text-muted);margin-left:auto;background:var(--bg);padding:5px 11px;border-radius:20px;border:1px solid var(--border);}
+.rep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:11px;}
+.rep-kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 15px;}
+.rep-kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);margin-bottom:7px;}
+.rep-kpi-val{font-size:24px;font-weight:700;line-height:1;margin-bottom:6px;}
+.rep-kpi-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.rep-kpi-prev{font-size:11px;color:var(--text-faint);}
+.rep-delta{font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.rep-delta.up{background:var(--green-light);color:var(--green);}
+.rep-delta.down{background:var(--red-light);color:var(--red);}
+.rep-delta.flat{background:var(--gray-light);color:var(--gray);}
+.rep-snapshot{display:inline-flex;align-items:baseline;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--text-muted);}
+.rep-snapshot b{font-size:14px;color:var(--text);}
+.rep-empty{font-size:13px;color:var(--text-muted);padding:14px 0;}
+.rep-spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
 .ugc-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
 .ugc-table th{text-align:left;padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);background:var(--bg);border-bottom:1px solid var(--border);white-space:nowrap;}
 .ugc-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
@@ -475,6 +513,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
       <button class="tab-btn" id="tab-ugc" onclick="setTab('ugc')"><svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>UGC Siuntos</button>
       <button class="tab-btn" id="tab-todo" onclick="setTab('todo')"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Mano To Do<span class="tab-badge" id="todoBadge" style="display:none"></span></button>
       <button class="tab-btn" id="tab-calendar" onclick="setTab('calendar')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Kalendorius</button>
+      <button class="tab-btn" id="tab-reports" onclick="setTab('reports')"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="4" width="3" height="14"/></svg>Ataskaitos</button>
     </div>
     <div class="h-right">
       <div id="weekNav" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
@@ -689,6 +728,69 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeUgcModal()">Atšaukti</button>
       <button class="btn-confirm" onclick="saveUgcEntry()">Išsaugoti</button>
+    </div>
+  </div>
+</div>
+
+<!-- ATASKAITOS (FB/IG) TAB -->
+<div id="tabReports" style="display:none">
+  <div class="rep-wrapper">
+    <div class="rep-toolbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:14px;font-weight:700">Facebook &amp; Instagram ataskaita</span>
+        <span id="repClientName" style="font-size:12px;color:var(--text-muted)"></span>
+      </div>
+      <span id="repConnBadge" class="rep-conn-badge" style="display:none">
+        <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        Prijungta
+      </span>
+    </div>
+
+    <div id="repNoClient" class="no-client-msg" style="min-height:180px">
+      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14"/></svg>
+      <strong>Pasirink klientą</strong><span style="font-size:12px">Ataskaitos generuojamos pagal klientą</span>
+    </div>
+
+    <div id="repBody" style="display:none">
+      <!-- Prisijungimas -->
+      <div class="rep-card">
+        <div class="rep-card-title">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          Prisijungimas
+        </div>
+        <div class="rep-field">
+          <label>Graph API prieigos raktas (token)</label>
+          <input type="password" class="rep-input" id="repToken" placeholder="EAAB... įklijuok Graph API Explorer tokeną" autocomplete="off">
+          <div class="rep-hint">Gauk iš <b>developers.facebook.com → Graph API Explorer</b>. Reikia teisių: <code>pages_read_engagement</code>, <code>read_insights</code>, <code>instagram_basic</code>, <code>instagram_manage_insights</code>.</div>
+        </div>
+        <div class="rep-field">
+          <div class="rep-btn-row">
+            <button class="rep-btn sec" id="repLoadPagesBtn" onclick="repLoadPages()">Įkelti puslapius</button>
+            <select class="rep-select" id="repPageSelect" style="flex:1;min-width:180px;display:none" onchange="repOnPageSelect()"></select>
+          </div>
+          <div class="rep-hint" id="repPageHint" style="display:none"></div>
+        </div>
+        <div class="rep-btn-row" style="margin-top:4px">
+          <button class="rep-btn sec" id="repSaveBtn" onclick="repSaveSettings()" style="display:none">Išsaugoti prisijungimą</button>
+        </div>
+      </div>
+
+      <!-- Generuoti -->
+      <div class="rep-card">
+        <div class="rep-btn-row" style="justify-content:space-between">
+          <div>
+            <div style="font-size:13px;font-weight:700">Mėnesio ataskaita su palyginimu</div>
+            <div class="rep-hint" id="repRangeHint" style="margin-top:3px"></div>
+          </div>
+          <div class="rep-btn-row">
+            <button class="rep-btn" id="repGenBtn" onclick="repGenerate()">Generuoti ataskaitą</button>
+            <button class="rep-btn sec" id="repCopyBtn" onclick="repCopy()" style="display:none">Kopijuoti tekstą</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rezultatai -->
+      <div id="repResults"></div>
     </div>
   </div>
 </div>
@@ -983,17 +1085,19 @@ async function doLogout(){await sb.auth.signOut();}
 // ─── TABS ───
 function setTab(tab){
   currentTab=tab;
-  ['journal','ugc','todo','calendar'].forEach(t=>{
+  ['journal','ugc','todo','calendar','reports'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
   document.getElementById('tabJournal').style.display=tab==='journal'?'block':'none';
   document.getElementById('tabUgc').style.display=tab==='ugc'?'block':'none';
   document.getElementById('tabTodo').style.display=tab==='todo'?'block':'none';
   document.getElementById('tabCalendar').style.display=tab==='calendar'?'block':'none';
+  document.getElementById('tabReports').style.display=tab==='reports'?'block':'none';
   document.getElementById('weekNav').style.display=tab==='journal'?'flex':'none';
   if(tab==='ugc')renderUgcTab();
   if(tab==='todo')loadTodos();
   if(tab==='calendar')calLoad();
+  if(tab==='reports')repInit();
 }
 
 // ─── TODO ───
@@ -2321,6 +2425,320 @@ async function calDeletePost(){
   const{error}=await sb.from('content_plans').delete().eq('id',id);
   if(error){showToast('Klaida: '+error.message);return;}
   calCloseModal();showToast('Ištrinta.');calLoad();
+}
+
+// ═══════════════ FB / IG ATASKAITOS ═══════════════
+const FB_API='https://graph.facebook.com/v21.0/';
+const LT_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
+// Kandidatinės metrikos — nepalaikomos (pagal API versiją / paskyrą) tiesiog praleidžiamos
+const FB_METRICS=[
+  ['page_impressions','Parodymai'],
+  ['page_impressions_unique','Pasiekimas'],
+  ['page_post_engagements','Įrašų įsitraukimai'],
+  ['page_total_actions','Veiksmai su puslapiu'],
+  ['page_views_total','Puslapio peržiūros'],
+  ['page_daily_follows_unique','Nauji sekėjai'],
+  ['page_actions_post_reactions_total','Reakcijos'],
+];
+const IG_METRICS=[
+  ['reach','Pasiekimas'],
+  ['impressions','Parodymai'],
+  ['views','Peržiūros'],
+  ['profile_views','Profilio peržiūros'],
+  ['accounts_engaged','Įsitraukę paskyros'],
+  ['total_interactions','Sąveikos'],
+  ['website_clicks','Svetainės paspaudimai'],
+  ['follower_count','Nauji sekėjai'],
+];
+
+let repToken='', repPages=[], repSettings=null, repReportText='';
+
+function repMonthRanges(){
+  const now=new Date(), y=now.getFullYear(), m=now.getMonth();
+  const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const lastStart=new Date(y,m-1,1), prevStart=new Date(y,m-2,1);
+  return {
+    last:{since:iso(lastStart),until:iso(new Date(y,m,1)),label:LT_MONTHS[lastStart.getMonth()]+' '+lastStart.getFullYear()},
+    prev:{since:iso(prevStart),until:iso(new Date(y,m-1,1)),label:LT_MONTHS[prevStart.getMonth()]+' '+prevStart.getFullYear()}
+  };
+}
+
+async function fbGraph(path,params){
+  const u=new URL(FB_API+path);
+  Object.entries(params||{}).forEach(([k,v])=>{if(v!=null)u.searchParams.set(k,v);});
+  const r=await fetch(u.toString());
+  const j=await r.json();
+  if(j.error)throw new Error(j.error.message||'Graph API klaida');
+  return j;
+}
+
+// FB puslapio metrika: sumuojam dienines reikšmes per mėnesį
+async function fbMetricSum(id,token,metric,range){
+  try{
+    const j=await fbGraph(id+'/insights',{metric,period:'day',since:range.since,until:range.until,access_token:token});
+    const vals=(j.data&&j.data[0]&&j.data[0].values)||[];
+    return vals.reduce((s,v)=>s+(typeof v.value==='number'?v.value:0),0);
+  }catch(e){return null;}
+}
+// IG metrika: pirma bandom total_value (dedublikuota), jei nepalaiko — sumuojam dienines
+async function igMetricTotal(id,token,metric,range){
+  try{
+    const j=await fbGraph(id+'/insights',{metric,metric_type:'total_value',period:'day',since:range.since,until:range.until,access_token:token});
+    const tv=j.data&&j.data[0]&&j.data[0].total_value;
+    if(tv&&typeof tv.value==='number')return tv.value;
+  }catch(e){/* fallback */}
+  try{
+    const j=await fbGraph(id+'/insights',{metric,period:'day',since:range.since,until:range.until,access_token:token});
+    const vals=(j.data&&j.data[0]&&j.data[0].values)||[];
+    if(vals.length)return vals.reduce((s,v)=>s+(typeof v.value==='number'?v.value:0),0);
+  }catch(e){}
+  return null;
+}
+
+function repInit(){
+  document.getElementById('repClientName').textContent=currentClient?('· '+currentClient.name):'';
+  const has=!!currentClient;
+  document.getElementById('repNoClient').style.display=has?'none':'flex';
+  document.getElementById('repBody').style.display=has?'block':'none';
+  const rg=repMonthRanges();
+  document.getElementById('repRangeHint').textContent=`${rg.last.label} palyginta su ${rg.prev.label}`;
+  if(!has)return;
+  // Reset UI, tada užkraunam išsaugotus nustatymus
+  repPages=[];repReportText='';
+  document.getElementById('repResults').innerHTML='';
+  document.getElementById('repCopyBtn').style.display='none';
+  document.getElementById('repPageSelect').style.display='none';
+  document.getElementById('repPageHint').style.display='none';
+  document.getElementById('repSaveBtn').style.display='none';
+  document.getElementById('repConnBadge').style.display='none';
+  document.getElementById('repToken').value='';
+  repLoadSettings();
+}
+
+async function repLoadSettings(){
+  const cid=currentClient.id;
+  const{data}=await sb.from('fb_report_settings').select('*').eq('client_id',cid).maybeSingle();
+  if(!currentClient||currentClient.id!==cid)return; // klientas pasikeitė
+  repSettings=data||null;
+  if(data){
+    if(data.access_token){repToken=data.access_token;document.getElementById('repToken').value=data.access_token;}
+    if(data.fb_page_id){
+      document.getElementById('repConnBadge').style.display='inline-flex';
+      const hint=document.getElementById('repPageHint');
+      hint.style.display='block';
+      hint.innerHTML=`Puslapis: <b>${escHtml(data.fb_page_name||data.fb_page_id)}</b>`+
+        (data.ig_username?` · IG: <b>@${escHtml(data.ig_username)}</b>`:' · IG nesusietas');
+    }
+  }
+}
+
+async function repLoadPages(){
+  const tok=document.getElementById('repToken').value.trim();
+  if(!tok){showToast('Įklijuok prieigos raktą (token)');return;}
+  repToken=tok;
+  const btn=document.getElementById('repLoadPagesBtn');
+  btn.disabled=true;btn.textContent='Kraunama...';
+  try{
+    const j=await fbGraph('me/accounts',{fields:'name,id,instagram_business_account{id,username,followers_count,media_count}',limit:100,access_token:tok});
+    repPages=j.data||[];
+    if(!repPages.length){showToast('Nerasta jokių puslapių šiam tokenui');return;}
+    const sel=document.getElementById('repPageSelect');
+    const savedId=repSettings&&repSettings.fb_page_id;
+    sel.innerHTML='<option value="">— pasirink puslapį —</option>'+repPages.map(p=>{
+      const ig=p.instagram_business_account?` (IG: @${p.instagram_business_account.username||'susietas'})`:'';
+      return `<option value="${p.id}"${savedId===p.id?' selected':''}>${escHtml(p.name)}${ig}</option>`;
+    }).join('');
+    sel.style.display='block';
+    document.getElementById('repSaveBtn').style.display='inline-flex';
+    repOnPageSelect();
+    showToast('Puslapiai įkelti ✓');
+  }catch(e){
+    showToast('Klaida: '+e.message,4500);
+  }finally{
+    btn.disabled=false;btn.textContent='Įkelti puslapius';
+  }
+}
+
+function repSelectedPage(){
+  const id=document.getElementById('repPageSelect').value;
+  return repPages.find(p=>p.id===id)||null;
+}
+function repOnPageSelect(){
+  const p=repSelectedPage();
+  const hint=document.getElementById('repPageHint');
+  if(!p){hint.style.display='none';return;}
+  hint.style.display='block';
+  const ig=p.instagram_business_account;
+  hint.innerHTML=`Puslapis: <b>${escHtml(p.name)}</b> · `+(ig?`IG: <b>@${escHtml(ig.username||'susietas')}</b>`:'IG paskyra nesusieta su šiuo puslapiu');
+}
+
+async function repSaveSettings(){
+  if(!currentClient)return;
+  const p=repSelectedPage();
+  if(!p){showToast('Pasirink puslapį');return;}
+  const ig=p.instagram_business_account;
+  const row={
+    client_id:currentClient.id,
+    access_token:repToken,
+    fb_page_id:p.id,
+    fb_page_name:p.name,
+    ig_user_id:ig?ig.id:null,
+    ig_username:ig?ig.username:null,
+    updated_at:new Date().toISOString()
+  };
+  const{error}=await sb.from('fb_report_settings').upsert(row,{onConflict:'client_id'});
+  if(error){showToast('Klaida: '+error.message,4500);return;}
+  repSettings=row;
+  document.getElementById('repConnBadge').style.display='inline-flex';
+  showToast('Prisijungimas išsaugotas ✓');
+}
+
+async function repGenerate(){
+  if(!currentClient){showToast('Pasirink klientą');return;}
+  const tok=(document.getElementById('repToken').value.trim())||repToken;
+  if(!tok){showToast('Reikia prieigos rakto (token)');return;}
+  repToken=tok;
+  // Puslapio ID: iš pasirinkimo arba iš išsaugotų nustatymų
+  let page=repSelectedPage();
+  let pageId=page?page.id:(repSettings&&repSettings.fb_page_id);
+  let igId=page?(page.instagram_business_account&&page.instagram_business_account.id):(repSettings&&repSettings.ig_user_id);
+  let igUser=page?(page.instagram_business_account&&page.instagram_business_account.username):(repSettings&&repSettings.ig_username);
+  let pageName=page?page.name:(repSettings&&repSettings.fb_page_name);
+  if(!pageId){showToast('Pirma įkelk ir pasirink puslapį');return;}
+
+  const btn=document.getElementById('repGenBtn');
+  btn.disabled=true;btn.innerHTML='<span class="rep-spinner"></span> Generuojama...';
+  const res=document.getElementById('repResults');
+  res.innerHTML='<div class="rep-card"><div class="rep-empty">Kraunami duomenys iš Facebook / Instagram...</div></div>';
+  const rg=repMonthRanges();
+
+  try{
+    // Puslapio prieigos raktas (insights reikalauja Page token) + sekėjų skaičius
+    const pageInfo=await fbGraph(pageId,{fields:'access_token,name,fan_count,followers_count',access_token:tok});
+    const pageToken=pageInfo.access_token||tok;
+    pageName=pageName||pageInfo.name;
+
+    // ── Facebook metrikos (abu mėnesiai lygiagrečiai) ──
+    const fbRows=[];
+    await Promise.all(FB_METRICS.map(async([key,label])=>{
+      const[cur,prev]=await Promise.all([
+        fbMetricSum(pageId,pageToken,key,rg.last),
+        fbMetricSum(pageId,pageToken,key,rg.prev)
+      ]);
+      if(cur!=null||prev!=null)fbRows.push({label,cur:cur||0,prev:prev||0});
+    }));
+
+    // ── Instagram metrikos ──
+    let igRows=[], igSnap=null;
+    if(igId){
+      try{
+        igSnap=await fbGraph(igId,{fields:'username,followers_count,media_count',access_token:pageToken});
+        igUser=igUser||igSnap.username;
+      }catch(e){}
+      await Promise.all(IG_METRICS.map(async([key,label])=>{
+        const[cur,prev]=await Promise.all([
+          igMetricTotal(igId,pageToken,key,rg.last),
+          igMetricTotal(igId,pageToken,key,rg.prev)
+        ]);
+        if(cur!=null||prev!=null)igRows.push({label,cur:cur||0,prev:prev||0});
+      }));
+    }
+
+    repRenderReport({pageName,fanCount:pageInfo.fan_count??pageInfo.followers_count,fbRows,igId,igUser,igSnap,igRows,rg});
+    // Išsaugom tekstinę versiją kopijavimui
+    repReportText=repBuildText({pageName,fanCount:pageInfo.fan_count??pageInfo.followers_count,fbRows,igUser,igSnap,igRows,rg});
+    document.getElementById('repCopyBtn').style.display='inline-flex';
+  }catch(e){
+    res.innerHTML=`<div class="rep-card"><div class="rep-empty" style="color:var(--red)">Klaida: ${escHtml(e.message)}</div></div>`;
+  }finally{
+    btn.disabled=false;btn.textContent='Generuoti ataskaitą';
+  }
+}
+
+function repDelta(cur,prev){
+  cur=cur||0;prev=prev||0;
+  if(prev===0)return cur===0?{cls:'flat',txt:'—'}:{cls:'up',txt:'naujas'};
+  const p=Math.round((cur-prev)/prev*100);
+  if(p>0)return{cls:'up',txt:'▲ '+p+'%'};
+  if(p<0)return{cls:'down',txt:'▼ '+Math.abs(p)+'%'};
+  return{cls:'flat',txt:'0%'};
+}
+function repNum(n){return (n||0).toLocaleString('lt-LT');}
+
+function repKpiHtml(rows){
+  if(!rows.length)return '<div class="rep-empty">Šiai paskyrai nepavyko gauti metrikų (gali trūkti teisių arba duomenų šį laikotarpį).</div>';
+  return '<div class="rep-grid">'+rows.map(r=>{
+    const d=repDelta(r.cur,r.prev);
+    return `<div class="rep-kpi">
+      <div class="rep-kpi-label">${escHtml(r.label)}</div>
+      <div class="rep-kpi-val">${repNum(r.cur)}</div>
+      <div class="rep-kpi-foot"><span class="rep-kpi-prev">buvo ${repNum(r.prev)}</span><span class="rep-delta ${d.cls}">${d.txt}</span></div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function repRenderReport(r){
+  const periodNote=`<span class="rep-period-note">${r.rg.last.label} vs ${r.rg.prev.label}</span>`;
+  let html='';
+  // Facebook
+  html+=`<div class="rep-platform">
+    <div class="rep-plat-head">
+      <div class="rep-plat-icon fb">📘</div>
+      <div><div class="rep-plat-name">Facebook</div><div class="rep-plat-sub">${escHtml(r.pageName||'')}</div></div>
+      ${periodNote}
+    </div>
+    ${r.fanCount!=null?`<div style="margin-bottom:12px"><span class="rep-snapshot">Sekėjai (viso) <b>${repNum(r.fanCount)}</b></span></div>`:''}
+    ${repKpiHtml(r.fbRows)}
+  </div>`;
+  // Instagram
+  html+=`<div class="rep-platform">
+    <div class="rep-plat-head">
+      <div class="rep-plat-icon ig">📷</div>
+      <div><div class="rep-plat-name">Instagram</div><div class="rep-plat-sub">${r.igUser?('@'+escHtml(r.igUser)):'nesusieta paskyra'}</div></div>
+      ${r.igId?periodNote:''}
+    </div>`;
+  if(!r.igId){
+    html+='<div class="rep-empty">Su šiuo puslapiu nesusieta Instagram verslo paskyra. Susiek ją Meta Business nustatymuose, kad matytum IG ataskaitą.</div>';
+  }else{
+    if(r.igSnap){
+      html+='<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">'+
+        `<span class="rep-snapshot">Sekėjai <b>${repNum(r.igSnap.followers_count)}</b></span>`+
+        `<span class="rep-snapshot">Įrašų <b>${repNum(r.igSnap.media_count)}</b></span>`+
+      '</div>';
+    }
+    html+=repKpiHtml(r.igRows);
+  }
+  html+='</div>';
+  document.getElementById('repResults').innerHTML=html;
+}
+
+function repBuildText(r){
+  const L=[];
+  L.push(`${(currentClient&&currentClient.name)||''} — Facebook & Instagram ataskaita`);
+  L.push(`${r.rg.last.label} (palyginta su ${r.rg.prev.label})`);
+  L.push('');
+  L.push(`📘 FACEBOOK — ${r.pageName||''}`);
+  if(r.fanCount!=null)L.push(`Sekėjai (viso): ${repNum(r.fanCount)}`);
+  (r.fbRows.length?r.fbRows:[]).forEach(x=>{
+    const d=repDelta(x.cur,x.prev);
+    L.push(`• ${x.label}: ${repNum(x.cur)} (buvo ${repNum(x.prev)}, ${d.txt.replace('▲','+').replace('▼','-')})`);
+  });
+  if(!r.fbRows.length)L.push('• Nėra duomenų');
+  L.push('');
+  L.push(`📷 INSTAGRAM — ${r.igUser?('@'+r.igUser):'nesusieta'}`);
+  if(r.igSnap){L.push(`Sekėjai: ${repNum(r.igSnap.followers_count)} · Įrašų: ${repNum(r.igSnap.media_count)}`);}
+  (r.igRows||[]).forEach(x=>{
+    const d=repDelta(x.cur,x.prev);
+    L.push(`• ${x.label}: ${repNum(x.cur)} (buvo ${repNum(x.prev)}, ${d.txt.replace('▲','+').replace('▼','-')})`);
+  });
+  if(r.igId&&!(r.igRows||[]).length)L.push('• Nėra duomenų');
+  if(!r.igId)L.push('• Instagram paskyra nesusieta');
+  return L.join('\n');
+}
+
+function repCopy(){
+  if(!repReportText){showToast('Pirma sugeneruok ataskaitą');return;}
+  navigator.clipboard.writeText(repReportText).then(()=>showToast('Ataskaita nukopijuota ✓')).catch(()=>showToast('Nepavyko nukopijuoti'));
 }
 
 const initP=getPeriodDates('week');currentDateFrom=initP.from;currentDateTo=initP.to;
