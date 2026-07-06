@@ -77,13 +77,17 @@ CREATE TABLE IF NOT EXISTS meta_stats (
 CREATE TABLE IF NOT EXISTS fb_report_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   client_id UUID UNIQUE REFERENCES clients(id) ON DELETE CASCADE NOT NULL,
-  access_token TEXT,          -- Graph API (User) prieigos raktas
+  access_token TEXT,          -- Facebook Graph API (User) prieigos raktas
+  ig_access_token TEXT,       -- Instagram prieigos raktas (atskiras nuo FB)
   fb_page_id TEXT,
   fb_page_name TEXT,
   ig_user_id TEXT,
   ig_username TEXT,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Jei fb_report_settings jau egzistuoja — pridėk naują IG tokeno stulpelį
+ALTER TABLE fb_report_settings ADD COLUMN IF NOT EXISTS ig_access_token TEXT;
 
 -- ============================================================
 -- RLS politikos

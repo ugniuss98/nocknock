@@ -10,28 +10,41 @@ Agentūros savaitinių darbų sekimo įrankis. Adminas įveda užduotis, klienta
 - **Savaitės navigacija** — peržiūra pagal savaitę
 - **PDF / spausdinimas** — savaitės ataskaita vienu paspaudimu
 - **Kopijuoti ataskaitą** — teksto formatas el. paštui ar žinutei
-- **Facebook & Instagram ataskaitos** — praėjusio mėnesio statistika su palyginimu prieš tai buvusį mėnesį (Graph API)
+- **Facebook & Instagram ataskaitos** — pasirenkamo laikotarpio statistika su automatiniu palyginimu ir PDF eksportu
 
 ## Facebook & Instagram ataskaitos
 
 Admin skiltis **Ataskaitos** sugeneruoja kliento FB puslapio ir IG verslo paskyros
-mėnesio ataskaitą ir automatiškai palygina praėjusį mėnesį su dar prieš tai buvusiu
-(pvz. Birželis vs Gegužė) — kiekvienai metrikai parodo pokytį %.
+ataskaitą už pasirinktą laikotarpį ir **automatiškai palygina su ankstesniu tokios pat
+trukmės laikotarpiu** (pvz. Birželis vs Gegužė, arba pask. 30 d. vs prieš tai buvusios 30 d.).
+Kiekvienai metrikai rodomas pokytis % ir stulpelinis grafikas.
 
-### Nustatymas
+### Prisijungimas
 
-1. Eik į [Graph API Explorer](https://developers.facebook.com/tools/explorer/) ir
-   sugeneruok prieigos raktą (token) su teisėmis:
-   `pages_read_engagement`, `read_insights`, `instagram_basic`, `instagram_manage_insights`.
-2. Admin → **Ataskaitos** tab → pasirink klientą → įklijuok tokeną → **Įkelti puslapius**.
-3. Pasirink kliento Facebook puslapį (susietas Instagram paskyros ID paimamas automatiškai) →
-   **Išsaugoti prisijungimą** (įrašoma į `fb_report_settings` lentelę kiekvienam klientui).
-4. **Generuoti ataskaitą** — duomenys traukiami tiesiai iš Facebook Graph API naršyklėje.
-   **Kopijuoti tekstą** paruošia ataskaitą siuntimui klientui.
+Facebook ir Instagram naudoja **atskirus** prieigos raktus:
+
+- **Facebook** — [Graph API Explorer](https://developers.facebook.com/tools/explorer/),
+  teisės: `pages_read_engagement`, `read_insights`.
+- **Instagram** — atskiras tokenas per **Instagram API su Instagram Login**
+  (`graph.instagram.com`), teisės: `instagram_basic`, `instagram_manage_insights`.
+  Jei IG verslo paskyra susieta su FB puslapiu, atskiro IG tokeno gali ir nereikėti.
+
+### Naudojimas
+
+1. Admin → **Ataskaitos** tab → pasirink klientą.
+2. Įklijuok **Facebook** tokeną → **Įkelti puslapius** → pasirink puslapį.
+3. (Nebūtina) Įklijuok **Instagram** tokeną → **Prijungti IG paskyrą**.
+4. Prisijungimas **automatiškai išsaugomas naršyklėje** (localStorage). Norint dalintis
+   tarp įrenginių — **Išsaugoti debesyje** (įrašo į `fb_report_settings` lentelę).
+5. Pasirink **laikotarpį** (praėjęs mėnuo / šis mėnuo / 7 / 30 / 90 d. / pasirinktinai).
+6. **Generuoti ataskaitą** → matai KPI korteles su grafikais.
+   **Atsisiųsti PDF** atidaro spausdinimo langą (Išsaugoti kaip PDF) su grafikais;
+   **Kopijuoti tekstą** paruošia tekstą žinutei/el. paštui.
 
 > Graph API Explorer tokenai trumpaamžiai (~1–2 val.). Ilgalaikiam naudojimui
-> iškeisk jį į „long-lived" tokeną (Access Token Tool) ir įklijuok iš naujo, kai baigsis.
-> Metrikos, kurių paskyra ar API versija nepalaiko, tyliai praleidžiamos.
+> iškeisk į „long-lived" tokeną (Access Token Tool) ir įklijuok iš naujo, kai baigsis.
+> Metrikos, kurių paskyra ar API versija nepalaiko, tyliai praleidžiamos; jei paskyra
+> laikotarpiu neturėjo aktyvumo, visos reikšmės bus 0.
 
 ## Supabase setup
 
