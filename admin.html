@@ -478,6 +478,53 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .cal-img-rm{position:absolute;top:6px;right:6px;width:22px;height:22px;background:rgba(0,0,0,.55);color:white;border:none;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;line-height:1;}
 .cal-img-rm:hover{background:var(--red);}
 .cal-cell-img{width:100%;height:36px;object-fit:cover;border-radius:4px;margin-top:2px;}
+/* ── VIEW TOGGLE (Mėnuo / Savaitė) ── */
+.cal-view-toggle{display:flex;border:1.5px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0;}
+.cal-vt-btn{font-size:12px;font-weight:600;padding:5px 13px;border:none;background:var(--surface);color:var(--text-muted);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.cal-vt-btn:hover{color:var(--text);}
+.cal-vt-btn.active{background:var(--text);color:white;}
+.cal-pp .dots{display:flex;gap:2px;flex-shrink:0;align-items:center;}
+/* ── WEEK VIEW ── */
+.cal-page-layout.wk-mode{grid-template-columns:1fr;}
+.cal-page-layout.wk-mode .cal-week-side{display:none;}
+.cal-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:stretch;}
+.cal-wk-col{background:var(--surface);border:1px solid var(--border);border-radius:12px;min-height:calc(100vh - 220px);padding:9px 8px;display:flex;flex-direction:column;gap:7px;cursor:pointer;transition:border-color .15s;}
+.cal-wk-col:hover{border-color:var(--border-strong);}
+.cal-wk-col.cal-today{border-color:var(--accent);border-width:1.5px;}
+.cal-wk-hd{display:flex;align-items:center;justify-content:space-between;padding:0 2px 7px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.cal-wk-hd-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+.cal-wk-hd-num{font-size:13px;font-weight:600;}
+.cal-wk-col.cal-today .cal-wk-hd-num{background:var(--accent);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.cal-wk-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;background:var(--surface);transition:box-shadow .15s,border-color .15s;flex-shrink:0;}
+.cal-wk-card:hover{border-color:var(--border-strong);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.cal-wk-card img{width:100%;height:84px;object-fit:cover;display:block;}
+.cal-wk-card-body{padding:6px 8px 7px;display:flex;flex-direction:column;gap:4px;}
+.cal-wk-card-plats{display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
+.cal-wk-card-title{font-size:11px;font-weight:600;line-height:1.3;word-break:break-word;}
+.cal-wk-card-meta{font-size:10px;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;gap:4px;}
+.cal-wk-empty{font-size:11px;color:var(--text-faint);text-align:center;padding:10px 0;}
+/* ── POST PREVIEW (profile post view) ── */
+.post-view{max-width:440px;padding:0;gap:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;}
+.pv-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.pv-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.pv-head-mid{flex:1;min-width:0;}
+.pv-plats{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px;}
+.pv-plat-chip{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.pv-date{font-size:11px;color:var(--text-muted);}
+.pv-status{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.pv-close{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:14px;padding:4px;line-height:1;flex-shrink:0;}
+.pv-close:hover{color:var(--text);}
+.pv-img-wrap{background:#141414;max-height:380px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pv-img-wrap img{width:100%;max-height:380px;object-fit:contain;display:block;}
+.pv-img-ph{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,var(--bg),var(--border));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text-muted);font-size:12px;}
+.pv-img-ph span:first-child{font-size:34px;}
+.pv-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:0;}
+.pv-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+.pv-title{font-size:15px;font-weight:700;line-height:1.35;}
+.pv-notes{font-size:13px;line-height:1.55;white-space:pre-wrap;}
+.pv-comments{border-top:1px solid var(--border);padding-top:10px;display:flex;flex-direction:column;gap:7px;}
+.pv-comments-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);}
+.pv-actions{display:flex;gap:7px;padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;}
 @media print{body:not(.print-samata) #loginScreen,body:not(.print-samata) .header,body:not(.print-samata) .sidebar,body:not(.print-samata) .modal-overlay,body:not(.print-samata) .toast{display:none!important;}body:not(.print-samata) .layout{grid-template-columns:1fr!important;}body:not(.print-samata) .s-main{padding:0!important;}body:not(.print-samata) .day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}body:not(.print-samata) .del-btn,body:not(.print-samata) .status-btn{display:none!important;}body:not(.print-samata) .tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.header{padding:10px 14px;flex-wrap:wrap;}.s-main,.meta-wrapper{padding:14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-grid{grid-template-columns:1fr;}.page-kpi-grid{grid-template-columns:repeat(2,1fr);}}
@@ -836,9 +883,13 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
       <button class="fp" onclick="calToggleAllF()" style="border-color:var(--border)">Visos / Jokios</button>
     </div>
     <div class="cal-toolbar-right">
-      <button class="cal-nav-btn" onclick="calChangeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="cal-view-toggle">
+        <button class="cal-vt-btn active" id="calVtMonth" onclick="calSetView('month')">Mėnuo</button>
+        <button class="cal-vt-btn" id="calVtWeek" onclick="calSetView('week')">Savaitė</button>
+      </div>
+      <button class="cal-nav-btn" onclick="calNav(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span class="cal-month-lbl" id="calMonthLabel"></span>
-      <button class="cal-nav-btn" onclick="calChangeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <button class="cal-nav-btn" onclick="calNav(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       <button class="cal-today-btn" onclick="calGoToday()">Šiandien</button>
       <button class="btn-primary" style="width:auto;padding:7px 14px;font-size:12px" onclick="calOpenModal()">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -846,18 +897,23 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
       </button>
     </div>
   </div>
-  <div class="cal-page-layout">
+  <div class="cal-page-layout" id="calPageLayout">
     <div class="cal-main-area">
-      <div class="cal-dow">
-        <div class="cal-dow-cell">Pr</div>
-        <div class="cal-dow-cell">An</div>
-        <div class="cal-dow-cell">Tr</div>
-        <div class="cal-dow-cell">Kt</div>
-        <div class="cal-dow-cell">Pn</div>
-        <div class="cal-dow-cell cal-weekend">Št</div>
-        <div class="cal-dow-cell cal-weekend">Sk</div>
+      <div id="calMonthView">
+        <div class="cal-dow">
+          <div class="cal-dow-cell">Pr</div>
+          <div class="cal-dow-cell">An</div>
+          <div class="cal-dow-cell">Tr</div>
+          <div class="cal-dow-cell">Kt</div>
+          <div class="cal-dow-cell">Pn</div>
+          <div class="cal-dow-cell cal-weekend">Št</div>
+          <div class="cal-dow-cell cal-weekend">Sk</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
       </div>
-      <div class="cal-grid" id="calGrid"></div>
+      <div id="calWeekView" style="display:none">
+        <div class="cal-week-grid" id="calWeekGrid"></div>
+      </div>
     </div>
     <aside class="cal-week-side">
       <div class="cal-ws-title">Šios savaitės planas</div>
@@ -931,6 +987,33 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
       <button class="btn-del" id="calMDelBtn" onclick="calDeletePost()" style="display:none">Ištrinti</button>
       <button class="btn-cancel" onclick="calCloseModal()">Atšaukti</button>
       <button class="btn-confirm" onclick="calSavePost()">Išsaugoti</button>
+    </div>
+  </div>
+</div>
+
+<!-- POST PREVIEW MODAL (profile post view) -->
+<div class="modal-overlay hidden" id="calViewModal" onclick="if(event.target===this)calCloseView()">
+  <div class="modal post-view">
+    <div class="pv-head">
+      <div class="pv-avatar" id="pvAvatar">📷</div>
+      <div class="pv-head-mid">
+        <div class="pv-plats" id="pvPlats"></div>
+        <div class="pv-date" id="pvDate"></div>
+      </div>
+      <span class="pv-status" id="pvStatus"></span>
+      <button class="pv-close" onclick="calCloseView()" title="Uždaryti">✕</button>
+    </div>
+    <div class="pv-img-wrap" id="pvImgWrap"></div>
+    <div class="pv-body">
+      <div class="pv-type" id="pvType"></div>
+      <div class="pv-title" id="pvTitle"></div>
+      <div class="pv-notes" id="pvNotes"></div>
+      <div class="pv-comments" id="pvComments"></div>
+    </div>
+    <div class="pv-actions">
+      <button class="btn-del" onclick="calViewDelete()">Ištrinti</button>
+      <button class="btn-cancel" onclick="calCloseView()">Uždaryti</button>
+      <button class="btn-confirm" onclick="calViewEdit()">Redaguoti</button>
     </div>
   </div>
 </div>
@@ -2213,8 +2296,9 @@ sb.channel('cal-a').on('postgres_changes',{event:'*',schema:'public',table:'cont
 // ─── CALENDAR ───
 let calPlans=[],calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let calActiveF=new Set(['ig','tiktok','fb','youtube','linkedin','other']);
-let calEditingId=null,calCurPlats=['ig'],calCurStatus='planuojama',calPendingImgFile=null,calExistingImgUrl=null;
+let calEditingId=null,calEditingGroup=null,calCurPlats=['ig'],calCurStatus='planuojama',calPendingImgFile=null,calExistingImgUrl=null;
 let calLoaded=false;
+let calView='month',calWeekAnchor=new Date(),calViewGroup=null;
 
 const CAL_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
 const CAL_DAYS_LT=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
@@ -2222,21 +2306,78 @@ const CAL_PLAT_L={ig:'Instagram',tiktok:'TikTok',fb:'Facebook',youtube:'YouTube'
 const CAL_PLAT_E={ig:'📷',tiktok:'🎵',fb:'📘',youtube:'▶',linkedin:'💼',other:'🔗'};
 const CAL_TYPE_L={reels:'🎬 Reels',post:'🖼 Post',carousel:'🎠 Karuselė',story:'📱 Story',ugc:'📦 UGC',live:'🔴 Live',other:'📌 Kita'};
 const CAL_ST_E={planuojama:'📋',ruosiama:'✏️',paruosta:'✅',paskelbta:'🚀'};
+const CAL_ST_L={planuojama:'📋 Planuojama',ruosiama:'✏️ Ruošiama',paruosta:'✅ Paruošta',paskelbta:'🚀 Paskelbta'};
+const CAL_ST_STYLE={planuojama:'background:var(--gray-light);color:var(--gray)',ruosiama:'background:var(--orange-light);color:var(--orange)',paruosta:'background:var(--accent-light);color:var(--accent)',paskelbta:'background:var(--green-light);color:var(--green)'};
 
 function calFmt(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function calWeekMon(d){const x=new Date(d);let dw=x.getDay();if(dw===0)dw=7;x.setDate(x.getDate()-(dw-1));x.setHours(12,0,0,0);return x;}
 
-function calChangeMonth(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}calLoad();}
-function calGoToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();calLoad();}
+// tas pats įrašas keliom platformom (ta pati data/pavadinimas/tipas/pastabos) rodomas kaip vienas
+function calGroupKey(p){return`${p.date}|${p.title||''}|${p.content_type||''}|${p.notes||''}`;}
+function calGroupDay(dp){
+  const map=new Map(),out=[];
+  dp.forEach(p=>{
+    const k=calGroupKey(p);
+    let g=map.get(k);
+    if(!g){g={recs:[],plats:[],img:null,cmts:0,first:p};map.set(k,g);out.push(g);}
+    g.recs.push(p);
+    if(!g.plats.includes(p.platform))g.plats.push(p.platform);
+    if(!g.img&&p.image_url)g.img=p.image_url;
+    g.cmts+=p.calendar_comments?.[0]?.count||0;
+  });
+  return out;
+}
+function calFindGroup(id){
+  const p=calPlans.find(x=>String(x.id)===String(id));
+  if(!p)return null;
+  const k=calGroupKey(p);
+  const recs=calPlans.filter(x=>calGroupKey(x)===k);
+  return{recs,plats:[...new Set(recs.map(r=>r.platform))],first:p,img:recs.find(r=>r.image_url)?.image_url||null,cmts:recs.reduce((s,r)=>s+(r.calendar_comments?.[0]?.count||0),0)};
+}
+
+function calSetView(v){
+  if(calView===v)return;
+  calView=v;
+  document.getElementById('calVtMonth').classList.toggle('active',v==='month');
+  document.getElementById('calVtWeek').classList.toggle('active',v==='week');
+  document.getElementById('calMonthView').style.display=v==='month'?'':'none';
+  document.getElementById('calWeekView').style.display=v==='week'?'':'none';
+  document.getElementById('calPageLayout').classList.toggle('wk-mode',v==='week');
+  if(v==='week'){
+    const n=new Date();
+    calWeekAnchor=(n.getFullYear()===calYear&&n.getMonth()===calMonth)?new Date(n):new Date(calYear,calMonth,1,12);
+  }else{
+    calYear=calWeekAnchor.getFullYear();calMonth=calWeekAnchor.getMonth();
+  }
+  calLoad();
+}
+function calNav(d){
+  if(calView==='month'){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}}
+  else{calWeekAnchor.setDate(calWeekAnchor.getDate()+7*d);}
+  calLoad();
+}
+function calGoToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();calWeekAnchor=new Date(n);calLoad();}
 
 async function calLoad(){
-  document.getElementById('calMonthLabel').textContent=`${CAL_MONTHS[calMonth]} ${calYear}`;
-  const from=calFmt(new Date(calYear,calMonth-1,24));
-  const to=calFmt(new Date(calYear,calMonth+1,7));
+  let from,to;
+  if(calView==='month'){
+    document.getElementById('calMonthLabel').textContent=`${CAL_MONTHS[calMonth]} ${calYear}`;
+    from=calFmt(new Date(calYear,calMonth-1,24));
+    to=calFmt(new Date(calYear,calMonth+1,7));
+  }else{
+    const mon=calWeekMon(calWeekAnchor),sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    const m1=CAL_MONTHS[mon.getMonth()].slice(0,4).toLowerCase(),m2=CAL_MONTHS[sun.getMonth()].slice(0,4).toLowerCase();
+    document.getElementById('calMonthLabel').textContent=mon.getMonth()===sun.getMonth()
+      ?`${m1} ${mon.getDate()}–${sun.getDate()}, ${sun.getFullYear()}`
+      :`${m1} ${mon.getDate()} – ${m2} ${sun.getDate()}, ${sun.getFullYear()}`;
+    from=calFmt(mon);to=calFmt(sun);
+  }
   const{data,error}=await sb.from('content_plans').select('*,calendar_comments(count)').gte('date',from).lte('date',to).order('date').order('created_at');
   if(error){showToast('Klaida: '+error.message);return;}
   calPlans=data||[];
   calLoaded=true;
-  calRenderCal();calRenderWeek();
+  if(calView==='month'){calRenderCal();calRenderWeek();}
+  else calRenderWeekView();
 }
 
 function calGetDays(){
@@ -2255,16 +2396,18 @@ function calRenderCal(){
   grid.innerHTML=calGetDays().map(d=>{
     const ds=calFmt(d),isToday=ds===todayStr,isOther=d.getMonth()!==calMonth;
     const dp=calPlans.filter(p=>p.date===ds&&calActiveF.has(p.platform));
-    const imgEntry=dp.find(p=>p.image_url);
-    const pills=dp.slice(0,3).map(p=>{
-      const cmtCount=p.calendar_comments?.[0]?.count||0;
-      return`<div class="cal-pp c-${p.platform}" onclick="event.stopPropagation();calOpenModal(${p.id})">
-        <span class="dot d-${p.platform}"></span>
+    const groups=calGroupDay(dp);
+    const imgGroup=groups.find(g=>g.img);
+    const pills=groups.slice(0,3).map(g=>{
+      const p=g.first;
+      const dots=g.plats.map(pl=>`<span class="dot d-${pl}"></span>`).join('');
+      return`<div class="cal-pp c-${p.platform}" onclick="event.stopPropagation();calOpenView(${p.id})">
+        <span class="dots">${dots}</span>
         <span class="lbl">${escHtml(p.title||CAL_TYPE_L[p.content_type]||CAL_PLAT_L[p.platform]||'')}</span>
-        ${cmtCount>0?`<span style="margin-left:auto;font-size:9px;opacity:.7">💬${cmtCount}</span>`:''}
+        ${g.cmts>0?`<span style="margin-left:auto;font-size:9px;opacity:.7">💬${g.cmts}</span>`:''}
       </div>`;}).join('');
-    const more=dp.length>3?`<div class="cal-pp-more">+${dp.length-3} daugiau</div>`:'';
-    const thumb=imgEntry?`<img class="cal-cell-img" src="${escHtml(imgEntry.image_url)}" alt="" loading="lazy" onclick="event.stopPropagation();calOpenModal(${imgEntry.id})">`:'';
+    const more=groups.length>3?`<div class="cal-pp-more">+${groups.length-3} daugiau</div>`:'';
+    const thumb=imgGroup?`<img class="cal-cell-img" src="${escHtml(imgGroup.img)}" alt="" loading="lazy" onclick="event.stopPropagation();calOpenView(${imgGroup.first.id})">`:'';
     return`<div class="cal-cell${isToday?' cal-today':''}${isOther?' cal-other-month':''}" onclick="calOpenModal(null,'${ds}')">
       <div class="cal-cell-top">
         ${isToday?`<span class="cal-today-badge">${d.getDate()}</span>`:`<span class="cal-cell-num">${d.getDate()}</span>`}
@@ -2284,17 +2427,91 @@ function calRenderWeek(){
   const list=document.getElementById('calWeekList');
   list.innerHTML=weekDays.map((d,i)=>{
     const ds=calFmt(d),dp=calPlans.filter(p=>p.date===ds&&calActiveF.has(p.platform));
+    const groups=calGroupDay(dp);
     const mn=`${CAL_MONTHS[d.getMonth()].slice(0,3).toLowerCase()}.`;
     return`<div class="cal-ws-day">
-      <div class="cal-ws-day-hd">${dp.length?'<span class="cal-ws-dot"></span>':''}<span>${CAL_DAYS_LT[i].slice(0,2)}, ${d.getDate()} ${mn}</span></div>
-      ${dp.length?dp.map(p=>`
-        <div class="cal-ws-item" onclick="calOpenModal(${p.id})">
-          <span class="cal-ws-badge c-${p.platform}">${CAL_PLAT_E[p.platform]} ${CAL_PLAT_L[p.platform]}</span>
-          <span class="cal-ws-txt">${escHtml(p.title||CAL_TYPE_L[p.content_type]||'—')}</span>
-          <span class="cal-ws-st">${CAL_ST_E[p.status]||'📋'}</span>
+      <div class="cal-ws-day-hd">${groups.length?'<span class="cal-ws-dot"></span>':''}<span>${CAL_DAYS_LT[i].slice(0,2)}, ${d.getDate()} ${mn}</span></div>
+      ${groups.length?groups.map(g=>`
+        <div class="cal-ws-item" onclick="calOpenView(${g.first.id})">
+          <span class="cal-ws-badge c-${g.first.platform}">${g.plats.map(pl=>CAL_PLAT_E[pl]).join(' ')}${g.plats.length===1?` ${CAL_PLAT_L[g.first.platform]}`:''}</span>
+          <span class="cal-ws-txt">${escHtml(g.first.title||CAL_TYPE_L[g.first.content_type]||'—')}</span>
+          <span class="cal-ws-st">${CAL_ST_E[g.first.status]||'📋'}</span>
         </div>`).join(''):`<div class="cal-ws-empty">Nieko</div>`}
     </div>`;
   }).join('');
+}
+
+function calRenderWeekView(){
+  const grid=document.getElementById('calWeekGrid');
+  const mon=calWeekMon(calWeekAnchor),todayStr=calFmt(new Date());
+  grid.innerHTML=Array.from({length:7},(_,i)=>{
+    const d=new Date(mon);d.setDate(mon.getDate()+i);
+    const ds=calFmt(d),isToday=ds===todayStr;
+    const groups=calGroupDay(calPlans.filter(p=>p.date===ds&&calActiveF.has(p.platform)));
+    const cards=groups.map(g=>{
+      const p=g.first;
+      const plats=g.plats.map(pl=>`<span class="tag c-${pl}" style="font-size:9px;padding:1px 6px">${CAL_PLAT_E[pl]} ${CAL_PLAT_L[pl]}</span>`).join('');
+      return`<div class="cal-wk-card" onclick="event.stopPropagation();calOpenView(${p.id})">
+        ${g.img?`<img src="${escHtml(g.img)}" loading="lazy" alt="">`:''}
+        <div class="cal-wk-card-body">
+          <div class="cal-wk-card-plats">${plats}</div>
+          <div class="cal-wk-card-title">${escHtml(p.title||CAL_TYPE_L[p.content_type]||'—')}</div>
+          <div class="cal-wk-card-meta"><span>${CAL_TYPE_L[p.content_type]||''}</span><span>${CAL_ST_E[p.status]||'📋'}${g.cmts>0?` 💬${g.cmts}`:''}</span></div>
+        </div>
+      </div>`;}).join('');
+    return`<div class="cal-wk-col${isToday?' cal-today':''}" onclick="calOpenModal(null,'${ds}')">
+      <div class="cal-wk-hd"><span class="cal-wk-hd-name">${CAL_DAYS_LT[i].slice(0,3)}</span><span class="cal-wk-hd-num">${d.getDate()}</span></div>
+      ${cards||`<div class="cal-wk-empty">Nieko suplanuota</div>`}
+    </div>`;
+  }).join('');
+}
+
+// ── POST PREVIEW (profile post view) ──
+function calOpenView(id){
+  const g=calFindGroup(id);
+  if(!g)return;
+  calViewGroup=g;
+  document.getElementById('pvAvatar').textContent=CAL_PLAT_E[g.first.platform]||'📌';
+  document.getElementById('pvPlats').innerHTML=g.plats.map(pl=>`<span class="pv-plat-chip c-${pl}">${CAL_PLAT_E[pl]} ${CAL_PLAT_L[pl]}</span>`).join('');
+  document.getElementById('pvDate').textContent=new Date(g.first.date+'T12:00:00').toLocaleDateString('lt-LT',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const st=document.getElementById('pvStatus');
+  st.textContent=CAL_ST_L[g.first.status]||'';
+  st.style.cssText=CAL_ST_STYLE[g.first.status]||'';
+  const typeEmoji=(CAL_TYPE_L[g.first.content_type]||'📌 Kita').split(' ')[0];
+  document.getElementById('pvImgWrap').innerHTML=g.img
+    ?`<img src="${escHtml(g.img)}" alt="">`
+    :`<div class="pv-img-ph"><span>${typeEmoji}</span><span>Vizualo dar nėra</span></div>`;
+  document.getElementById('pvType').textContent=CAL_TYPE_L[g.first.content_type]||'';
+  document.getElementById('pvTitle').textContent=g.first.title||'(be pavadinimo)';
+  const notes=document.getElementById('pvNotes');
+  notes.textContent=g.first.notes||'';
+  notes.style.display=g.first.notes?'':'none';
+  calLoadViewComments(g.recs.map(r=>r.id));
+  document.getElementById('calViewModal').classList.remove('hidden');
+}
+async function calLoadViewComments(ids){
+  const box=document.getElementById('pvComments');
+  box.innerHTML='<div class="pv-comments-title">Komentarai</div><span style="font-size:12px;color:var(--text-faint)">Kraunama...</span>';
+  const{data}=await sb.from('calendar_comments').select('*,clients(name)').in('plan_id',ids).order('created_at');
+  const items=(data||[]).map(c=>{
+    const name=c.clients?.name||'—';
+    const time=new Date(c.created_at).toLocaleString('lt-LT',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return`<div style="background:var(--bg);border-radius:8px;padding:8px 10px">
+      <div style="font-size:11px;font-weight:600;margin-bottom:2px">${escHtml(name)} <span style="font-size:10px;color:var(--text-faint);font-weight:400">${time}</span></div>
+      <div style="font-size:12px;line-height:1.45">${escHtml(c.text)}</div>
+    </div>`;
+  }).join('');
+  box.innerHTML='<div class="pv-comments-title">Komentarai</div>'+(items||'<span style="font-size:12px;color:var(--text-faint)">Komentarų nėra.</span>');
+}
+function calCloseView(){document.getElementById('calViewModal').classList.add('hidden');calViewGroup=null;}
+function calViewEdit(){if(!calViewGroup)return;const id=calViewGroup.first.id;calCloseView();calOpenModal(id);}
+async function calViewDelete(){
+  if(!calViewGroup)return;
+  const ids=calViewGroup.recs.map(r=>r.id);
+  if(!confirm(ids.length>1?`Ištrinti šį įrašą iš ${ids.length} platformų?`:'Ištrinti šį įrašą?'))return;
+  const{error}=await sb.from('content_plans').delete().in('id',ids);
+  if(error){showToast('Klaida: '+error.message);return;}
+  calCloseView();showToast('Ištrinta.');calLoad();
 }
 
 function calToggleF(p){
@@ -2311,7 +2528,7 @@ function calToggleAllF(){
 }
 
 function calOpenModal(id=null,dateStr=null){
-  calEditingId=id;calPendingImgFile=null;calExistingImgUrl=null;
+  calEditingId=id;calEditingGroup=null;calPendingImgFile=null;calExistingImgUrl=null;
   document.getElementById('calMId').value=id||'';
   document.getElementById('calMDelBtn').style.display=id?'':'none';
   document.getElementById('calModalTitle').textContent=id?'Redaguoti įrašą':'Naujas įrašas';
@@ -2324,16 +2541,18 @@ function calOpenModal(id=null,dateStr=null){
   calSetImgPreview(null);
   calApplyPlatUI();calApplyStatusUI();
   if(id){
-    const p=calPlans.find(x=>x.id===id||String(x.id)===String(id));
-    if(p){
-      calCurPlats=[p.platform||'ig'];calCurStatus=p.status||'planuojama';
+    const g=calFindGroup(id);
+    if(g){
+      const p=g.first;
+      calEditingGroup=g.recs;
+      calCurPlats=[...g.plats];calCurStatus=p.status||'planuojama';
       document.getElementById('calMDate').value=p.date||'';
       document.getElementById('calMType').value=p.content_type||'reels';
       document.getElementById('calMTitle').value=p.title||'';
       document.getElementById('calMNotes').value=p.notes||'';
-      if(p.image_url){calExistingImgUrl=p.image_url;calSetImgPreview(p.image_url);}
+      if(g.img){calExistingImgUrl=g.img;calSetImgPreview(g.img);}
       calApplyPlatUI();calApplyStatusUI();
-      calLoadAdminComments(id);
+      calLoadAdminComments(g.recs.map(r=>r.id));
     }
   }
   if(!id){document.getElementById('calAdminComments').style.display='none';}
@@ -2341,11 +2560,12 @@ function calOpenModal(id=null,dateStr=null){
   setTimeout(()=>document.getElementById('calMTitle').focus(),60);
 }
 
-async function calLoadAdminComments(planId){
+async function calLoadAdminComments(planIds){
   const wrap=document.getElementById('calAdminComments');
   const list=document.getElementById('calAdminCommentsList');
   wrap.style.display='block';list.innerHTML='<span style="font-size:12px;color:var(--text-faint)">Kraunama...</span>';
-  const{data}=await sb.from('calendar_comments').select('*,clients(name)').eq('plan_id',planId).order('created_at');
+  const ids=Array.isArray(planIds)?planIds:[planIds];
+  const{data}=await sb.from('calendar_comments').select('*,clients(name)').in('plan_id',ids).order('created_at');
   if(!data||data.length===0){list.innerHTML='<span style="font-size:12px;color:var(--text-faint)">Komentarų nėra.</span>';return;}
   list.innerHTML=data.map(c=>{
     const name=c.clients?.name||'—';
@@ -2356,7 +2576,7 @@ async function calLoadAdminComments(planId){
     </div>`;
   }).join('');
 }
-function calCloseModal(){document.getElementById('calPostModal').classList.add('hidden');calEditingId=null;calPendingImgFile=null;calExistingImgUrl=null;}
+function calCloseModal(){document.getElementById('calPostModal').classList.add('hidden');calEditingId=null;calEditingGroup=null;calPendingImgFile=null;calExistingImgUrl=null;}
 
 function calSetImgPreview(url){
   const prev=document.getElementById('calImgPreview'),drop=document.getElementById('calImgDrop');
@@ -2409,7 +2629,19 @@ async function calSavePost(){
   const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null};
   const id=document.getElementById('calMId').value;
   let error;
-  if(id){
+  if(id&&calEditingGroup&&calEditingGroup.length){
+    // redaguojant grupę: bendri laukai atnaujinami visiems, platformos pridedamos/šalinamos
+    const existing=calEditingGroup;
+    const seen=new Set(),keepIds=[],extraIds=[];
+    existing.forEach(r=>{
+      if(calCurPlats.includes(r.platform)&&!seen.has(r.platform)){seen.add(r.platform);keepIds.push(r.id);}
+      else extraIds.push(r.id);
+    });
+    const addPlats=calCurPlats.filter(p=>!seen.has(p));
+    if(keepIds.length)({error}=await sb.from('content_plans').update(base).in('id',keepIds));
+    if(!error&&extraIds.length)({error}=await sb.from('content_plans').delete().in('id',extraIds));
+    if(!error&&addPlats.length)({error}=await sb.from('content_plans').insert(addPlats.map(p=>({...base,platform:p}))));
+  }else if(id){
     ({error}=await sb.from('content_plans').update({...base,platform:calCurPlats[0]}).eq('id',id));
   }else{
     const rows=calCurPlats.map(p=>({...base,platform:p}));
@@ -2421,8 +2653,10 @@ async function calSavePost(){
 }
 async function calDeletePost(){
   const id=document.getElementById('calMId').value;
-  if(!id||!confirm('Ištrinti šį įrašą?'))return;
-  const{error}=await sb.from('content_plans').delete().eq('id',id);
+  if(!id)return;
+  const ids=calEditingGroup&&calEditingGroup.length?calEditingGroup.map(r=>r.id):[id];
+  if(!confirm(ids.length>1?`Ištrinti šį įrašą iš ${ids.length} platformų?`:'Ištrinti šį įrašą?'))return;
+  const{error}=await sb.from('content_plans').delete().in('id',ids);
   if(error){showToast('Klaida: '+error.message);return;}
   calCloseModal();showToast('Ištrinta.');calLoad();
 }
