@@ -432,6 +432,10 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .cal-posts{display:flex;flex-direction:column;gap:2px;flex:1;}
 .cal-pp{display:flex;align-items:center;gap:4px;padding:2px 5px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;transition:opacity .15s;overflow:hidden;}
 .cal-pp:hover{opacity:.7;}
+.cal-pp[draggable="true"]{cursor:grab;}
+.cal-pp.dragging,.cal-wk-card.dragging{opacity:.35;}
+.cal-cell.drag-over-day,.cal-wk-col.drag-over-day{border-color:var(--accent);background:var(--accent-light);border-style:dashed;}
+.cal-wk-card[draggable="true"]{cursor:grab;}
 .cal-pp .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
 .cal-pp .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cal-pp-more{font-size:10px;color:var(--text-faint);padding:1px 4px;cursor:pointer;}
@@ -2401,14 +2405,14 @@ function calRenderCal(){
     const pills=groups.slice(0,3).map(g=>{
       const p=g.first;
       const dots=g.plats.map(pl=>`<span class="dot d-${pl}"></span>`).join('');
-      return`<div class="cal-pp c-${p.platform}" onclick="event.stopPropagation();calOpenView(${p.id})">
+      return`<div class="cal-pp c-${p.platform}" draggable="true" ondragstart="calDragStart(event,${p.id})" ondragend="calDragEnd(event)" onclick="event.stopPropagation();calOpenView(${p.id})">
         <span class="dots">${dots}</span>
         <span class="lbl">${escHtml(p.title||CAL_TYPE_L[p.content_type]||CAL_PLAT_L[p.platform]||'')}</span>
         ${g.cmts>0?`<span style="margin-left:auto;font-size:9px;opacity:.7">💬${g.cmts}</span>`:''}
       </div>`;}).join('');
     const more=groups.length>3?`<div class="cal-pp-more">+${groups.length-3} daugiau</div>`:'';
-    const thumb=imgGroup?`<img class="cal-cell-img" src="${escHtml(imgGroup.img)}" alt="" loading="lazy" onclick="event.stopPropagation();calOpenView(${imgGroup.first.id})">`:'';
-    return`<div class="cal-cell${isToday?' cal-today':''}${isOther?' cal-other-month':''}" onclick="calOpenModal(null,'${ds}')">
+    const thumb=imgGroup?`<img class="cal-cell-img" src="${escHtml(imgGroup.img)}" alt="" loading="lazy" draggable="true" ondragstart="calDragStart(event,${imgGroup.first.id})" ondragend="calDragEnd(event)" onclick="event.stopPropagation();calOpenView(${imgGroup.first.id})">`:'';
+    return`<div class="cal-cell${isToday?' cal-today':''}${isOther?' cal-other-month':''}" onclick="calOpenModal(null,'${ds}')" ondragover="calDragOverDay(event)" ondragleave="calDragLeaveDay(event)" ondrop="calDropDay(event,'${ds}')">
       <div class="cal-cell-top">
         ${isToday?`<span class="cal-today-badge">${d.getDate()}</span>`:`<span class="cal-cell-num">${d.getDate()}</span>`}
         <button class="cal-plus" onclick="event.stopPropagation();calOpenModal(null,'${ds}')">+</button>
@@ -2432,7 +2436,7 @@ function calRenderWeek(){
     return`<div class="cal-ws-day">
       <div class="cal-ws-day-hd">${groups.length?'<span class="cal-ws-dot"></span>':''}<span>${CAL_DAYS_LT[i].slice(0,2)}, ${d.getDate()} ${mn}</span></div>
       ${groups.length?groups.map(g=>`
-        <div class="cal-ws-item" onclick="calOpenView(${g.first.id})">
+        <div class="cal-ws-item" draggable="true" ondragstart="calDragStart(event,${g.first.id})" ondragend="calDragEnd(event)" onclick="calOpenView(${g.first.id})">
           <span class="cal-ws-badge c-${g.first.platform}">${g.plats.map(pl=>CAL_PLAT_E[pl]).join(' ')}${g.plats.length===1?` ${CAL_PLAT_L[g.first.platform]}`:''}</span>
           <span class="cal-ws-txt">${escHtml(g.first.title||CAL_TYPE_L[g.first.content_type]||'—')}</span>
           <span class="cal-ws-st">${CAL_ST_E[g.first.status]||'📋'}</span>
@@ -2451,7 +2455,7 @@ function calRenderWeekView(){
     const cards=groups.map(g=>{
       const p=g.first;
       const plats=g.plats.map(pl=>`<span class="tag c-${pl}" style="font-size:9px;padding:1px 6px">${CAL_PLAT_E[pl]} ${CAL_PLAT_L[pl]}</span>`).join('');
-      return`<div class="cal-wk-card" onclick="event.stopPropagation();calOpenView(${p.id})">
+      return`<div class="cal-wk-card" draggable="true" ondragstart="calDragStart(event,${p.id})" ondragend="calDragEnd(event)" onclick="event.stopPropagation();calOpenView(${p.id})">
         ${g.img?`<img src="${escHtml(g.img)}" loading="lazy" alt="">`:''}
         <div class="cal-wk-card-body">
           <div class="cal-wk-card-plats">${plats}</div>
@@ -2459,11 +2463,46 @@ function calRenderWeekView(){
           <div class="cal-wk-card-meta"><span>${CAL_TYPE_L[p.content_type]||''}</span><span>${CAL_ST_E[p.status]||'📋'}${g.cmts>0?` 💬${g.cmts}`:''}</span></div>
         </div>
       </div>`;}).join('');
-    return`<div class="cal-wk-col${isToday?' cal-today':''}" onclick="calOpenModal(null,'${ds}')">
+    return`<div class="cal-wk-col${isToday?' cal-today':''}" onclick="calOpenModal(null,'${ds}')" ondragover="calDragOverDay(event)" ondragleave="calDragLeaveDay(event)" ondrop="calDropDay(event,'${ds}')">
       <div class="cal-wk-hd"><span class="cal-wk-hd-name">${CAL_DAYS_LT[i].slice(0,3)}</span><span class="cal-wk-hd-num">${d.getDate()}</span></div>
       ${cards||`<div class="cal-wk-empty">Nieko suplanuota</div>`}
     </div>`;
   }).join('');
+}
+
+// ── DRAG & DROP: įrašo perkėlimas į kitą dieną ──
+let calDragId=null;
+function calDragStart(e,id){
+  calDragId=id;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',String(id));
+  e.currentTarget.classList.add('dragging');
+  e.stopPropagation();
+}
+function calDragEnd(e){
+  calDragId=null;
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.drag-over-day').forEach(el=>el.classList.remove('drag-over-day'));
+}
+function calDragOverDay(e){
+  if(calDragId==null)return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('drag-over-day');
+}
+function calDragLeaveDay(e){e.currentTarget.classList.remove('drag-over-day');}
+async function calDropDay(e,ds){
+  e.preventDefault();e.stopPropagation();
+  e.currentTarget.classList.remove('drag-over-day');
+  const id=calDragId??e.dataTransfer.getData('text/plain');
+  calDragId=null;
+  if(!id)return;
+  const g=calFindGroup(id);
+  if(!g||g.first.date===ds)return;
+  const{error}=await sb.from('content_plans').update({date:ds}).in('id',g.recs.map(r=>r.id));
+  if(error){showToast('Klaida: '+error.message);return;}
+  showToast(`Perkelta į ${fmtNice(ds)}`);
+  calLoad();
 }
 
 // ── POST PREVIEW (profile post view) ──
