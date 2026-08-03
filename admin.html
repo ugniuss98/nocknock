@@ -529,6 +529,9 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .pv-comments{border-top:1px solid var(--border);padding-top:10px;display:flex;flex-direction:column;gap:7px;}
 .pv-comments-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);}
 .pv-actions{display:flex;gap:7px;padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;}
+.pv-approval{display:none;font-size:11px;font-weight:700;padding:6px 10px;border-radius:8px;align-self:flex-start;}
+.pv-approval.ok{display:inline-block;background:var(--green-light);color:var(--green);}
+.pv-approval.no{display:inline-block;background:var(--red-light);color:var(--red);}
 @media print{body:not(.print-samata) #loginScreen,body:not(.print-samata) .header,body:not(.print-samata) .sidebar,body:not(.print-samata) .modal-overlay,body:not(.print-samata) .toast{display:none!important;}body:not(.print-samata) .layout{grid-template-columns:1fr!important;}body:not(.print-samata) .s-main{padding:0!important;}body:not(.print-samata) .day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}body:not(.print-samata) .del-btn,body:not(.print-samata) .status-btn{display:none!important;}body:not(.print-samata) .tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.header{padding:10px 14px;flex-wrap:wrap;}.s-main,.meta-wrapper{padding:14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-grid{grid-template-columns:1fr;}.page-kpi-grid{grid-template-columns:repeat(2,1fr);}}
@@ -1009,6 +1012,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     </div>
     <div class="pv-img-wrap" id="pvImgWrap"></div>
     <div class="pv-body">
+      <div class="pv-approval" id="pvApproval"></div>
       <div class="pv-type" id="pvType"></div>
       <div class="pv-title" id="pvTitle"></div>
       <div class="pv-notes" id="pvNotes"></div>
@@ -2526,7 +2530,18 @@ function calOpenView(id){
   notes.textContent=g.first.notes||'';
   notes.style.display=g.first.notes?'':'none';
   calLoadViewComments(g.recs.map(r=>r.id));
+  calLoadViewApproval(g.recs.map(r=>r.id));
   document.getElementById('calViewModal').classList.remove('hidden');
+}
+async function calLoadViewApproval(ids){
+  const el=document.getElementById('pvApproval');
+  el.className='pv-approval';el.textContent='';
+  const{data,error}=await sb.from('calendar_approvals').select('*').in('plan_id',ids).order('created_at',{ascending:false}).limit(1);
+  if(error||!data||!data.length)return;
+  const a=data[0];
+  const when=new Date(a.created_at).toLocaleDateString('lt-LT',{month:'short',day:'numeric'});
+  el.className='pv-approval '+(a.approved?'ok':'no');
+  el.textContent=a.approved?`✅ Klientas patvirtino (${when})`:`✖ Klientas nepatvirtino (${when})`;
 }
 async function calLoadViewComments(ids){
   const box=document.getElementById('pvComments');

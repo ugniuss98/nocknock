@@ -85,6 +85,15 @@ CREATE TABLE IF NOT EXISTS fb_report_settings (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 7. Kalendoriaus įrašų tvirtinimas (klientas spaudžia „Tvirtinu / Netvirtinu")
+CREATE TABLE IF NOT EXISTS calendar_approvals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  plan_id BIGINT UNIQUE NOT NULL,
+  client_id UUID REFERENCES clients(id) ON DELETE SET NULL,
+  approved BOOLEAN NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================================
 -- RLS politikos
 -- ============================================================
@@ -126,6 +135,15 @@ DROP POLICY IF EXISTS "meta_stats_read_all" ON meta_stats;
 DROP POLICY IF EXISTS "meta_stats_write_auth" ON meta_stats;
 CREATE POLICY "meta_stats_read_all" ON meta_stats FOR SELECT USING (true);
 CREATE POLICY "meta_stats_write_auth" ON meta_stats FOR ALL USING (auth.role() = 'authenticated');
+
+-- Įrašų tvirtinimas: klientas (anon) gali skaityti, kurti ir keisti savo sprendimą
+ALTER TABLE calendar_approvals ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "approvals_read_all" ON calendar_approvals;
+DROP POLICY IF EXISTS "approvals_insert_all" ON calendar_approvals;
+DROP POLICY IF EXISTS "approvals_update_all" ON calendar_approvals;
+CREATE POLICY "approvals_read_all" ON calendar_approvals FOR SELECT USING (true);
+CREATE POLICY "approvals_insert_all" ON calendar_approvals FOR INSERT WITH CHECK (true);
+CREATE POLICY "approvals_update_all" ON calendar_approvals FOR UPDATE USING (true);
 
 -- FB/IG ataskaitų nustatymai: TIK auth (juose saugomas tokenas)
 DROP POLICY IF EXISTS "fb_report_settings_auth" ON fb_report_settings;
