@@ -2718,10 +2718,18 @@ function repChangeYear(d){repYear+=d;repLoad();}
 
 async function repLoad(){
   document.getElementById('repYearLabel').textContent=repYear;
+  repFiles=[];
+  repRenderMonths(); // tinklelis rodomas iškart, failai užsikrauna po to
   const cid=currentClient.id;
   const{data,error}=await sb.from('monthly_reports').select('*').eq('client_id',cid).like('month',repYear+'-%').order('created_at');
-  if(error){showToast('Klaida: '+error.message,4500);return;}
   if(!currentClient||currentClient.id!==cid)return;
+  if(error){
+    document.getElementById('repMonthsGrid').insertAdjacentHTML('afterbegin',
+      `<div class="rep-card" style="grid-column:1/-1;border-color:#F5C89A;margin-bottom:0">
+        <div style="font-size:13px;line-height:1.5;color:var(--orange)"><b>Duomenų bazė dar neparuošta.</b> Supabase → SQL Editor paleisk <b>setup.sql</b> dalį „monthly_reports“ — tada failų įkėlimas veiks.<br><span style="font-size:11px;color:var(--text-muted)">Klaida: ${escHtml(error.message)}</span></div>
+      </div>`);
+    return;
+  }
   repFiles=data||[];
   repRenderMonths();
 }
