@@ -419,7 +419,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .cal-dow-cell{text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-faint);padding:3px 0;}
 .cal-dow-cell.cal-weekend{color:var(--red);}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-.cal-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:100px;padding:7px 7px 5px;cursor:pointer;transition:border-color .15s,background .1s;display:flex;flex-direction:column;gap:2px;position:relative;}
+.cal-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:100px;padding:7px 7px 5px;cursor:pointer;transition:border-color .15s,background .1s;display:flex;flex-direction:column;gap:2px;position:relative;min-width:0;overflow:hidden;}
 .cal-cell:hover{border-color:var(--border-strong);background:#FAFAF8;}
 .cal-cell:hover .cal-plus{opacity:1;}
 .cal-cell.cal-today{border-color:var(--accent);border-width:1.5px;}

@@ -233,8 +233,12 @@
     .week-label{min-width:120px;}
   }
 /* ── CLIENT CALENDAR ── */
-.cl-cal-wrap{max-width:860px;margin:0 auto;padding:16px 20px;}
-.cl-cal-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.cl-cal-wrap{max-width:1060px;margin:0 auto;padding:16px 20px;}
+.cl-cal-toolbar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.cl-view-toggle{display:flex;border:1.5px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0;}
+.cl-vt-btn{font-size:12px;font-weight:600;padding:5px 13px;border:none;background:var(--surface);color:var(--text-muted);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.cl-vt-btn:hover{color:var(--text);}
+.cl-vt-btn.active{background:var(--text);color:white;}
 .cl-nav-btn{width:32px;height:32px;border:1px solid var(--border-strong);background:var(--surface);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .15s;}
 .cl-nav-btn:hover{background:var(--bg);}.cl-nav-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
 .cl-month-lbl{font-size:16px;font-weight:600;letter-spacing:-.3px;min-width:170px;text-align:center;}
@@ -243,7 +247,7 @@
 .cl-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-faint);}
 .cl-wknd{color:var(--red);}
 .cl-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-.cl-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:90px;padding:7px;cursor:pointer;transition:border-color .15s,background .1s;display:flex;flex-direction:column;gap:3px;}
+.cl-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:90px;padding:7px;cursor:pointer;transition:border-color .15s,background .1s;display:flex;flex-direction:column;gap:3px;min-width:0;overflow:hidden;}
 .cl-cell:hover{border-color:var(--accent);background:var(--accent-light);}
 .cl-cell.cl-today{border-color:var(--accent);border-width:2px;}
 .cl-cell.cl-other{opacity:.35;}
@@ -254,6 +258,23 @@
 .cl-entry .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
 .cl-entry .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cl-more{font-size:10px;color:var(--text-faint);padding:1px 3px;}
+/* client week view */
+.cl-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:stretch;}
+.cl-wk-col{background:var(--surface);border:1px solid var(--border);border-radius:12px;min-height:340px;padding:9px 8px;display:flex;flex-direction:column;gap:7px;min-width:0;}
+.cl-wk-col.cl-today{border-color:var(--accent);border-width:1.5px;}
+.cl-wk-hd{display:flex;align-items:center;justify-content:space-between;padding:0 2px 7px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.cl-wk-hd-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);}
+.cl-wk-hd-num{font-size:13px;font-weight:600;}
+.cl-wk-col.cl-today .cl-wk-hd-num{background:var(--accent);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.cl-wk-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;background:var(--surface);transition:box-shadow .15s,border-color .15s;flex-shrink:0;}
+.cl-wk-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.cl-wk-card img{width:100%;height:80px;object-fit:cover;display:block;}
+.cl-wk-card-body{padding:6px 8px 7px;display:flex;flex-direction:column;gap:4px;}
+.cl-wk-card-plats{display:flex;flex-wrap:wrap;gap:3px;}
+.cl-wk-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;white-space:nowrap;}
+.cl-wk-card-title{font-size:11px;font-weight:600;line-height:1.3;word-break:break-word;}
+.cl-wk-card-meta{font-size:10px;color:var(--text-muted);}
+.cl-wk-empty{font-size:11px;color:var(--text-faint);text-align:center;padding:10px 0;}
 /* Detail panel */
 .cl-detail-panel{max-width:560px;margin:16px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
 .cl-detail-panel.hidden{display:none;}
@@ -459,17 +480,27 @@
   <div class="cl-cal-wrap">
     <!-- Month nav -->
     <div class="cl-cal-toolbar">
-      <button class="cl-nav-btn" onclick="clCalChangeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="cl-view-toggle">
+        <button class="cl-vt-btn active" id="clVtMonth" onclick="clSetView('month')">Mėnuo</button>
+        <button class="cl-vt-btn" id="clVtWeek" onclick="clSetView('week')">Savaitė</button>
+      </div>
+      <button class="cl-nav-btn" onclick="clCalNav(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span class="cl-month-lbl" id="clMonthLabel"></span>
-      <button class="cl-nav-btn" onclick="clCalChangeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <button class="cl-nav-btn" onclick="clCalNav(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       <button class="cl-today-btn" onclick="clCalGoToday()">Šiandien</button>
     </div>
-    <!-- Grid -->
-    <div class="cl-cal-dow">
-      <div>Pr</div><div>An</div><div>Tr</div><div>Kt</div><div>Pn</div>
-      <div class="cl-wknd">Št</div><div class="cl-wknd">Sk</div>
+    <!-- Month grid -->
+    <div id="clMonthView">
+      <div class="cl-cal-dow">
+        <div>Pr</div><div>An</div><div>Tr</div><div>Kt</div><div>Pn</div>
+        <div class="cl-wknd">Št</div><div class="cl-wknd">Sk</div>
+      </div>
+      <div class="cl-cal-grid" id="clCalGrid"></div>
     </div>
-    <div class="cl-cal-grid" id="clCalGrid"></div>
+    <!-- Week grid -->
+    <div id="clWeekView" style="display:none">
+      <div class="cl-week-grid" id="clWeekGrid"></div>
+    </div>
   </div>
   <!-- Entry detail panel -->
   <div class="cl-detail-panel hidden" id="clDetailPanel">
@@ -1062,6 +1093,7 @@ async function generatePdf(){
 // ─── CLIENT CALENDAR ───
 let clCalYear=new Date().getFullYear(),clCalMonth=new Date().getMonth();
 let clPlans=[],clActivePlanId=null,clActiveIds=[];
+let clCalView='month',clWeekAnchor=new Date();
 
 const CL_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
 const CL_PLAT_L={ig:'📷 Instagram',tiktok:'🎵 TikTok',fb:'📘 Facebook',youtube:'▶ YouTube',linkedin:'💼 LinkedIn',other:'🔗 Kita'};
@@ -1072,17 +1104,47 @@ const CL_DOT_CLS={ig:'d-ig',tiktok:'d-tiktok',fb:'d-fb',youtube:'d-youtube',link
 function clFmt(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function clEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-function clCalChangeMonth(d){clCalMonth+=d;if(clCalMonth>11){clCalMonth=0;clCalYear++;}if(clCalMonth<0){clCalMonth=11;clCalYear--;}clCalLoad();}
-function clCalGoToday(){const n=new Date();clCalYear=n.getFullYear();clCalMonth=n.getMonth();clCalLoad();}
+function clWeekMonday(d){const x=new Date(d);let dw=x.getDay();if(dw===0)dw=7;x.setDate(x.getDate()-(dw-1));x.setHours(12,0,0,0);return x;}
+function clSetView(v){
+  if(clCalView===v)return;
+  clCalView=v;
+  document.getElementById('clVtMonth').classList.toggle('active',v==='month');
+  document.getElementById('clVtWeek').classList.toggle('active',v==='week');
+  document.getElementById('clMonthView').style.display=v==='month'?'':'none';
+  document.getElementById('clWeekView').style.display=v==='week'?'':'none';
+  if(v==='week'){
+    const n=new Date();
+    clWeekAnchor=(n.getFullYear()===clCalYear&&n.getMonth()===clCalMonth)?new Date(n):new Date(clCalYear,clCalMonth,1,12);
+  }else{
+    clCalYear=clWeekAnchor.getFullYear();clCalMonth=clWeekAnchor.getMonth();
+  }
+  clCalLoad();
+}
+function clCalNav(d){
+  if(clCalView==='month'){clCalMonth+=d;if(clCalMonth>11){clCalMonth=0;clCalYear++;}if(clCalMonth<0){clCalMonth=11;clCalYear--;}}
+  else{clWeekAnchor.setDate(clWeekAnchor.getDate()+7*d);}
+  clCalLoad();
+}
+function clCalGoToday(){const n=new Date();clCalYear=n.getFullYear();clCalMonth=n.getMonth();clWeekAnchor=new Date(n);clCalLoad();}
 
 async function clCalLoad(){
-  document.getElementById('clMonthLabel').textContent=`${CL_MONTHS[clCalMonth]} ${clCalYear}`;
-  const from=clFmt(new Date(clCalYear,clCalMonth-1,24));
-  const to=clFmt(new Date(clCalYear,clCalMonth+1,7));
+  let from,to;
+  if(clCalView==='month'){
+    document.getElementById('clMonthLabel').textContent=`${CL_MONTHS[clCalMonth]} ${clCalYear}`;
+    from=clFmt(new Date(clCalYear,clCalMonth-1,24));
+    to=clFmt(new Date(clCalYear,clCalMonth+1,7));
+  }else{
+    const mon=clWeekMonday(clWeekAnchor),sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    const m1=CL_MONTHS[mon.getMonth()].slice(0,4).toLowerCase(),m2=CL_MONTHS[sun.getMonth()].slice(0,4).toLowerCase();
+    document.getElementById('clMonthLabel').textContent=mon.getMonth()===sun.getMonth()
+      ?`${m1} ${mon.getDate()}–${sun.getDate()}, ${sun.getFullYear()}`
+      :`${m1} ${mon.getDate()} – ${m2} ${sun.getDate()}, ${sun.getFullYear()}`;
+    from=clFmt(mon);to=clFmt(sun);
+  }
   const{data,error}=await sb.from('content_plans').select('*').gte('date',from).lte('date',to).order('date').order('created_at');
   if(error){console.error(error);return;}
   clPlans=data||[];
-  clRenderCalGrid();
+  if(clCalView==='month')clRenderCalGrid();else clRenderWeekView();
   if(clActivePlanId){
     const p=clPlans.find(x=>String(x.id)===String(clActivePlanId));
     if(p)clOpenPost(p.id);else clCloseDetail();
@@ -1142,6 +1204,32 @@ function clOpenDay(ds){
   const dp=clPlans.filter(p=>p.date===ds);
   if(dp.length)clOpenPost(dp[0].id);
   // if 0, do nothing
+}
+
+const CL_DOW=['Pr','An','Tr','Kt','Pn','Št','Sk'];
+function clRenderWeekView(){
+  const grid=document.getElementById('clWeekGrid');
+  const mon=clWeekMonday(clWeekAnchor),todayStr=clFmt(new Date());
+  grid.innerHTML=Array.from({length:7},(_,i)=>{
+    const d=new Date(mon);d.setDate(mon.getDate()+i);
+    const ds=clFmt(d),isToday=ds===todayStr;
+    const groups=clGroupDay(clPlans.filter(p=>p.date===ds));
+    const cards=groups.map(g=>{
+      const p=g.first;
+      const plats=g.plats.map(pl=>`<span class="cl-wk-tag ${CL_PLAT_CLS[pl]||'c-other'}">${CL_PLAT_L[pl]||pl}</span>`).join('');
+      return`<div class="cl-wk-card" onclick="clOpenPost(${p.id})">
+        ${g.img?`<img src="${clEsc(g.img)}" loading="lazy" alt="">`:''}
+        <div class="cl-wk-card-body">
+          <div class="cl-wk-card-plats">${plats}</div>
+          <div class="cl-wk-card-title">${clEsc(p.title||CL_TYPE_L[p.content_type]||'—')}</div>
+          <div class="cl-wk-card-meta">${CL_TYPE_L[p.content_type]||''}</div>
+        </div>
+      </div>`;}).join('');
+    return`<div class="cl-wk-col${isToday?' cl-today':''}">
+      <div class="cl-wk-hd"><span class="cl-wk-hd-name">${CL_DOW[i]}</span><span class="cl-wk-hd-num">${d.getDate()}</span></div>
+      ${cards||`<div class="cl-wk-empty">Nieko</div>`}
+    </div>`;
+  }).join('');
 }
 
 async function clOpenPost(id){
