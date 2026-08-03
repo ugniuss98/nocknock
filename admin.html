@@ -251,6 +251,29 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .rep-btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .rep-hint{font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.5;}
 .rep-conn-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--green-light);color:var(--green);display:inline-flex;align-items:center;gap:5px;}
+/* mėnesių failų archyvas */
+.rep-months-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.rep-month-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.rep-month-card.rep-current{border-color:var(--accent);}
+.rep-month-hd{display:flex;align-items:center;justify-content:space-between;}
+.rep-month-name{font-size:13px;font-weight:700;}
+.rep-month-count{font-size:10px;font-weight:600;background:var(--gray-light);color:var(--gray);padding:2px 8px;border-radius:20px;}
+.rep-month-count.has{background:var(--green-light);color:var(--green);}
+.rep-files{display:flex;flex-direction:column;gap:5px;}
+.rep-file{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:8px;padding:7px 9px;}
+.rep-file-ico{font-size:15px;flex-shrink:0;}
+.rep-file-info{flex:1;min-width:0;}
+.rep-file-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rep-file-name a{color:var(--text);text-decoration:none;}
+.rep-file-name a:hover{color:var(--accent);text-decoration:underline;}
+.rep-file-meta{font-size:10px;color:var(--text-faint);}
+.rep-file-del{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:3px;border-radius:5px;display:flex;flex-shrink:0;transition:all .15s;}
+.rep-file-del:hover{color:var(--red);background:var(--red-light);}
+.rep-file-del svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;}
+.rep-upload{border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:10px;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;transition:all .15s;color:var(--text-muted);font-size:12px;background:var(--bg);}
+.rep-upload:hover,.rep-upload.drag-over{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
+.rep-upload svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.rep-upload.busy{opacity:.6;pointer-events:none;}
 .rep-platform{margin-bottom:22px;}
 .rep-plat-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap;}
 .rep-plat-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
@@ -791,60 +814,23 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
   <div class="rep-wrapper">
     <div class="rep-toolbar">
       <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:14px;font-weight:700">Facebook &amp; Instagram ataskaita</span>
+        <span style="font-size:14px;font-weight:700">Mėnesių ataskaitos</span>
         <span id="repClientName" style="font-size:12px;color:var(--text-muted)"></span>
       </div>
-      <span id="repConnBadge" class="rep-conn-badge" style="display:none">
-        <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5"><path d="M20 6L9 17l-5-5"/></svg>
-        Prijungta
-      </span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="cal-nav-btn" onclick="repChangeYear(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <span style="font-size:14px;font-weight:600;min-width:56px;text-align:center" id="repYearLabel"></span>
+        <button class="cal-nav-btn" onclick="repChangeYear(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
     </div>
 
     <div id="repNoClient" class="no-client-msg" style="min-height:180px">
       <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14"/></svg>
-      <strong>Pasirink klientą</strong><span style="font-size:12px">Ataskaitos generuojamos pagal klientą</span>
+      <strong>Pasirink klientą</strong><span style="font-size:12px">Ataskaitos saugomos pagal klientą</span>
     </div>
 
     <div id="repBody" style="display:none">
-      <!-- Prisijungimas -->
-      <div class="rep-card">
-        <div class="rep-card-title">
-          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-          Prisijungimas
-        </div>
-        <div class="rep-field">
-          <label>Graph API prieigos raktas (token)</label>
-          <input type="password" class="rep-input" id="repToken" placeholder="EAAB... įklijuok Graph API Explorer tokeną" autocomplete="off">
-          <div class="rep-hint">Gauk iš <b>developers.facebook.com → Graph API Explorer</b>. Reikia teisių: <code>pages_read_engagement</code>, <code>read_insights</code>, <code>instagram_basic</code>, <code>instagram_manage_insights</code>.</div>
-        </div>
-        <div class="rep-field">
-          <div class="rep-btn-row">
-            <button class="rep-btn sec" id="repLoadPagesBtn" onclick="repLoadPages()">Įkelti puslapius</button>
-            <select class="rep-select" id="repPageSelect" style="flex:1;min-width:180px;display:none" onchange="repOnPageSelect()"></select>
-          </div>
-          <div class="rep-hint" id="repPageHint" style="display:none"></div>
-        </div>
-        <div class="rep-btn-row" style="margin-top:4px">
-          <button class="rep-btn sec" id="repSaveBtn" onclick="repSaveSettings()" style="display:none">Išsaugoti prisijungimą</button>
-        </div>
-      </div>
-
-      <!-- Generuoti -->
-      <div class="rep-card">
-        <div class="rep-btn-row" style="justify-content:space-between">
-          <div>
-            <div style="font-size:13px;font-weight:700">Mėnesio ataskaita su palyginimu</div>
-            <div class="rep-hint" id="repRangeHint" style="margin-top:3px"></div>
-          </div>
-          <div class="rep-btn-row">
-            <button class="rep-btn" id="repGenBtn" onclick="repGenerate()">Generuoti ataskaitą</button>
-            <button class="rep-btn sec" id="repCopyBtn" onclick="repCopy()" style="display:none">Kopijuoti tekstą</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Rezultatai -->
-      <div id="repResults"></div>
+      <div class="rep-months-grid" id="repMonthsGrid"></div>
     </div>
   </div>
 </div>
@@ -2715,318 +2701,111 @@ async function calDeletePost(){
   calCloseModal();showToast('Ištrinta.');calLoad();
 }
 
-// ═══════════════ FB / IG ATASKAITOS ═══════════════
-const FB_API='https://graph.facebook.com/v21.0/';
+// ═══════════════ MĖNESIŲ ATASKAITOS (failų archyvas) ═══════════════
 const LT_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
-// Kandidatinės metrikos — nepalaikomos (pagal API versiją / paskyrą) tiesiog praleidžiamos
-const FB_METRICS=[
-  ['page_impressions','Parodymai'],
-  ['page_impressions_unique','Pasiekimas'],
-  ['page_post_engagements','Įrašų įsitraukimai'],
-  ['page_total_actions','Veiksmai su puslapiu'],
-  ['page_views_total','Puslapio peržiūros'],
-  ['page_daily_follows_unique','Nauji sekėjai'],
-  ['page_actions_post_reactions_total','Reakcijos'],
-];
-const IG_METRICS=[
-  ['reach','Pasiekimas'],
-  ['impressions','Parodymai'],
-  ['views','Peržiūros'],
-  ['profile_views','Profilio peržiūros'],
-  ['accounts_engaged','Įsitraukę paskyros'],
-  ['total_interactions','Sąveikos'],
-  ['website_clicks','Svetainės paspaudimai'],
-  ['follower_count','Nauji sekėjai'],
-];
-
-let repToken='', repPages=[], repSettings=null, repReportText='';
-
-function repMonthRanges(){
-  const now=new Date(), y=now.getFullYear(), m=now.getMonth();
-  const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  const lastStart=new Date(y,m-1,1), prevStart=new Date(y,m-2,1);
-  return {
-    last:{since:iso(lastStart),until:iso(new Date(y,m,1)),label:LT_MONTHS[lastStart.getMonth()]+' '+lastStart.getFullYear()},
-    prev:{since:iso(prevStart),until:iso(new Date(y,m-1,1)),label:LT_MONTHS[prevStart.getMonth()]+' '+prevStart.getFullYear()}
-  };
-}
-
-async function fbGraph(path,params){
-  const u=new URL(FB_API+path);
-  Object.entries(params||{}).forEach(([k,v])=>{if(v!=null)u.searchParams.set(k,v);});
-  const r=await fetch(u.toString());
-  const j=await r.json();
-  if(j.error)throw new Error(j.error.message||'Graph API klaida');
-  return j;
-}
-
-// FB puslapio metrika: sumuojam dienines reikšmes per mėnesį
-async function fbMetricSum(id,token,metric,range){
-  try{
-    const j=await fbGraph(id+'/insights',{metric,period:'day',since:range.since,until:range.until,access_token:token});
-    const vals=(j.data&&j.data[0]&&j.data[0].values)||[];
-    return vals.reduce((s,v)=>s+(typeof v.value==='number'?v.value:0),0);
-  }catch(e){return null;}
-}
-// IG metrika: pirma bandom total_value (dedublikuota), jei nepalaiko — sumuojam dienines
-async function igMetricTotal(id,token,metric,range){
-  try{
-    const j=await fbGraph(id+'/insights',{metric,metric_type:'total_value',period:'day',since:range.since,until:range.until,access_token:token});
-    const tv=j.data&&j.data[0]&&j.data[0].total_value;
-    if(tv&&typeof tv.value==='number')return tv.value;
-  }catch(e){/* fallback */}
-  try{
-    const j=await fbGraph(id+'/insights',{metric,period:'day',since:range.since,until:range.until,access_token:token});
-    const vals=(j.data&&j.data[0]&&j.data[0].values)||[];
-    if(vals.length)return vals.reduce((s,v)=>s+(typeof v.value==='number'?v.value:0),0);
-  }catch(e){}
-  return null;
-}
+let repYear=new Date().getFullYear(),repFiles=[];
 
 function repInit(){
   document.getElementById('repClientName').textContent=currentClient?('· '+currentClient.name):'';
   const has=!!currentClient;
   document.getElementById('repNoClient').style.display=has?'none':'flex';
   document.getElementById('repBody').style.display=has?'block':'none';
-  const rg=repMonthRanges();
-  document.getElementById('repRangeHint').textContent=`${rg.last.label} palyginta su ${rg.prev.label}`;
+  document.getElementById('repYearLabel').textContent=repYear;
   if(!has)return;
-  // Reset UI, tada užkraunam išsaugotus nustatymus
-  repPages=[];repReportText='';
-  document.getElementById('repResults').innerHTML='';
-  document.getElementById('repCopyBtn').style.display='none';
-  document.getElementById('repPageSelect').style.display='none';
-  document.getElementById('repPageHint').style.display='none';
-  document.getElementById('repSaveBtn').style.display='none';
-  document.getElementById('repConnBadge').style.display='none';
-  document.getElementById('repToken').value='';
-  repLoadSettings();
+  repLoad();
 }
+function repChangeYear(d){repYear+=d;repLoad();}
 
-async function repLoadSettings(){
+async function repLoad(){
+  document.getElementById('repYearLabel').textContent=repYear;
   const cid=currentClient.id;
-  const{data}=await sb.from('fb_report_settings').select('*').eq('client_id',cid).maybeSingle();
-  if(!currentClient||currentClient.id!==cid)return; // klientas pasikeitė
-  repSettings=data||null;
-  if(data){
-    if(data.access_token){repToken=data.access_token;document.getElementById('repToken').value=data.access_token;}
-    if(data.fb_page_id){
-      document.getElementById('repConnBadge').style.display='inline-flex';
-      const hint=document.getElementById('repPageHint');
-      hint.style.display='block';
-      hint.innerHTML=`Puslapis: <b>${escHtml(data.fb_page_name||data.fb_page_id)}</b>`+
-        (data.ig_username?` · IG: <b>@${escHtml(data.ig_username)}</b>`:' · IG nesusietas');
-    }
-  }
-}
-
-async function repLoadPages(){
-  const tok=document.getElementById('repToken').value.trim();
-  if(!tok){showToast('Įklijuok prieigos raktą (token)');return;}
-  repToken=tok;
-  const btn=document.getElementById('repLoadPagesBtn');
-  btn.disabled=true;btn.textContent='Kraunama...';
-  try{
-    const j=await fbGraph('me/accounts',{fields:'name,id,instagram_business_account{id,username,followers_count,media_count}',limit:100,access_token:tok});
-    repPages=j.data||[];
-    if(!repPages.length){showToast('Nerasta jokių puslapių šiam tokenui');return;}
-    const sel=document.getElementById('repPageSelect');
-    const savedId=repSettings&&repSettings.fb_page_id;
-    sel.innerHTML='<option value="">— pasirink puslapį —</option>'+repPages.map(p=>{
-      const ig=p.instagram_business_account?` (IG: @${p.instagram_business_account.username||'susietas'})`:'';
-      return `<option value="${p.id}"${savedId===p.id?' selected':''}>${escHtml(p.name)}${ig}</option>`;
-    }).join('');
-    sel.style.display='block';
-    document.getElementById('repSaveBtn').style.display='inline-flex';
-    repOnPageSelect();
-    showToast('Puslapiai įkelti ✓');
-  }catch(e){
-    showToast('Klaida: '+e.message,4500);
-  }finally{
-    btn.disabled=false;btn.textContent='Įkelti puslapius';
-  }
-}
-
-function repSelectedPage(){
-  const id=document.getElementById('repPageSelect').value;
-  return repPages.find(p=>p.id===id)||null;
-}
-function repOnPageSelect(){
-  const p=repSelectedPage();
-  const hint=document.getElementById('repPageHint');
-  if(!p){hint.style.display='none';return;}
-  hint.style.display='block';
-  const ig=p.instagram_business_account;
-  hint.innerHTML=`Puslapis: <b>${escHtml(p.name)}</b> · `+(ig?`IG: <b>@${escHtml(ig.username||'susietas')}</b>`:'IG paskyra nesusieta su šiuo puslapiu');
-}
-
-async function repSaveSettings(){
-  if(!currentClient)return;
-  const p=repSelectedPage();
-  if(!p){showToast('Pasirink puslapį');return;}
-  const ig=p.instagram_business_account;
-  const row={
-    client_id:currentClient.id,
-    access_token:repToken,
-    fb_page_id:p.id,
-    fb_page_name:p.name,
-    ig_user_id:ig?ig.id:null,
-    ig_username:ig?ig.username:null,
-    updated_at:new Date().toISOString()
-  };
-  const{error}=await sb.from('fb_report_settings').upsert(row,{onConflict:'client_id'});
+  const{data,error}=await sb.from('monthly_reports').select('*').eq('client_id',cid).like('month',repYear+'-%').order('created_at');
   if(error){showToast('Klaida: '+error.message,4500);return;}
-  repSettings=row;
-  document.getElementById('repConnBadge').style.display='inline-flex';
-  showToast('Prisijungimas išsaugotas ✓');
+  if(!currentClient||currentClient.id!==cid)return;
+  repFiles=data||[];
+  repRenderMonths();
 }
 
-async function repGenerate(){
-  if(!currentClient){showToast('Pasirink klientą');return;}
-  const tok=(document.getElementById('repToken').value.trim())||repToken;
-  if(!tok){showToast('Reikia prieigos rakto (token)');return;}
-  repToken=tok;
-  // Puslapio ID: iš pasirinkimo arba iš išsaugotų nustatymų
-  let page=repSelectedPage();
-  let pageId=page?page.id:(repSettings&&repSettings.fb_page_id);
-  let igId=page?(page.instagram_business_account&&page.instagram_business_account.id):(repSettings&&repSettings.ig_user_id);
-  let igUser=page?(page.instagram_business_account&&page.instagram_business_account.username):(repSettings&&repSettings.ig_username);
-  let pageName=page?page.name:(repSettings&&repSettings.fb_page_name);
-  if(!pageId){showToast('Pirma įkelk ir pasirink puslapį');return;}
-
-  const btn=document.getElementById('repGenBtn');
-  btn.disabled=true;btn.innerHTML='<span class="rep-spinner"></span> Generuojama...';
-  const res=document.getElementById('repResults');
-  res.innerHTML='<div class="rep-card"><div class="rep-empty">Kraunami duomenys iš Facebook / Instagram...</div></div>';
-  const rg=repMonthRanges();
-
-  try{
-    // Puslapio prieigos raktas (insights reikalauja Page token) + sekėjų skaičius
-    const pageInfo=await fbGraph(pageId,{fields:'access_token,name,fan_count,followers_count',access_token:tok});
-    const pageToken=pageInfo.access_token||tok;
-    pageName=pageName||pageInfo.name;
-
-    // ── Facebook metrikos (abu mėnesiai lygiagrečiai) ──
-    const fbRows=[];
-    await Promise.all(FB_METRICS.map(async([key,label])=>{
-      const[cur,prev]=await Promise.all([
-        fbMetricSum(pageId,pageToken,key,rg.last),
-        fbMetricSum(pageId,pageToken,key,rg.prev)
-      ]);
-      if(cur!=null||prev!=null)fbRows.push({label,cur:cur||0,prev:prev||0});
-    }));
-
-    // ── Instagram metrikos ──
-    let igRows=[], igSnap=null;
-    if(igId){
-      try{
-        igSnap=await fbGraph(igId,{fields:'username,followers_count,media_count',access_token:pageToken});
-        igUser=igUser||igSnap.username;
-      }catch(e){}
-      await Promise.all(IG_METRICS.map(async([key,label])=>{
-        const[cur,prev]=await Promise.all([
-          igMetricTotal(igId,pageToken,key,rg.last),
-          igMetricTotal(igId,pageToken,key,rg.prev)
-        ]);
-        if(cur!=null||prev!=null)igRows.push({label,cur:cur||0,prev:prev||0});
-      }));
-    }
-
-    repRenderReport({pageName,fanCount:pageInfo.fan_count??pageInfo.followers_count,fbRows,igId,igUser,igSnap,igRows,rg});
-    // Išsaugom tekstinę versiją kopijavimui
-    repReportText=repBuildText({pageName,fanCount:pageInfo.fan_count??pageInfo.followers_count,fbRows,igUser,igSnap,igRows,rg});
-    document.getElementById('repCopyBtn').style.display='inline-flex';
-  }catch(e){
-    res.innerHTML=`<div class="rep-card"><div class="rep-empty" style="color:var(--red)">Klaida: ${escHtml(e.message)}</div></div>`;
-  }finally{
-    btn.disabled=false;btn.textContent='Generuoti ataskaitą';
-  }
+function repFileIcon(name){
+  const ext=String(name||'').split('.').pop().toLowerCase();
+  if(['pdf'].includes(ext))return'📄';
+  if(['xls','xlsx','csv'].includes(ext))return'📊';
+  if(['doc','docx','txt'].includes(ext))return'📝';
+  if(['ppt','pptx','key'].includes(ext))return'📽';
+  if(['png','jpg','jpeg','webp','gif','heic'].includes(ext))return'🖼';
+  if(['zip','rar','7z'].includes(ext))return'🗜';
+  return'📎';
+}
+function repFmtSize(b){
+  if(!b)return'';
+  if(b<1024)return b+' B';
+  if(b<1048576)return(b/1024).toFixed(0)+' KB';
+  return(b/1048576).toFixed(1)+' MB';
 }
 
-function repDelta(cur,prev){
-  cur=cur||0;prev=prev||0;
-  if(prev===0)return cur===0?{cls:'flat',txt:'—'}:{cls:'up',txt:'naujas'};
-  const p=Math.round((cur-prev)/prev*100);
-  if(p>0)return{cls:'up',txt:'▲ '+p+'%'};
-  if(p<0)return{cls:'down',txt:'▼ '+Math.abs(p)+'%'};
-  return{cls:'flat',txt:'0%'};
-}
-function repNum(n){return (n||0).toLocaleString('lt-LT');}
-
-function repKpiHtml(rows){
-  if(!rows.length)return '<div class="rep-empty">Šiai paskyrai nepavyko gauti metrikų (gali trūkti teisių arba duomenų šį laikotarpį).</div>';
-  return '<div class="rep-grid">'+rows.map(r=>{
-    const d=repDelta(r.cur,r.prev);
-    return `<div class="rep-kpi">
-      <div class="rep-kpi-label">${escHtml(r.label)}</div>
-      <div class="rep-kpi-val">${repNum(r.cur)}</div>
-      <div class="rep-kpi-foot"><span class="rep-kpi-prev">buvo ${repNum(r.prev)}</span><span class="rep-delta ${d.cls}">${d.txt}</span></div>
+function repRenderMonths(){
+  const now=new Date();
+  document.getElementById('repMonthsGrid').innerHTML=Array.from({length:12},(_,m)=>{
+    const key=`${repYear}-${String(m+1).padStart(2,'0')}`;
+    const files=repFiles.filter(f=>f.month===key);
+    const isCur=now.getFullYear()===repYear&&now.getMonth()===m;
+    const list=files.map(f=>`<div class="rep-file">
+      <span class="rep-file-ico">${repFileIcon(f.file_name)}</span>
+      <div class="rep-file-info">
+        <div class="rep-file-name"><a href="${escHtml(f.file_url)}" target="_blank" rel="noopener">${escHtml(f.file_name||'failas')}</a></div>
+        <div class="rep-file-meta">${repFmtSize(f.file_size)}${f.file_size?' · ':''}${new Date(f.created_at).toLocaleDateString('lt-LT')}</div>
+      </div>
+      <button class="rep-file-del" onclick="repDeleteFile('${f.id}')" title="Ištrinti">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </button>
+    </div>`).join('');
+    return`<div class="rep-month-card${isCur?' rep-current':''}">
+      <div class="rep-month-hd">
+        <span class="rep-month-name">${LT_MONTHS[m]} ${repYear}</span>
+        <span class="rep-month-count${files.length?' has':''}">${files.length?files.length+' fail.':'tuščia'}</span>
+      </div>
+      ${files.length?`<div class="rep-files">${list}</div>`:''}
+      <label class="rep-upload" id="repUp-${key}" ondragover="repDragOver(event)" ondragleave="repDragLeave(event)" ondrop="repDrop(event,'${key}')">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Įkelti failą</span>
+        <input type="file" multiple style="display:none" onchange="repPick(event,'${key}')">
+      </label>
     </div>`;
-  }).join('')+'</div>';
+  }).join('');
 }
 
-function repRenderReport(r){
-  const periodNote=`<span class="rep-period-note">${r.rg.last.label} vs ${r.rg.prev.label}</span>`;
-  let html='';
-  // Facebook
-  html+=`<div class="rep-platform">
-    <div class="rep-plat-head">
-      <div class="rep-plat-icon fb">📘</div>
-      <div><div class="rep-plat-name">Facebook</div><div class="rep-plat-sub">${escHtml(r.pageName||'')}</div></div>
-      ${periodNote}
-    </div>
-    ${r.fanCount!=null?`<div style="margin-bottom:12px"><span class="rep-snapshot">Sekėjai (viso) <b>${repNum(r.fanCount)}</b></span></div>`:''}
-    ${repKpiHtml(r.fbRows)}
-  </div>`;
-  // Instagram
-  html+=`<div class="rep-platform">
-    <div class="rep-plat-head">
-      <div class="rep-plat-icon ig">📷</div>
-      <div><div class="rep-plat-name">Instagram</div><div class="rep-plat-sub">${r.igUser?('@'+escHtml(r.igUser)):'nesusieta paskyra'}</div></div>
-      ${r.igId?periodNote:''}
-    </div>`;
-  if(!r.igId){
-    html+='<div class="rep-empty">Su šiuo puslapiu nesusieta Instagram verslo paskyra. Susiek ją Meta Business nustatymuose, kad matytum IG ataskaitą.</div>';
-  }else{
-    if(r.igSnap){
-      html+='<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">'+
-        `<span class="rep-snapshot">Sekėjai <b>${repNum(r.igSnap.followers_count)}</b></span>`+
-        `<span class="rep-snapshot">Įrašų <b>${repNum(r.igSnap.media_count)}</b></span>`+
-      '</div>';
-    }
-    html+=repKpiHtml(r.igRows);
+function repDragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function repDragLeave(e){e.currentTarget.classList.remove('drag-over');}
+function repDrop(e,key){e.preventDefault();e.currentTarget.classList.remove('drag-over');repUpload(key,[...e.dataTransfer.files]);}
+function repPick(e,key){repUpload(key,[...e.target.files]);e.target.value='';}
+
+async function repUpload(key,files){
+  if(!files.length||!currentClient)return;
+  const zone=document.getElementById('repUp-'+key);
+  if(zone){zone.classList.add('busy');const sp=zone.querySelector('span');if(sp)sp.textContent='Keliama...';}
+  let ok=0;
+  for(const file of files){
+    if(file.size>50*1024*1024){showToast(`${file.name}: per didelis (maks. 50 MB)`,4000);continue;}
+    const safe=file.name.replace(/[^\w.\-]+/g,'_');
+    const path=`reports/${currentClient.id}/${key}/${Date.now()}-${safe}`;
+    const{error:upErr}=await sb.storage.from('client-files').upload(path,file,{cacheControl:'3600',upsert:false});
+    if(upErr){showToast('Įkėlimo klaida: '+upErr.message,4500);continue;}
+    const{data:pub}=sb.storage.from('client-files').getPublicUrl(path);
+    const{error:dbErr}=await sb.from('monthly_reports').insert([{client_id:currentClient.id,month:key,file_url:pub.publicUrl,file_name:file.name,file_size:file.size,storage_path:path}]);
+    if(dbErr){showToast('Klaida: '+dbErr.message,4500);continue;}
+    ok++;
   }
-  html+='</div>';
-  document.getElementById('repResults').innerHTML=html;
+  if(ok)showToast(ok>1?`Įkelti ${ok} failai ✓`:'Failas įkeltas ✓');
+  repLoad();
 }
 
-function repBuildText(r){
-  const L=[];
-  L.push(`${(currentClient&&currentClient.name)||''} — Facebook & Instagram ataskaita`);
-  L.push(`${r.rg.last.label} (palyginta su ${r.rg.prev.label})`);
-  L.push('');
-  L.push(`📘 FACEBOOK — ${r.pageName||''}`);
-  if(r.fanCount!=null)L.push(`Sekėjai (viso): ${repNum(r.fanCount)}`);
-  (r.fbRows.length?r.fbRows:[]).forEach(x=>{
-    const d=repDelta(x.cur,x.prev);
-    L.push(`• ${x.label}: ${repNum(x.cur)} (buvo ${repNum(x.prev)}, ${d.txt.replace('▲','+').replace('▼','-')})`);
-  });
-  if(!r.fbRows.length)L.push('• Nėra duomenų');
-  L.push('');
-  L.push(`📷 INSTAGRAM — ${r.igUser?('@'+r.igUser):'nesusieta'}`);
-  if(r.igSnap){L.push(`Sekėjai: ${repNum(r.igSnap.followers_count)} · Įrašų: ${repNum(r.igSnap.media_count)}`);}
-  (r.igRows||[]).forEach(x=>{
-    const d=repDelta(x.cur,x.prev);
-    L.push(`• ${x.label}: ${repNum(x.cur)} (buvo ${repNum(x.prev)}, ${d.txt.replace('▲','+').replace('▼','-')})`);
-  });
-  if(r.igId&&!(r.igRows||[]).length)L.push('• Nėra duomenų');
-  if(!r.igId)L.push('• Instagram paskyra nesusieta');
-  return L.join('\n');
-}
-
-function repCopy(){
-  if(!repReportText){showToast('Pirma sugeneruok ataskaitą');return;}
-  navigator.clipboard.writeText(repReportText).then(()=>showToast('Ataskaita nukopijuota ✓')).catch(()=>showToast('Nepavyko nukopijuoti'));
+async function repDeleteFile(id){
+  const f=repFiles.find(x=>String(x.id)===String(id));
+  if(!f||!confirm(`Ištrinti "${f.file_name||'failą'}"?`))return;
+  if(f.storage_path){await sb.storage.from('client-files').remove([f.storage_path]);}
+  const{error}=await sb.from('monthly_reports').delete().eq('id',id);
+  if(error){showToast('Klaida: '+error.message);return;}
+  showToast('Ištrinta.');repLoad();
 }
 
 const initP=getPeriodDates('week');currentDateFrom=initP.from;currentDateTo=initP.to;

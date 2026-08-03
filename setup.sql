@@ -94,6 +94,18 @@ CREATE TABLE IF NOT EXISTS calendar_approvals (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 8. Mėnesių ataskaitų failai (admin įkelia savo darytus failus kiekvienam mėnesiui)
+CREATE TABLE IF NOT EXISTS monthly_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  month TEXT NOT NULL,                -- 'YYYY-MM'
+  file_url TEXT NOT NULL,
+  file_name TEXT,
+  file_size BIGINT,
+  storage_path TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================================
 -- RLS politikos
 -- ============================================================
@@ -144,6 +156,13 @@ DROP POLICY IF EXISTS "approvals_update_all" ON calendar_approvals;
 CREATE POLICY "approvals_read_all" ON calendar_approvals FOR SELECT USING (true);
 CREATE POLICY "approvals_insert_all" ON calendar_approvals FOR INSERT WITH CHECK (true);
 CREATE POLICY "approvals_update_all" ON calendar_approvals FOR UPDATE USING (true);
+
+-- Mėnesių ataskaitų failai: visi skaito, tik auth rašo
+ALTER TABLE monthly_reports ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "monthly_reports_read_all" ON monthly_reports;
+DROP POLICY IF EXISTS "monthly_reports_write_auth" ON monthly_reports;
+CREATE POLICY "monthly_reports_read_all" ON monthly_reports FOR SELECT USING (true);
+CREATE POLICY "monthly_reports_write_auth" ON monthly_reports FOR ALL USING (auth.role() = 'authenticated');
 
 -- FB/IG ataskaitų nustatymai: TIK auth (juose saugomas tokenas)
 DROP POLICY IF EXISTS "fb_report_settings_auth" ON fb_report_settings;
