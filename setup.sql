@@ -173,6 +173,10 @@ CREATE POLICY "fb_report_settings_auth" ON fb_report_settings FOR ALL USING (aut
 -- Dashboard → Storage → New bucket → Name: client-files → Public: ON
 -- ============================================================
 
+-- Leisk visų tipų failus (HTML ataskaitos, PDF, Excel ir t.t.).
+-- Be šito Supabase atmeta įkėlimą su klaida "mime type ... is not supported".
+UPDATE storage.buckets SET allowed_mime_types = NULL WHERE id = 'client-files';
+
 -- ============================================================
 -- Admin vartotojas:
 -- Authentication → Users → Add user → įvesk el. paštą + slaptažodį

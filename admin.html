@@ -2810,7 +2810,13 @@ async function repUpload(key,files){
     const safe=file.name.replace(/[^\w.\-]+/g,'_');
     const path=`reports/${currentClient.id}/${key}/${Date.now()}-${safe}`;
     const{error:upErr}=await sb.storage.from('client-files').upload(path,file,{cacheControl:'3600',upsert:false,contentType:repMime(file)});
-    if(upErr){showToast('Įkėlimo klaida: '+upErr.message,4500);continue;}
+    if(upErr){
+      const m=String(upErr.message||'');
+      // Bucket'as riboja failų tipus — pasakom tiksliai, ką paleisti
+      if(/mime type|not supported/i.test(m))showToast('Šio tipo failai uždrausti saugykloje. Supabase → SQL Editor paleisk: UPDATE storage.buckets SET allowed_mime_types = NULL WHERE id = \'client-files\';',9000);
+      else showToast('Įkėlimo klaida: '+m,4500);
+      continue;
+    }
     const{data:pub}=sb.storage.from('client-files').getPublicUrl(path);
     const{error:dbErr}=await sb.from('monthly_reports').insert([{client_id:currentClient.id,month:key,file_url:pub.publicUrl,file_name:file.name,file_size:file.size,storage_path:path}]);
     if(dbErr){showToast('Klaida: '+dbErr.message,4500);continue;}
