@@ -2734,8 +2734,21 @@ async function repLoad(){
   repRenderMonths();
 }
 
+// HTML ataskaitos turi keliauti kaip text/html, kad naršyklė jas atidarytų kaip puslapį,
+// o ne parodytų kodą — naršyklės File.type kartais būna tuščias.
+const REP_MIME={html:'text/html',htm:'text/html',pdf:'application/pdf',csv:'text/csv',
+  png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',svg:'image/svg+xml',
+  xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation'};
+function repMime(file){
+  const ext=String(file.name||'').split('.').pop().toLowerCase();
+  return REP_MIME[ext]||file.type||'application/octet-stream';
+}
+
 function repFileIcon(name){
   const ext=String(name||'').split('.').pop().toLowerCase();
+  if(['html','htm'].includes(ext))return'🌐';
   if(['pdf'].includes(ext))return'📄';
   if(['xls','xlsx','csv'].includes(ext))return'📊';
   if(['doc','docx','txt'].includes(ext))return'📝';
@@ -2796,7 +2809,7 @@ async function repUpload(key,files){
     if(file.size>50*1024*1024){showToast(`${file.name}: per didelis (maks. 50 MB)`,4000);continue;}
     const safe=file.name.replace(/[^\w.\-]+/g,'_');
     const path=`reports/${currentClient.id}/${key}/${Date.now()}-${safe}`;
-    const{error:upErr}=await sb.storage.from('client-files').upload(path,file,{cacheControl:'3600',upsert:false});
+    const{error:upErr}=await sb.storage.from('client-files').upload(path,file,{cacheControl:'3600',upsert:false,contentType:repMime(file)});
     if(upErr){showToast('Įkėlimo klaida: '+upErr.message,4500);continue;}
     const{data:pub}=sb.storage.from('client-files').getPublicUrl(path);
     const{error:dbErr}=await sb.from('monthly_reports').insert([{client_id:currentClient.id,month:key,file_url:pub.publicUrl,file_name:file.name,file_size:file.size,storage_path:path}]);
