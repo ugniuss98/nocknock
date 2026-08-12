@@ -169,7 +169,7 @@
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0;}
   .modal-overlay.hidden{display:none;}
   @media(min-width:600px){.modal-overlay{align-items:center;}}
-  .modal{background:var(--surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:24px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -8px 40px rgba(0,0,0,.12);}
+  .modal{background:var(--surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:24px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:14px;box-shadow:0 -8px 40px rgba(0,0,0,.12);max-height:90vh;overflow-y:auto;}
   @media(min-width:600px){.modal{border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,.18);}}
   .modal-title{font-size:16px;font-weight:600;}
   .modal-sub{font-size:13px;color:var(--text-muted);margin-top:-6px;}
@@ -195,7 +195,7 @@
   .error-state strong{font-size:15px;color:var(--text);}
 
   /* PDF MODAL */
-  .pdf-modal{background:var(--surface);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.18);}
+  .pdf-modal{background:var(--surface);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.18);max-height:90vh;overflow-y:auto;}
   .period-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
   .period-opt{padding:11px 13px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;}
   .period-opt:hover,.period-opt.selected{border-color:var(--accent);background:var(--accent-light);}
