@@ -258,6 +258,17 @@
 .cl-entry .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
 .cl-entry .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .cl-more{font-size:10px;color:var(--text-faint);padding:1px 3px;}
+/* rezultato žyma */
+.cl-entry.fl-green{background:var(--green-light);color:var(--green);}
+.cl-entry.fl-red{background:var(--red-light);color:var(--red);}
+.cl-flag-note{font-size:9px;line-height:1.35;padding:2px 5px;border-radius:4px;word-break:break-word;}
+.cl-flag-note.fn-green{background:#EFFAF3;color:var(--green);}
+.cl-flag-note.fn-red{background:#FDF0F2;color:var(--red);}
+.cl-cell.day-green{background:#FBFEFC;border-color:#BFE5CE;}
+.cl-cell.day-red{background:#FFFBFB;border-color:#F3BEC5;}
+.clp-flag{display:none;font-size:13px;font-weight:600;padding:9px 12px;border-radius:10px;line-height:1.45;margin-bottom:10px;}
+.clp-flag.on-green{display:block;background:var(--green-light);color:var(--green);}
+.clp-flag.on-red{display:block;background:var(--red-light);color:var(--red);}
 /* client week view */
 .cl-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:stretch;}
 .cl-wk-col{background:var(--surface);border:1px solid var(--border);border-radius:12px;min-height:340px;padding:9px 8px;display:flex;flex-direction:column;gap:7px;min-width:0;}
@@ -516,6 +527,7 @@
       <img id="clDetailImg" src="" alt="">
     </div>
     <div class="clp-body">
+      <div class="clp-flag" id="clDetailFlag"></div>
       <div class="clp-title" id="clDetailTitle"></div>
       <div class="clp-notes hidden" id="clDetailNotes"></div>
       <!-- Comments -->
@@ -1187,13 +1199,17 @@ function clRenderCalGrid(){
     const entries=groups.slice(0,3).map(g=>{
       const p=g.first;
       const dots=g.plats.map(pl=>`<span class="dot ${CL_DOT_CLS[pl]||'d-other'}"></span>`).join('');
-      return`<div class="cl-entry ${CL_PLAT_CLS[p.platform]||'c-other'}" onclick="event.stopPropagation();clOpenPost(${p.id})">
+      const cls=p.flag==='green'?'fl-green':p.flag==='red'?'fl-red':(CL_PLAT_CLS[p.platform]||'c-other');
+      const note=p.flag&&p.flag_note?`<div class="cl-flag-note fn-${p.flag}">${p.flag==='green'?'✅':'⚠️'} ${clEsc(p.flag_note)}</div>`:'';
+      return`<div class="cl-entry ${cls}" onclick="event.stopPropagation();clOpenPost(${p.id})">
         ${dots}
         <span class="lbl">${clEsc(p.title||CL_TYPE_L[p.content_type]||CL_PLAT_L[p.platform]||'')}</span>
-      </div>`;}).join('');
+      </div>${note}`;}).join('');
     const more=groups.length>3?`<div class="cl-more">+${groups.length-3}</div>`:'';
     const thumb=imgGroup?`<img class="cl-cell-img" src="${clEsc(imgGroup.img)}" alt="" loading="lazy" onclick="event.stopPropagation();clOpenPost(${imgGroup.first.id})">`:'';
-    return`<div class="cl-cell${isToday?' cl-today':''}${isOther?' cl-other':''}" onclick="clOpenDay('${ds}')">
+    const flags=[...new Set(groups.map(g=>g.first.flag).filter(Boolean))];
+    const dayFlag=flags.length===1?` day-${flags[0]}`:'';
+    return`<div class="cl-cell${isToday?' cl-today':''}${isOther?' cl-other':''}${dayFlag}" onclick="clOpenDay('${ds}')">
       ${isToday?`<div class="cl-today-num">${d.getDate()}</div>`:`<div class="cl-cell-num">${d.getDate()}</div>`}
       ${thumb}${entries}${more}
     </div>`;
@@ -1217,12 +1233,14 @@ function clRenderWeekView(){
     const cards=groups.map(g=>{
       const p=g.first;
       const plats=g.plats.map(pl=>`<span class="cl-wk-tag ${CL_PLAT_CLS[pl]||'c-other'}">${CL_PLAT_L[pl]||pl}</span>`).join('');
+      const note=p.flag?`<div class="cl-flag-note fn-${p.flag}">${p.flag==='green'?'✅':'⚠️'} ${clEsc(p.flag_note||(p.flag==='green'?'Paskelbta':'Neįvyko'))}</div>`:'';
       return`<div class="cl-wk-card" onclick="clOpenPost(${p.id})">
         ${g.img?`<img src="${clEsc(g.img)}" loading="lazy" alt="">`:''}
         <div class="cl-wk-card-body">
           <div class="cl-wk-card-plats">${plats}</div>
           <div class="cl-wk-card-title">${clEsc(p.title||CL_TYPE_L[p.content_type]||'—')}</div>
           <div class="cl-wk-card-meta">${CL_TYPE_L[p.content_type]||''}</div>
+          ${note}
         </div>
       </div>`;}).join('');
     return`<div class="cl-wk-col${isToday?' cl-today':''}">
@@ -1252,6 +1270,10 @@ async function clOpenPost(id){
   const imgWrap=document.getElementById('clDetailImgWrap');
   if(img){imgWrap.classList.remove('hidden');document.getElementById('clDetailImg').src=img;}
   else imgWrap.classList.add('hidden');
+  // Rezultato žyma
+  const fl=document.getElementById('clDetailFlag');
+  fl.className='clp-flag'+(p.flag?' on-'+p.flag:'');
+  fl.textContent=p.flag?`${p.flag==='green'?'✅ Paskelbta – viskas ok':'⚠️ Neįvyko – problema'}${p.flag_note?': '+p.flag_note:''}`:'';
   // Title + caption (pre-wrap išsaugo eilučių tarpus)
   document.getElementById('clDetailTitle').textContent=p.title||CL_TYPE_L[p.content_type]||'—';
   const notes=document.getElementById('clDetailNotes');

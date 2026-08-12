@@ -106,6 +106,11 @@ CREATE TABLE IF NOT EXISTS monthly_reports (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 9. Kalendoriaus įrašo rezultato žyma: žalia (paskelbta, viskas ok) / raudona (neįvyko)
+--    flag_note paaiškina, kas atsitiko — rodoma tiesiai kalendoriaus langelyje.
+ALTER TABLE content_plans ADD COLUMN IF NOT EXISTS flag TEXT;
+ALTER TABLE content_plans ADD COLUMN IF NOT EXISTS flag_note TEXT;
+
 -- ============================================================
 -- RLS politikos
 -- ============================================================

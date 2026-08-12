@@ -492,6 +492,20 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .m-pill.sel.ms-ruosiama{background:var(--orange-light);color:var(--orange);border-color:#F5C89A;}
 .m-pill.sel.ms-paruosta{background:var(--accent-light);color:var(--accent);border-color:#C5D4FA;}
 .m-pill.sel.ms-paskelbta{background:var(--green-light);color:var(--green);border-color:#A8DFC0;}
+/* rezultato žyma: žalia / raudona */
+.m-pill.sel.mf-none{background:var(--gray-light);color:var(--gray);border-color:var(--border-strong);}
+.m-pill.sel.mf-green{background:var(--green-light);color:var(--green);border-color:#A8DFC0;}
+.m-pill.sel.mf-red{background:var(--red-light);color:var(--red);border-color:#F5A8B0;}
+.cal-pp.fl-green{background:var(--green-light);color:var(--green);}
+.cal-pp.fl-red{background:var(--red-light);color:var(--red);}
+.cal-flag-note{font-size:9px;line-height:1.35;padding:2px 5px;border-radius:4px;word-break:break-word;}
+.cal-flag-note.fn-green{background:#EFFAF3;color:var(--green);}
+.cal-flag-note.fn-red{background:#FDF0F2;color:var(--red);}
+.cal-cell.day-green{background:#FBFEFC;border-color:#BFE5CE;}
+.cal-cell.day-red{background:#FFFBFB;border-color:#F3BEC5;}
+.pv-flag{display:none;font-size:12px;font-weight:600;padding:8px 11px;border-radius:8px;line-height:1.45;}
+.pv-flag.on-green{display:block;background:var(--green-light);color:var(--green);}
+.pv-flag.on-red{display:block;background:var(--red-light);color:var(--red);}
 .btn-del{background:var(--red-light);color:var(--red);border:1px solid #F5A8B0;border-radius:var(--radius);padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;flex:none;}
 .btn-del:hover{background:var(--red);color:white;}
 .modal-actions{display:flex;gap:7px;margin-top:2px;}
@@ -971,6 +985,16 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
         <button class="m-pill ms-paskelbta"  data-calst="paskelbta"  onclick="calSelStatus('paskelbta')">🚀 Paskelbta</button>
       </div>
     </div>
+    <div>
+      <label>Rezultatas — langelio spalva kalendoriuje</label>
+      <div class="pill-group" id="calFlagPills">
+        <button class="m-pill mf-none"  data-calfl=""      onclick="calSelFlag('')">⚪ Be žymos</button>
+        <button class="m-pill mf-green" data-calfl="green" onclick="calSelFlag('green')">🟢 Paskelbta – viskas ok</button>
+        <button class="m-pill mf-red"   data-calfl="red"   onclick="calSelFlag('red')">🔴 Neįvyko – problema</button>
+      </div>
+      <input type="text" id="calMFlagNote" placeholder="Kas atsitiko? pvz. „Klientas neatsiuntė nuotraukų“" style="margin-top:7px">
+      <div style="font-size:10px;color:var(--text-faint);margin-top:4px">Šis paaiškinimas matysis tiesiai kalendoriaus langelyje.</div>
+    </div>
     <div id="calAdminComments" style="display:none;border-top:1px solid var(--border);padding-top:12px;margin-top:2px">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px">Komentarai</div>
       <div id="calAdminCommentsList" style="display:flex;flex-direction:column;gap:7px;max-height:200px;overflow-y:auto"></div>
@@ -998,6 +1022,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
     </div>
     <div class="pv-img-wrap" id="pvImgWrap"></div>
     <div class="pv-body">
+      <div class="pv-flag" id="pvFlag"></div>
       <div class="pv-approval" id="pvApproval"></div>
       <div class="pv-type" id="pvType"></div>
       <div class="pv-title" id="pvTitle"></div>
@@ -2290,7 +2315,7 @@ sb.channel('cal-a').on('postgres_changes',{event:'*',schema:'public',table:'cont
 // ─── CALENDAR ───
 let calPlans=[],calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let calActiveF=new Set(['ig','tiktok','fb','youtube','linkedin','other']);
-let calEditingId=null,calEditingGroup=null,calCurPlats=['ig'],calCurStatus='planuojama',calPendingImgFile=null,calExistingImgUrl=null;
+let calEditingId=null,calEditingGroup=null,calCurPlats=['ig'],calCurStatus='planuojama',calCurFlag='',calPendingImgFile=null,calExistingImgUrl=null;
 let calLoaded=false;
 let calView='month',calWeekAnchor=new Date(),calViewGroup=null;
 
@@ -2395,14 +2420,16 @@ function calRenderCal(){
     const pills=groups.slice(0,3).map(g=>{
       const p=g.first;
       const dots=g.plats.map(pl=>`<span class="dot d-${pl}"></span>`).join('');
-      return`<div class="cal-pp c-${p.platform}" draggable="true" ondragstart="calDragStart(event,${p.id})" ondragend="calDragEnd(event)" onclick="event.stopPropagation();calOpenView(${p.id})">
+      return`<div class="cal-pp ${calFlagCls(p)}" draggable="true" ondragstart="calDragStart(event,${p.id})" ondragend="calDragEnd(event)" onclick="event.stopPropagation();calOpenView(${p.id})">
         <span class="dots">${dots}</span>
         <span class="lbl">${escHtml(p.title||CAL_TYPE_L[p.content_type]||CAL_PLAT_L[p.platform]||'')}</span>
         ${g.cmts>0?`<span style="margin-left:auto;font-size:9px;opacity:.7">💬${g.cmts}</span>`:''}
-      </div>`;}).join('');
+      </div>${calFlagNoteHtml(p)}`;}).join('');
     const more=groups.length>3?`<div class="cal-pp-more">+${groups.length-3} daugiau</div>`:'';
     const thumb=imgGroup?`<img class="cal-cell-img" src="${escHtml(imgGroup.img)}" alt="" loading="lazy" draggable="true" ondragstart="calDragStart(event,${imgGroup.first.id})" ondragend="calDragEnd(event)" onclick="event.stopPropagation();calOpenView(${imgGroup.first.id})">`:'';
-    return`<div class="cal-cell${isToday?' cal-today':''}${isOther?' cal-other-month':''}" onclick="calOpenModal(null,'${ds}')" ondragover="calDragOverDay(event)" ondragleave="calDragLeaveDay(event)" ondrop="calDropDay(event,'${ds}')">
+    const flags=[...new Set(groups.map(g=>g.first.flag).filter(Boolean))];
+    const dayFlag=flags.length===1?` day-${flags[0]}`:'';
+    return`<div class="cal-cell${isToday?' cal-today':''}${isOther?' cal-other-month':''}${dayFlag}" onclick="calOpenModal(null,'${ds}')" ondragover="calDragOverDay(event)" ondragleave="calDragLeaveDay(event)" ondrop="calDropDay(event,'${ds}')">
       <div class="cal-cell-top">
         ${isToday?`<span class="cal-today-badge">${d.getDate()}</span>`:`<span class="cal-cell-num">${d.getDate()}</span>`}
         <button class="cal-plus" onclick="event.stopPropagation();calOpenModal(null,'${ds}')">+</button>
@@ -2428,7 +2455,7 @@ function calRenderWeek(){
       ${groups.length?groups.map(g=>`
         <div class="cal-ws-item" draggable="true" ondragstart="calDragStart(event,${g.first.id})" ondragend="calDragEnd(event)" onclick="calOpenView(${g.first.id})">
           <span class="cal-ws-badge c-${g.first.platform}">${g.plats.map(pl=>CAL_PLAT_E[pl]).join(' ')}${g.plats.length===1?` ${CAL_PLAT_L[g.first.platform]}`:''}</span>
-          <span class="cal-ws-txt">${escHtml(g.first.title||CAL_TYPE_L[g.first.content_type]||'—')}</span>
+          <span class="cal-ws-txt">${escHtml(g.first.title||CAL_TYPE_L[g.first.content_type]||'—')}${g.first.flag?`<div class="cal-flag-note fn-${g.first.flag}" style="margin-top:3px">${g.first.flag==='green'?'✅':'⚠️'} ${escHtml(g.first.flag_note||(g.first.flag==='green'?'Paskelbta':'Neįvyko'))}</div>`:''}</span>
           <span class="cal-ws-st">${CAL_ST_E[g.first.status]||'📋'}</span>
         </div>`).join(''):`<div class="cal-ws-empty">Nieko</div>`}
     </div>`;
@@ -2451,6 +2478,7 @@ function calRenderWeekView(){
           <div class="cal-wk-card-plats">${plats}</div>
           <div class="cal-wk-card-title">${escHtml(p.title||CAL_TYPE_L[p.content_type]||'—')}</div>
           <div class="cal-wk-card-meta"><span>${CAL_TYPE_L[p.content_type]||''}</span><span>${CAL_ST_E[p.status]||'📋'}${g.cmts>0?` 💬${g.cmts}`:''}</span></div>
+          ${calFlagNoteHtml(p)}
         </div>
       </div>`;}).join('');
     return`<div class="cal-wk-col${isToday?' cal-today':''}" onclick="calOpenModal(null,'${ds}')" ondragover="calDragOverDay(event)" ondragleave="calDragLeaveDay(event)" ondrop="calDropDay(event,'${ds}')">
@@ -2515,6 +2543,9 @@ function calOpenView(id){
   const notes=document.getElementById('pvNotes');
   notes.textContent=g.first.notes||'';
   notes.style.display=g.first.notes?'':'none';
+  const fl=document.getElementById('pvFlag');
+  fl.className='pv-flag'+(g.first.flag?' on-'+g.first.flag:'');
+  fl.textContent=g.first.flag?`${g.first.flag==='green'?'✅ Paskelbta – viskas ok':'⚠️ Neįvyko – problema'}${g.first.flag_note?': '+g.first.flag_note:''}`:'';
   calLoadViewComments(g.recs.map(r=>r.id));
   calLoadViewApproval(g.recs.map(r=>r.id));
   document.getElementById('calViewModal').classList.remove('hidden');
@@ -2572,26 +2603,28 @@ function calOpenModal(id=null,dateStr=null){
   document.getElementById('calMId').value=id||'';
   document.getElementById('calMDelBtn').style.display=id?'':'none';
   document.getElementById('calModalTitle').textContent=id?'Redaguoti įrašą':'Naujas įrašas';
-  calCurPlats=['ig'];calCurStatus='planuojama';
+  calCurPlats=['ig'];calCurStatus='planuojama';calCurFlag='';
   document.getElementById('calMDate').value=dateStr||calFmt(new Date());
   document.getElementById('calMType').value='reels';
   document.getElementById('calMTitle').value='';
   document.getElementById('calMNotes').value='';
+  document.getElementById('calMFlagNote').value='';
   document.getElementById('calImgInput').value='';
   calSetImgPreview(null);
-  calApplyPlatUI();calApplyStatusUI();
+  calApplyPlatUI();calApplyStatusUI();calApplyFlagUI();
   if(id){
     const g=calFindGroup(id);
     if(g){
       const p=g.first;
       calEditingGroup=g.recs;
-      calCurPlats=[...g.plats];calCurStatus=p.status||'planuojama';
+      calCurPlats=[...g.plats];calCurStatus=p.status||'planuojama';calCurFlag=p.flag||'';
       document.getElementById('calMDate').value=p.date||'';
       document.getElementById('calMType').value=p.content_type||'reels';
       document.getElementById('calMTitle').value=p.title||'';
       document.getElementById('calMNotes').value=p.notes||'';
+      document.getElementById('calMFlagNote').value=p.flag_note||'';
       if(g.img){calExistingImgUrl=g.img;calSetImgPreview(g.img);}
-      calApplyPlatUI();calApplyStatusUI();
+      calApplyPlatUI();calApplyStatusUI();calApplyFlagUI();
       calLoadAdminComments(g.recs.map(r=>r.id));
     }
   }
@@ -2650,6 +2683,14 @@ function calSelPlat(p){
 function calApplyPlatUI(){document.querySelectorAll('#calPlatPills .m-pill').forEach(b=>b.classList.toggle('sel',calCurPlats.includes(b.dataset.calpl)));}
 function calSelStatus(s){calCurStatus=s;calApplyStatusUI();}
 function calApplyStatusUI(){document.querySelectorAll('#calStatusPills .m-pill').forEach(b=>b.classList.toggle('sel',b.dataset.calst===calCurStatus));}
+function calSelFlag(f){calCurFlag=f;calApplyFlagUI();}
+function calApplyFlagUI(){document.querySelectorAll('#calFlagPills .m-pill').forEach(b=>b.classList.toggle('sel',b.dataset.calfl===calCurFlag));}
+// Žymos klasė įrašo langeliui: žalia/raudona nustelbia platformos spalvą
+function calFlagCls(p){return p.flag==='green'?'fl-green':p.flag==='red'?'fl-red':'c-'+p.platform;}
+function calFlagNoteHtml(p){
+  if(!p.flag||!p.flag_note)return'';
+  return`<div class="cal-flag-note fn-${p.flag}">${p.flag==='green'?'✅':'⚠️'} ${escHtml(p.flag_note)}</div>`;
+}
 
 async function calUploadImg(){
   if(!calPendingImgFile)return calExistingImgUrl;
@@ -2666,7 +2707,7 @@ async function calSavePost(){
   const saveBtn=document.querySelector('#calPostModal .btn-confirm');
   if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Saugoma...';}
   const image_url=await calUploadImg();
-  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null};
+  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null,flag:calCurFlag||null,flag_note:calCurFlag?(document.getElementById('calMFlagNote').value.trim()||null):null};
   const id=document.getElementById('calMId').value;
   let error;
   if(id&&calEditingGroup&&calEditingGroup.length){
