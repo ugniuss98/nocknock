@@ -571,8 +571,43 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .pv-approval.no{display:inline-block;background:var(--red-light);color:var(--red);}
 @media print{body:not(.print-samata) #loginScreen,body:not(.print-samata) .header,body:not(.print-samata) .sidebar,body:not(.print-samata) .modal-overlay,body:not(.print-samata) .toast{display:none!important;}body:not(.print-samata) .layout{grid-template-columns:1fr!important;}body:not(.print-samata) .s-main{padding:0!important;}body:not(.print-samata) .day-card{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:10px;}body:not(.print-samata) .del-btn,body:not(.print-samata) .status-btn{display:none!important;}body:not(.print-samata) .tasks-body.hidden{display:block!important;}}
 @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
-@media(max-width:900px){.layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}.header{padding:10px 14px;flex-wrap:wrap;}.s-main,.meta-wrapper{padding:14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.charts-grid{grid-template-columns:1fr;}.page-kpi-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr;}.period-tabs{width:100%;}}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);}
+  .s-main,.meta-wrapper{padding:14px;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .charts-grid{grid-template-columns:1fr;}
+  .page-kpi-grid{grid-template-columns:repeat(2,1fr);}
+  /* Antraštė: logotipas + veiksmai pirmoje eilutėje, tabai — atskiroje slenkamoje eilutėje */
+  .header{padding:10px 12px;flex-wrap:wrap;gap:8px;}
+  .h-left{order:1;min-width:0;}
+  .h-right{order:2;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .h-center{order:3;flex:1 0 100%;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;gap:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .h-center::-webkit-scrollbar{display:none;}
+  .tab-btn{flex:0 0 auto;white-space:nowrap;}
+  .week-label{min-width:118px;}
+  /* Kalendorius: šoninis savaitės planas nusileidžia po kalendoriumi */
+  .cal-page-layout{grid-template-columns:1fr;height:auto;}
+  .cal-main-area{overflow-x:auto;padding:12px;}
+  .cal-week-side{border-left:none;border-top:1px solid var(--border);position:static;height:auto;}
+  .cal-toolbar{padding:10px 12px;}
+  .cal-month-lbl{min-width:auto;}
+  /* Tinklelis siauresniame ekrane slenkamas horizontaliai, kad langeliai liktų įskaitomi */
+  .cal-dow,.cal-grid{min-width:620px;}
+  .cal-week-grid{min-width:840px;}
+  .ugc-wrapper{padding:14px;overflow-x:auto;}
+  .rep-wrapper{padding:14px;}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .period-tabs{width:100%;}
+  .h-right{width:100%;margin-left:0;justify-content:space-between;}
+  .week-label{min-width:auto;flex:1;text-align:center;}
+  .rep-months-grid{grid-template-columns:1fr;}
+  .todo-wrap{padding:18px 14px;}
+  .modal:not(.post-view):not(.samata-modal){padding:18px;}
+  .cal-cell{min-height:84px;}
+}
 </style>
 </head>
 <body>

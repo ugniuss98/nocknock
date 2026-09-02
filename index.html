@@ -342,6 +342,20 @@
 .c-youtube{background:#FFE8E8;color:#CC0000;}.d-youtube{background:#CC0000;}
 .c-linkedin{background:#E8F4FD;color:#0A66C2;}.d-linkedin{background:#0A66C2;}
 .c-other{background:var(--gray-light);color:var(--gray);}.d-other{background:var(--gray);}
+
+/* ── MOBILE (kalendoriaus taisyklės — po visų .cl-* stilių, kad persvertų) ── */
+@media(max-width:640px){
+  .cl-cal-wrap{padding:12px;overflow-x:auto;}
+  .cl-cal-toolbar{gap:6px;}
+  .cl-month-lbl{min-width:auto;font-size:15px;}
+  /* Tinkleliai slenkami horizontaliai, kad langeliai liktų įskaitomi */
+  .cl-cal-dow,.cl-cal-grid{min-width:600px;}
+  .cl-week-grid{min-width:820px;}
+  .cl-wk-col{min-height:260px;}
+  .cl-cell{min-height:82px;}
+  .cl-detail-panel{margin:12px;}
+  .clp-img,.clp-img img{max-height:300px;}
+}
 </style>
 </head>
 <body>
