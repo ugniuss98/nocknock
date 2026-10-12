@@ -232,8 +232,74 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 #samataPrint{display:none;}
 
 /* UGC */
-.ugc-wrapper{padding:20px 24px;max-width:100%;}
-.ugc-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.ugc-wrapper{padding:20px 24px;max-width:1200px;margin:0 auto;}
+.ugc-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.ugc-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.ugc-search-wrap{width:320px;}
+/* filtrų čipai */
+.ugc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center;}
+.ugc-chip{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 11px;border-radius:20px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;}
+.ugc-chip span{font-size:10px;font-weight:700;background:var(--bg);color:var(--text-muted);padding:1px 6px;border-radius:20px;}
+.ugc-chip:hover{border-color:var(--text-muted);color:var(--text);}
+.ugc-chip.active{background:var(--text);border-color:var(--text);color:#fff;}
+.ugc-chip.active span{background:rgba(255,255,255,.2);color:#fff;}
+.ugc-chip-sep{width:1px;height:18px;background:var(--border-strong);margin:0 2px;}
+/* kūrėjų kortelės */
+.ugc-list{display:flex;flex-direction:column;gap:8px;}
+.ugc-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border-strong);border-radius:12px;transition:box-shadow .15s;}
+.ugc-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.ugc-card.open{box-shadow:0 4px 18px rgba(0,0,0,.08);}
+.ugc-row{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.1fr) 160px 210px 16px;grid-template-areas:"main ship tog st chev";gap:16px;align-items:center;padding:12px 16px;cursor:pointer;}
+.ugc-main{grid-area:main;display:flex;gap:11px;align-items:center;min-width:0;}
+.ugc-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;}
+.ugc-main-txt{min-width:0;display:flex;flex-direction:column;gap:4px;}
+.ugc-name{font-size:14px;font-weight:600;display:flex;align-items:baseline;gap:7px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ugc-country{font-size:11px;font-weight:500;color:var(--text-muted);}
+.ugc-pchips{display:flex;flex-wrap:wrap;gap:4px;}
+.ugc-pchip{font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;background:var(--bg);color:var(--text-muted);border:1px solid var(--border);}
+.ugc-pchip b{color:var(--text);font-weight:700;}
+.ugc-note-prev{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ugc-ship{grid-area:ship;min-width:0;display:flex;flex-direction:column;gap:3px;}
+.ugc-ship-date{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ugc-ship-date span{color:var(--text-faint);font-weight:400;}
+.ugc-ship-pkg{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ugc-toggles{grid-area:tog;display:flex;gap:5px;justify-content:flex-end;}
+.ugc-tg{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px dashed var(--border-strong);background:transparent;color:var(--text-faint);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.ugc-tg:hover{border-color:var(--green);color:var(--green);}
+.ugc-tg.on{border-style:solid;border-color:#A8DFC0;background:var(--green-light);color:var(--green);}
+select.ugc-st-sel{grid-area:st;width:100%;font-size:12px;font-weight:600;padding:6px 26px 6px 11px;border-radius:20px;border:none;cursor:pointer;}
+.ugc-chev{grid-area:chev;width:14px;height:14px;stroke:var(--text-faint);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;}
+.ugc-card.open .ugc-chev{transform:rotate(180deg);}
+/* išskleista informacija */
+.ugc-detail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px 16px 14px;border-top:1px solid var(--border);}
+.ugc-dsec{background:var(--bg);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;min-width:0;}
+.ugc-dsec.full{grid-column:1/-1;}
+.ugc-dtitle{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:2px;}
+.ugc-dline{font-size:12px;display:flex;gap:8px;align-items:baseline;min-width:0;}
+.ugc-dline .k{color:var(--text-muted);flex:0 0 70px;}
+.ugc-dline .v{min-width:0;word-break:break-word;}
+.ugc-dline a{color:var(--accent);text-decoration:none;}
+.ugc-dline a:hover{text-decoration:underline;}
+.ugc-dline em{font-style:normal;color:var(--text-faint);font-size:11px;}
+.ugc-mono{font-family:'DM Mono',monospace;letter-spacing:.3px;}
+.ugc-faint{color:var(--text-faint);}
+.ugc-copy{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:12px;padding:0 4px;}
+.ugc-copy:hover{color:var(--accent);}
+.ugc-notes-full{font-size:12.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;}
+.ugc-dactions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;}
+.ugc-dbtn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);transition:all .15s;}
+.ugc-dbtn.primary{background:var(--text);color:#fff;border-color:var(--text);}
+.ugc-dbtn.primary:hover{opacity:.85;}
+.ugc-dbtn.danger{color:var(--red);border-color:#F5A8B0;background:var(--red-light);}
+.ugc-dbtn.danger:hover{background:var(--red);color:#fff;}
+@media(max-width:760px){
+  .ugc-search-wrap{width:100%;}
+  .ugc-toolbar-right{width:100%;}
+  .ugc-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"main main" "st st" "ship tog";gap:10px 12px;padding:12px;}
+  .ugc-chev{display:none;}
+  .ugc-toggles{justify-content:flex-end;}
+  .ugc-detail{grid-template-columns:1fr;padding:10px 12px 12px;}
+}
 
 /* ── ATASKAITOS (FB/IG) TAB ── */
 .rep-wrapper{padding:20px 24px;max-width:1100px;margin:0 auto;}
@@ -295,38 +361,6 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .rep-snapshot b{font-size:14px;color:var(--text);}
 .rep-empty{font-size:13px;color:var(--text-muted);padding:14px 0;}
 .rep-spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
-.ugc-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
-.ugc-table th{text-align:left;padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);background:var(--bg);border-bottom:1px solid var(--border);white-space:nowrap;}
-.ugc-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
-.ugc-table tbody tr:last-child td{border-bottom:none;}
-.ugc-table tbody tr:hover td{background:#FAFAF8;}
-.ugc-creator{font-weight:600;font-size:12px;}
-.ugc-handle{font-size:11px;color:var(--text-muted);}
-.ugc-platforms{display:flex;flex-direction:column;gap:2px;}
-.ugc-plat{font-size:11px;display:flex;align-items:center;gap:4px;white-space:nowrap;}
-.ugc-followers{font-size:10px;color:var(--text-faint);font-family:'DM Mono',monospace;}
-.ugc-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;}
-.vs-laukiama{background:var(--gray-light);color:var(--gray);}
-.vs-filmuojama{background:#FEF0E6;color:#9C4A10;}
-.vs-atsiusta{background:var(--accent-light);color:var(--accent);}
-.vs-paviešinta{background:var(--green-light);color:var(--green);}
-.vs-veluoja{background:var(--red-light);color:var(--red);}
-.vs-pradzia{background:#F0EBF8;color:#6B35B8;}
-.vs-nustota{background:#F2F1EE;color:#4A4744;border:1px solid #D0CCC3;}
-.vs-komplikuota{background:#FFF4D6;color:#92600A;}
-.ugc-received-yes{color:var(--green);font-weight:600;}
-.ugc-received-no{color:var(--text-faint);}
-.ugc-affil-btn{cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
-.ugc-affil-yes{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;border:1.5px solid #A8DFC0;background:var(--green-light);color:var(--green);}
-.ugc-affil-yes:hover{opacity:.75;}
-.ugc-affil-no{font-size:13px;font-weight:400;padding:0;border:none;background:none;color:var(--text-faint);}
-.ugc-affil-no:hover{color:var(--green);}
-.ugc-edit-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:4px;border-radius:5px;transition:all .15s;display:inline-flex;}
-.ugc-edit-btn:hover{background:var(--bg);color:var(--accent);}
-.ugc-edit-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
-.ugc-del-btn{background:none;border:none;cursor:pointer;color:var(--text-faint);padding:4px;border-radius:5px;transition:all .15s;display:inline-flex;}
-.ugc-del-btn:hover{color:var(--red);}
-.ugc-del-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
 .ugc-modal-grid{display:flex;flex-direction:column;gap:9px;}
 .ugc-platform-row{display:flex;gap:6px;align-items:center;}
 .ugc-platform-row select{flex:0 0 110px;font-size:12px;}
@@ -595,7 +629,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
   /* Tinklelis siauresniame ekrane slenkamas horizontaliai, kad langeliai liktų įskaitomi */
   .cal-dow,.cal-grid{min-width:620px;}
   .cal-week-grid{min-width:840px;}
-  .ugc-wrapper{padding:14px;overflow-x:auto;}
+  .ugc-wrapper{padding:14px;}
   .rep-wrapper{padding:14px;}
 }
 @media(max-width:600px){
@@ -766,38 +800,24 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
   <div class="ugc-wrapper">
     <div class="ugc-toolbar">
       <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:13px;font-weight:600">UGC Siuntos</span>
+        <span style="font-size:14px;font-weight:700">UGC Siuntos</span>
         <span id="ugcClientName" style="font-size:12px;color:var(--text-muted)"></span>
       </div>
-      <button class="btn-primary" style="font-size:12px;padding:7px 14px" onclick="openUgcModal()">
-        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:white;fill:none;stroke-width:2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Pridėti įrašą
-      </button>
+      <div class="ugc-toolbar-right">
+        <div class="ugc-search-wrap"><input type="search" id="ugcSearch" placeholder="🔍  Ieškoti kūrėjo, el. pašto, kodo…" oninput="ugcOnSearch(this.value)"></div>
+        <button class="btn-primary" style="width:auto;font-size:12px;padding:8px 14px;white-space:nowrap" onclick="openUgcModal()">
+          <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:white;fill:none;stroke-width:2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Pridėti kūrėją
+        </button>
+      </div>
     </div>
     <div id="ugcNoClient" class="no-client-msg" style="min-height:180px">
       <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>
       <strong>Pasirink klientą</strong><span style="font-size:12px">UGC siuntos rodomos pagal klientą</span>
     </div>
-    <div id="ugcTableWrap" style="display:none;overflow-x:auto">
-      <table class="ugc-table" id="ugcTable">
-        <thead>
-          <tr>
-            <th style="width:28px">#</th>
-            <th style="min-width:130px">Kūrėjas / Pavadinimas</th>
-            <th style="min-width:140px">Platforma</th>
-            <th style="width:90px">Išsiuntimo data</th>
-            <th style="width:80px">Siunta gauta</th>
-            <th style="width:80px">Affiliate</th>
-            <th style="min-width:110px">Siuntos turinys</th>
-            <th style="min-width:120px">Kontaktai</th>
-            <th style="min-width:140px">Siuntos kodas</th>
-            <th style="width:110px">Video statusas</th>
-            <th style="min-width:260px">Pastabos</th>
-            <th style="width:60px"></th>
-          </tr>
-        </thead>
-        <tbody id="ugcTbody"></tbody>
-      </table>
+    <div id="ugcTableWrap" style="display:none">
+      <div class="ugc-chips" id="ugcChips"></div>
+      <div class="ugc-list" id="ugcList"></div>
     </div>
   </div>
 </div>
@@ -2180,49 +2200,139 @@ async function renderUgcTab(){
 }
 
 const UGC_STATUS_LABELS={veluoja:'⚠ Vėluoja',komplikuota:'💬 Komplikuota komunikacija',nustota:'🚫 Nustota dirbti',pradzia:'🌱 Pradžia',laukiama:'⏳ Laukiama',filmuojama:'🎬 Filmuojama',atsiusta:'📨 Atsiųsta',paviešinta:'✅ Paviešinta'};
-const UGC_STATUS_CLS={veluoja:'vs-veluoja',komplikuota:'vs-komplikuota',nustota:'vs-nustota',pradzia:'vs-pradzia',laukiama:'vs-laukiama',filmuojama:'vs-filmuojama',atsiusta:'vs-atsiusta',paviešinta:'vs-paviešinta'};
+// Eiliškumas: pirmiausia tie, kuriems reikia dėmesio
+const UGC_ORDER={veluoja:0,komplikuota:1,nustota:2,pradzia:3,laukiama:4,filmuojama:5,atsiusta:6,paviešinta:7};
+const UGC_ST_COLOR={veluoja:['#FDE8ED','#C0392B'],komplikuota:['#FFF4D6','#92600A'],nustota:['#F2F1EE','#4A4744'],pradzia:['#F0EBF8','#6B35B8'],laukiama:['#F2F1EE','#6B6862'],filmuojama:['#FEF0E6','#9C4A10'],atsiusta:['#EEF2FD','#2D5BE3'],paviešinta:['#E8F5EE','#1A7A4A']};
+const UGC_PLAT_SHORT={Instagram:'IG',TikTok:'TT',YouTube:'YT',Facebook:'FB','Twitter/X':'X',Kita:'Kita'};
+let ugcFilter='all',ugcQuery='',ugcOpen=new Set();
+
+function ugcIsUrl(s){return /^(https?:\/\/|www\.)/i.test(String(s||'').trim());}
+function ugcHref(s){s=String(s).trim();return /^https?:/i.test(s)?s:'https://'+s;}
+function ugcFollowers(f){f=String(f||'').trim();if(!f)return'';return /^\d+$/.test(f)?new Intl.NumberFormat('en',{notation:'compact',maximumFractionDigits:1}).format(+f):f;}
+// Handle gali būti @vardas arba visa nuoroda — nuorodą rodom kaip paspaudžiamą, be dvigubo @
+function ugcHandleHtml(p){
+  const h=String(p.handle||'').trim();if(!h)return'';
+  if(ugcIsUrl(h)){
+    const label=h.replace(/^https?:\/\//i,'').replace(/^www\./i,'').replace(/\/$/,'');
+    return`<a href="${escHtml(ugcHref(h))}" target="_blank" rel="noopener">${escHtml(label.length>40?label.slice(0,38)+'…':label)} ↗</a>`;
+  }
+  return'@'+escHtml(h.replace(/^@+/,''));
+}
+function ugcMatches(e){
+  if(ugcFilter==='notrecv'){if(e.package_received)return false;}
+  else if(ugcFilter==='affiliate'){if(!e.affiliate)return false;}
+  else if(ugcFilter!=='all'&&(e.video_status||'laukiama')!==ugcFilter)return false;
+  if(!ugcQuery)return true;
+  const hay=[e.creator_name,e.contact_name,e.contact_country,e.contact_email,e.tracking_code,e.package_contents,e.notes,...(e.platforms||[]).map(p=>p.handle)].join(' ').toLowerCase();
+  return hay.includes(ugcQuery);
+}
 
 function renderUgcTable(){
-  const ORDER={veluoja:0,komplikuota:1,nustota:2,pradzia:3,laukiama:4,filmuojama:5,atsiusta:6,paviešinta:7};
-  const sorted=[...ugcEntries].sort((a,b)=>(ORDER[a.video_status]??0)-(ORDER[b.video_status]??0));
-  ugcEntries=sorted;
-  const tbody=document.getElementById('ugcTbody');
-  if(!ugcEntries.length){
-    tbody.innerHTML=`<tr><td colspan="12" class="ugc-empty">Nėra įrašų. Spausk „Pridėti įrašą".</td></tr>`;return;
-  }
-  tbody.innerHTML=ugcEntries.map((e,i)=>{
-    const platforms=(e.platforms||[]).map(p=>`<div class="ugc-plat">${escHtml(p.platform||'')} ${p.handle?`<span style="color:var(--text-muted)">@${escHtml(p.handle)}</span>`:''} ${p.followers?`<span class="ugc-followers">${escHtml(String(p.followers))}</span>`:''}</div>`).join('');
-    const recv=e.package_received?`<span class="ugc-received-yes">✓ Gauta</span>`:`<span class="ugc-received-no">—</span>`;
-    const stCls=UGC_STATUS_CLS[e.video_status]||'vs-laukiama';
-    const stLbl=UGC_STATUS_LABELS[e.video_status]||e.video_status||'—';
-    const contacts=[e.contact_name,e.contact_country,e.contact_email].filter(Boolean).join(' · ');
-    const affil=e.affiliate
-      ?`<button class="ugc-affil-btn ugc-affil-yes" onclick="toggleAffiliate('${e.id}',false)">Affiliate</button>`
-      :`<button class="ugc-affil-btn ugc-affil-no"  onclick="toggleAffiliate('${e.id}',true)">—</button>`;
-    return`<tr>
-      <td style="color:var(--text-faint);font-size:11px">${i+1}</td>
-      <td><div class="ugc-creator">${escHtml(e.creator_name||'')}</div></td>
-      <td><div class="ugc-platforms">${platforms||'—'}</div></td>
-      <td style="white-space:nowrap;font-size:11px">${e.shipment_date?fmtNice(e.shipment_date):'—'}</td>
-      <td>${recv}</td>
-      <td>${affil}</td>
-      <td style="font-size:11px">${escHtml(e.package_contents||'—')}</td>
-      <td style="font-size:11px">${escHtml(contacts||'—')}</td>
-      <td style="font-size:11px">${e.tracking_code
-        ?`<div style="display:flex;flex-direction:column;gap:3px">
-            <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.3px">${escHtml(e.tracking_code)}</span>
-            ${e.tracking_link?`<a href="${escHtml(e.tracking_link)}" target="_blank" style="font-size:10px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:3px">
-              <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Sekti siuntą</a>`:''}
-          </div>`
-        :`<span style="color:var(--text-faint)">—</span>`}</td>
-      <td><span class="ugc-status ${stCls}">${stLbl}</span></td>
-      <td style="font-size:12px;line-height:1.5;color:var(--text);white-space:pre-wrap;word-break:break-word">${escHtml(e.notes||'')}</td>
-      <td style="white-space:nowrap">
-        <button class="ugc-edit-btn" onclick="openUgcModal('${e.id}')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-        <button class="ugc-del-btn" onclick="deleteUgcEntry('${e.id}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
-      </td>
-    </tr>`;
-  }).join('');
+  const all=[...ugcEntries].sort((a,b)=>
+    ((UGC_ORDER[a.video_status||'laukiama']??4)-(UGC_ORDER[b.video_status||'laukiama']??4))||
+    String(b.shipment_date||'').localeCompare(String(a.shipment_date||'')));
+  const cnt={};all.forEach(e=>{const s=e.video_status||'laukiama';cnt[s]=(cnt[s]||0)+1;});
+  // jei pasirinkto statuso nebeliko — grįžtam į „Visi"
+  if(UGC_ORDER[ugcFilter]!=null&&!cnt[ugcFilter])ugcFilter='all';
+  const chip=(key,label,n)=>`<button class="ugc-chip${ugcFilter===key?' active':''}" onclick="ugcSetFilter('${key}')">${label}<span>${n}</span></button>`;
+  let chips=chip('all','Visi',all.length);
+  Object.keys(UGC_ORDER).forEach(s=>{if(cnt[s])chips+=chip(s,UGC_STATUS_LABELS[s],cnt[s]);});
+  chips+='<span class="ugc-chip-sep"></span>'
+    +chip('notrecv','📦 Negauta siunta',all.filter(e=>!e.package_received).length)
+    +chip('affiliate','🤝 Affiliate',all.filter(e=>e.affiliate).length);
+  document.getElementById('ugcChips').innerHTML=chips;
+  const box=document.getElementById('ugcList');
+  if(!all.length){box.innerHTML=`<div class="ugc-empty">Nėra įrašų. Spausk „Pridėti kūrėją".</div>`;return;}
+  const list=all.filter(ugcMatches);
+  box.innerHTML=list.length?list.map(ugcCardHtml).join(''):`<div class="ugc-empty">Nieko nerasta pagal filtrą ar paiešką.</div>`;
+}
+
+function ugcCardHtml(e){
+  const id=escHtml(String(e.id));
+  const st=e.video_status||'laukiama';
+  const[bg,fg]=UGC_ST_COLOR[st]||UGC_ST_COLOR.laukiama;
+  const open=ugcOpen.has(String(e.id));
+  const plats=(e.platforms||[]).filter(p=>p.platform||p.handle);
+  const pchips=plats.map(p=>{const f=ugcFollowers(p.followers);return`<span class="ugc-pchip">${escHtml(UGC_PLAT_SHORT[p.platform]||p.platform||'')}${f?` <b>${escHtml(f)}</b>`:''}</span>`;}).join('');
+  const initial=escHtml((String(e.creator_name||'?').replace(/^@+/,'').trim()[0]||'?').toUpperCase());
+  const days=e.shipment_date?Math.round((new Date()-new Date(e.shipment_date+'T12:00:00'))/864e5):null;
+  const ago=days==null||days<0?'':days===0?' <span>· šiandien</span>':` <span>· prieš ${days} d.</span>`;
+  const opts=Object.keys(UGC_ORDER).map(s=>`<option value="${s}"${s===st?' selected':''}>${UGC_STATUS_LABELS[s]}</option>`).join('');
+  const notePrev=e.notes?String(e.notes).split('\n').find(l=>l.trim())||'':'';
+  return`<div class="ugc-card${open?' open':''}" style="border-left-color:${fg}">
+    <div class="ugc-row" onclick="ugcToggleOpen('${id}')">
+      <div class="ugc-main">
+        <div class="ugc-avatar" style="background:${bg};color:${fg}">${initial}</div>
+        <div class="ugc-main-txt">
+          <div class="ugc-name">${escHtml(e.creator_name||'—')}${e.contact_country?`<span class="ugc-country">${escHtml(e.contact_country)}</span>`:''}</div>
+          ${pchips?`<div class="ugc-pchips">${pchips}</div>`:''}
+          ${notePrev&&!open?`<div class="ugc-note-prev">💬 ${escHtml(notePrev)}</div>`:''}
+        </div>
+      </div>
+      <div class="ugc-ship">
+        <div class="ugc-ship-date">${e.shipment_date?`📦 ${fmtNice(e.shipment_date)}${ago}`:'<span>Dar neišsiųsta</span>'}</div>
+        ${e.package_contents?`<div class="ugc-ship-pkg">${escHtml(e.package_contents)}</div>`:''}
+      </div>
+      <div class="ugc-toggles" onclick="event.stopPropagation()">
+        <button class="ugc-tg${e.package_received?' on':''}" title="Pažymėti, ar kūrėjas gavo siuntą" onclick="setUgcField('${id}','package_received',${!e.package_received})">${e.package_received?'✓ Gauta':'Negauta'}</button>
+        <button class="ugc-tg${e.affiliate?' on':''}" title="Affiliate" onclick="setUgcField('${id}','affiliate',${!e.affiliate})">${e.affiliate?'✓ Affiliate':'Affiliate'}</button>
+      </div>
+      <select class="ugc-st-sel" style="background-color:${bg};color:${fg}" onclick="event.stopPropagation()" onchange="setUgcField('${id}','video_status',this.value)">${opts}</select>
+      <svg class="ugc-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    ${open?ugcDetailHtml(e,plats):''}
+  </div>`;
+}
+
+function ugcDetailHtml(e,plats){
+  const id=escHtml(String(e.id));
+  const copy=v=>`<button class="ugc-copy" data-copy="${escHtml(v)}" onclick="ugcCopy(this.dataset.copy)" title="Kopijuoti">⧉</button>`;
+  const line=(k,v)=>`<div class="ugc-dline"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+  const dash='<span class="ugc-faint">—</span>';
+  const platRows=plats.length
+    ?plats.map(p=>line(escHtml(p.platform||'—'),`${ugcHandleHtml(p)||dash}${p.followers?` <em>${escHtml(ugcFollowers(p.followers))} sek.</em>`:''}`)).join('')
+    :`<div class="ugc-dline">${dash}</div>`;
+  return`<div class="ugc-detail">
+    <div class="ugc-dsec">
+      <div class="ugc-dtitle">Kontaktai</div>
+      ${line('Vardas',e.contact_name?escHtml(e.contact_name):dash)}
+      ${line('Šalis',e.contact_country?escHtml(e.contact_country):dash)}
+      ${line('El. paštas',e.contact_email?`<a href="mailto:${escHtml(e.contact_email)}">${escHtml(e.contact_email)}</a>${copy(e.contact_email)}`:dash)}
+    </div>
+    <div class="ugc-dsec">
+      <div class="ugc-dtitle">Siunta</div>
+      ${line('Išsiųsta',e.shipment_date?fmtNice(e.shipment_date):dash)}
+      ${line('Turinys',e.package_contents?escHtml(e.package_contents):dash)}
+      ${line('Kodas',e.tracking_code?`<span class="ugc-mono">${escHtml(e.tracking_code)}</span>${copy(e.tracking_code)}`:dash)}
+      ${e.tracking_link?line('Sekimas',`<a href="${escHtml(ugcHref(e.tracking_link))}" target="_blank" rel="noopener">Sekti siuntą ↗</a>`):''}
+    </div>
+    <div class="ugc-dsec">
+      <div class="ugc-dtitle">Platformos</div>
+      ${platRows}
+    </div>
+    <div class="ugc-dsec full">
+      <div class="ugc-dtitle">Pastabos</div>
+      ${e.notes?`<div class="ugc-notes-full">${escHtml(e.notes)}</div>`:`<div class="ugc-faint" style="font-size:12px">Pastabų nėra — pridėk per „Redaguoti".</div>`}
+    </div>
+    <div class="ugc-dactions">
+      <button class="ugc-dbtn danger" onclick="deleteUgcEntry('${id}')">Ištrinti</button>
+      <button class="ugc-dbtn primary" onclick="openUgcModal('${id}')">✏️ Redaguoti</button>
+    </div>
+  </div>`;
+}
+
+function ugcToggleOpen(id){id=String(id);if(ugcOpen.has(id))ugcOpen.delete(id);else ugcOpen.add(id);renderUgcTable();}
+function ugcSetFilter(f){ugcFilter=f;renderUgcTable();}
+function ugcOnSearch(v){ugcQuery=String(v||'').trim().toLowerCase();renderUgcTable();}
+function ugcCopy(v){navigator.clipboard.writeText(v).then(()=>showToast('Nukopijuota ✓')).catch(()=>showToast('Nepavyko nukopijuoti'));}
+// Greitas vieno lauko keitimas iš sąrašo (statusas, gauta, affiliate) — UI atnaujinamas iškart
+async function setUgcField(id,field,val){
+  const e=ugcEntries.find(x=>String(x.id)===String(id));
+  const prev=e?e[field]:undefined;
+  if(e){e[field]=val;renderUgcTable();}
+  const{error}=await sb.from('ugc_shipments').update({[field]:val}).eq('id',id);
+  if(error){if(e){e[field]=prev;renderUgcTable();}showToast('Klaida: '+error.message);return;}
+  if(field==='video_status')showToast('Statusas: '+(UGC_STATUS_LABELS[val]||val));
 }
 
 function openUgcModal(editId){
@@ -2243,7 +2353,7 @@ function openUgcModal(editId){
   document.getElementById('ugcNotes').value='';
 
   if(editId){
-    const e=ugcEntries.find(x=>x.id===editId);
+    const e=ugcEntries.find(x=>String(x.id)===String(editId));
     if(e){
       document.getElementById('ugcName').value=e.creator_name||'';
       document.getElementById('ugcDate').value=e.shipment_date||'';
@@ -2322,13 +2432,6 @@ async function saveUgcEntry(){
   closeUgcModal();
   showToast(editingUgcId?'Atnaujinta!':'Įrašas pridėtas!');
   renderUgcTab();
-}
-
-async function toggleAffiliate(id,val){
-  const{error}=await sb.from('ugc_shipments').update({affiliate:val}).eq('id',id);
-  if(error){showToast('Klaida: '+error.message);return;}
-  const e=ugcEntries.find(x=>x.id===id);if(e)e.affiliate=val;
-  renderUgcTable();
 }
 
 async function deleteUgcEntry(id){
