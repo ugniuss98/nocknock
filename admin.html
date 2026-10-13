@@ -2200,8 +2200,8 @@ async function renderUgcTab(){
 }
 
 const UGC_STATUS_LABELS={veluoja:'⚠ Vėluoja',komplikuota:'💬 Komplikuota komunikacija',nustota:'🚫 Nustota dirbti',pradzia:'🌱 Pradžia',laukiama:'⏳ Laukiama',filmuojama:'🎬 Filmuojama',atsiusta:'📨 Atsiųsta',paviešinta:'✅ Paviešinta'};
-// Eiliškumas: pirmiausia tie, kuriems reikia dėmesio
-const UGC_ORDER={veluoja:0,komplikuota:1,nustota:2,pradzia:3,laukiama:4,filmuojama:5,atsiusta:6,paviešinta:7};
+// Eiliškumas: viršuje tie, su kuriais dirbama dabar ar laukiama; toliau probleminiai; apačioje baigti ir nutraukti
+const UGC_ORDER={filmuojama:0,pradzia:1,laukiama:2,veluoja:3,komplikuota:4,atsiusta:5,paviešinta:6,nustota:7};
 const UGC_ST_COLOR={veluoja:['#FDE8ED','#C0392B'],komplikuota:['#FFF4D6','#92600A'],nustota:['#F2F1EE','#4A4744'],pradzia:['#F0EBF8','#6B35B8'],laukiama:['#F2F1EE','#6B6862'],filmuojama:['#FEF0E6','#9C4A10'],atsiusta:['#EEF2FD','#2D5BE3'],paviešinta:['#E8F5EE','#1A7A4A']};
 const UGC_PLAT_SHORT={Instagram:'IG',TikTok:'TT',YouTube:'YT',Facebook:'FB','Twitter/X':'X',Kita:'Kita'};
 let ugcFilter='all',ugcQuery='',ugcOpen=new Set();
@@ -2229,7 +2229,7 @@ function ugcMatches(e){
 
 function renderUgcTable(){
   const all=[...ugcEntries].sort((a,b)=>
-    ((UGC_ORDER[a.video_status||'laukiama']??4)-(UGC_ORDER[b.video_status||'laukiama']??4))||
+    ((UGC_ORDER[a.video_status||'laukiama']??UGC_ORDER.laukiama)-(UGC_ORDER[b.video_status||'laukiama']??UGC_ORDER.laukiama))||
     String(b.shipment_date||'').localeCompare(String(a.shipment_date||'')));
   const cnt={};all.forEach(e=>{const s=e.video_status||'laukiama';cnt[s]=(cnt[s]||0)+1;});
   // jei pasirinkto statuso nebeliko — grįžtam į „Visi"
