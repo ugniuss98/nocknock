@@ -634,6 +634,12 @@ select.ugc-st-sel{grid-area:st;width:100%;font-size:12px;font-weight:600;padding
 .pdfc-cflag.green{color:var(--ok);} .pdfc-cflag.green i{background:var(--ok);}
 .pdfc-cflag.red{color:var(--bad);} .pdfc-cflag.red i{background:var(--bad);}
 
+.cal-notice{margin:12px 20px 0;padding:12px 14px;border:1px solid var(--orange);background:var(--orange-light);color:var(--text);border-radius:var(--radius);font-size:12.5px;line-height:1.5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.cal-notice b{font-weight:600;}
+.cal-notice code{display:block;margin-top:5px;font-family:'DM Mono',monospace;font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:6px 8px;white-space:pre-wrap;word-break:break-all;}
+.cal-notice-txt{flex:1;min-width:240px;}
+.cal-notice button{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:7px 12px;border-radius:var(--radius);border:none;background:var(--text);color:#fff;cursor:pointer;white-space:nowrap;}
+
 /* ── POST PREVIEW (profile post view) ── */
 .post-view{max-width:440px;padding:0;gap:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;}
 .pv-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -1044,6 +1050,7 @@ label:not([class]),.l-label,.sec-title,.f-label,.stat-label,.cal-ws-title{text-t
       </button>
     </div>
   </div>
+  <div id="calNotice" class="cal-notice" style="display:none"></div>
   <div class="cal-page-layout" id="calPageLayout">
     <div class="cal-main-area">
       <div id="calMonthView">
@@ -2601,6 +2608,36 @@ function calNav(d){
 }
 function calGoToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();calWeekAnchor=new Date(n);calLoad();}
 
+// Kalendoriaus įrašai pasirinktam klientui (+ dar niekam nepriskirti seni įrašai, kad niekas nedingtų).
+// Kol DB neturi client_id stulpelio — kraunama be filtro, kaip anksčiau, ir rodomas pranešimas.
+let calNeedsMigration=false;
+const CAL_MIGRATION_SQL="ALTER TABLE content_plans ADD COLUMN IF NOT EXISTS client_id UUID REFERENCES clients(id) ON DELETE SET NULL;\nUPDATE content_plans SET client_id = (SELECT id FROM clients WHERE slug = 'ferosticker') WHERE client_id IS NULL;\nCREATE INDEX IF NOT EXISTS content_plans_client_date_idx ON content_plans (client_id, date);";
+async function calQueryPlans(select,from,to){
+  const run=f=>{let q=sb.from('content_plans').select(select);if(f)q=q.or(f);return q.gte('date',from).lte('date',to).order('date').order('created_at');};
+  let r=await run(`client_id.eq.${currentClient.id},client_id.is.null`);
+  if(r.error&&/client_id/.test(r.error.message||'')){calNeedsMigration=true;r=await run(null);}
+  else if(!r.error)calNeedsMigration=false;
+  return r;
+}
+function calRenderNotice(){
+  const el=document.getElementById('calNotice');
+  const unassigned=calNeedsMigration?0:calPlans.filter(p=>!p.client_id).length;
+  if(calNeedsMigration){
+    el.innerHTML=`<div class="cal-notice-txt"><b>Kalendorius dar bendras visiems klientams.</b> Kad kiekvienas klientas turėtų atskirą kalendorių, Supabase → SQL Editor paleisk šį SQL (jis taip pat priskirs esamus įrašus FEROSTICKER):<code>${escHtml(CAL_MIGRATION_SQL)}</code></div><button onclick="calCopyMigration()">Kopijuoti SQL</button>`;
+    el.style.display='flex';
+  }else if(unassigned){
+    el.innerHTML=`<div class="cal-notice-txt"><b>${unassigned} įraš${unassigned===1?'as':'ai'} šiame laikotarpyje dar nepriskirt${unassigned===1?'as':'i'} jokiam klientui.</b> Kol nepriskirti, jie rodomi visiems klientams admin kalendoriuje (klientų nuorodose — ne).</div><button onclick="calAssignUnassigned()">Priskirti visus: ${escHtml(currentClient?currentClient.name:'')}</button>`;
+    el.style.display='flex';
+  }else{el.style.display='none';el.innerHTML='';}
+}
+function calCopyMigration(){navigator.clipboard.writeText(CAL_MIGRATION_SQL).then(()=>showToast('SQL nukopijuotas ✓')).catch(()=>showToast('Nepavyko nukopijuoti'));}
+async function calAssignUnassigned(){
+  if(!currentClient)return;
+  if(!confirm(`Priskirti VISUS dar niekam nepriskirtus kalendoriaus įrašus (visų mėnesių) klientui ${currentClient.name}?`))return;
+  const{error}=await sb.from('content_plans').update({client_id:currentClient.id}).is('client_id',null);
+  if(error){showToast('Klaida: '+error.message,5000);return;}
+  showToast('Priskirta ✓');calLoad();
+}
 function calShowLoadError(error){
   const m=String(error.message||'');
   if(/client_id/.test(m))showToast('Kalendoriui reikia atnaujinti duomenų bazę: Supabase → SQL Editor paleisk setup.sql 10 dalį (client_id).',9000);
@@ -2626,11 +2663,12 @@ async function calLoad(){
     showToast('Pasirink klientą Žurnalo skiltyje');return;
   }
   const cid=currentClient.id;
-  const{data,error}=await sb.from('content_plans').select('*,calendar_comments(count)').eq('client_id',cid).gte('date',from).lte('date',to).order('date').order('created_at');
+  const{data,error}=await calQueryPlans('*,calendar_comments(count)',from,to);
   if(!currentClient||currentClient.id!==cid)return; // klientas pasikeitė kol kraunama
   if(error){calShowLoadError(error);return;}
   calPlans=data||[];
   calLoaded=true;
+  calRenderNotice();
   if(calView==='month'){calRenderCal();calRenderWeek();}
   else calRenderWeekView();
 }
@@ -2944,7 +2982,7 @@ async function calSavePost(){
   const saveBtn=document.querySelector('#calPostModal .btn-confirm');
   if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Saugoma...';}
   const image_url=await calUploadImg();
-  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null,client_id:currentClient.id,flag:calCurFlag||null,flag_note:calCurFlag?(document.getElementById('calMFlagNote').value.trim()||null):null};
+  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null,...(calNeedsMigration?{}:{client_id:currentClient.id}),flag:calCurFlag||null,flag_note:calCurFlag?(document.getElementById('calMFlagNote').value.trim()||null):null};
   const id=document.getElementById('calMId').value;
   let error;
   if(id&&calEditingGroup&&calEditingGroup.length){
@@ -3032,9 +3070,7 @@ async function calDownloadPdf(){
     const y=calView==='month'?calYear:calWeekAnchor.getFullYear();
     const m=calView==='month'?calMonth:calWeekAnchor.getMonth();
     if(!currentClient)throw new Error('pasirink klientą Žurnalo skiltyje');
-    const{data,error}=await sb.from('content_plans').select('*').eq('client_id',currentClient.id)
-      .gte('date',calFmt(new Date(y,m,1))).lte('date',calFmt(new Date(y,m+1,0)))
-      .order('date').order('created_at');
+    const{data,error}=await calQueryPlans('*',calFmt(new Date(y,m,1)),calFmt(new Date(y,m+1,0)));
     if(error)throw new Error(error.message);
     const plans=(data||[]).filter(p=>calActiveF.has(p.platform));
 
