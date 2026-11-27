@@ -578,56 +578,61 @@ select.ugc-st-sel{grid-area:st;width:100%;font-size:12px;font-weight:600;padding
 .cal-wk-card-title{font-size:11px;font-weight:600;line-height:1.3;word-break:break-word;}
 .cal-wk-card-meta{font-size:10px;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;gap:4px;}
 .cal-wk-empty{font-size:11px;color:var(--text-faint);text-align:center;padding:10px 0;}
-/* ── MĖNESIO PDF: puslapiai piešiami už ekrano ribų, A4 gulsčias = 1123×794 px ── */
+/* ── MĖNESIO PDF: puslapiai piešiami už ekrano ribų, A4 gulsčias = 1123×794 px ──
+   Stilius: kreminis popierius, bordo rašalas, plonos linijos per visą plotį, serifinės antraštės */
 .pdfc-host{position:fixed;left:-20000px;top:0;z-index:-1;pointer-events:none;}
-.pdfc-page{width:1123px;height:794px;background:#fff;padding:34px 38px 26px;display:flex;flex-direction:column;font-family:'DM Sans',sans-serif;color:#1A1916;overflow:hidden;margin-bottom:20px;}
-.pdfc-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:16px;flex-shrink:0;}
-.pdfc-kicker{font-size:10px;font-weight:600;letter-spacing:2.2px;text-transform:uppercase;color:#8A877E;margin-bottom:6px;}
-.pdfc-month{font-size:34px;font-weight:600;letter-spacing:-1px;line-height:1;}
-.pdfc-month span{color:#B5B2AA;font-weight:300;}
-.pdfc-month.sm{font-size:24px;letter-spacing:-.5px;}
-.pdfc-stats{display:flex;gap:7px;}
-.pdfc-stat{background:#F7F6F3;border-radius:10px;padding:7px 12px;text-align:center;min-width:62px;}
-.pdfc-stat b{display:block;font-size:17px;font-weight:600;line-height:1.15;}
-.pdfc-stat span{font-size:8.5px;color:#8A877E;text-transform:uppercase;letter-spacing:.6px;font-weight:600;}
-.pdfc-stat.ok{background:#E8F5EE;} .pdfc-stat.ok b,.pdfc-stat.ok span{color:#1A7A4A;}
-.pdfc-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:5px;min-height:0;}
-.pdfc-dow{font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#B5B2AA;text-align:center;}
-.pdfc-dow.we{color:#C0392B;}
-.pdfc-cell{border:1px solid #E8E5DF;border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:3px;overflow:hidden;min-height:0;background:#fff;}
-.pdfc-cell.other{background:#FAFAF8;border-color:#F0EEE9;}
-.pdfc-cell.day-green{background:#FBFEFC;border-color:#BFE5CE;}
-.pdfc-cell.day-red{background:#FFFBFB;border-color:#F3BEC5;}
-.pdfc-num{font-size:10px;font-weight:600;color:#8A877E;line-height:1;}
-.pdfc-cell.other .pdfc-num{color:#D0CCC3;}
-.pdfc-thumb{width:100%;border-radius:5px;display:block;flex-shrink:0;}
-.pdfc-pp{display:flex;align-items:center;gap:3px;padding:2px 5px;border-radius:4px;font-size:8.5px;font-weight:500;white-space:nowrap;overflow:hidden;line-height:1.3;flex-shrink:0;}
-.pdfc-pp i{width:5px;height:5px;border-radius:50%;flex-shrink:0;display:inline-block;}
-.pdfc-pp.fl-green{background:#E8F5EE;color:#1A7A4A;}
-.pdfc-pp.fl-red{background:#FDE8ED;color:#C0392B;}
-.pdfc-more{font-size:8.5px;font-weight:600;color:#8A877E;padding-left:3px;line-height:1.3;}
-.pdfc-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:9px;color:#8A877E;flex-shrink:0;}
-.pdfc-legend{display:flex;gap:12px;align-items:center;}
-.pdfc-legend span{display:flex;align-items:center;gap:5px;}
-.pdfc-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;}
-.pdfc-list{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);gap:12px;min-height:0;}
-.pdfc-card{border:1px solid #E8E5DF;border-radius:12px;padding:11px;display:flex;gap:14px;overflow:hidden;min-height:0;}
-.pdfc-card.fl-green{border-color:#BFE5CE;}
-.pdfc-card.fl-red{border-color:#F3BEC5;}
-.pdfc-cimg{width:176px;height:176px;border-radius:8px;flex-shrink:0;display:block;}
-.pdfc-cph{width:176px;height:176px;border-radius:8px;flex-shrink:0;background:#F2F1EE;display:flex;align-items:center;justify-content:center;font-size:42px;}
+.pdfc-page{--ink:#6E2A1F;--soft:#A06A5E;--line:#D9C3B9;--cream:#F5F2E9;--ok:#4E6B45;--bad:#B23A2A;
+  width:1123px;height:794px;background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;overflow:hidden;margin-bottom:20px;}
+.pdfc-serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;}
+.pdfc-title{height:112px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px solid var(--line);}
+.pdfc-title.sm{height:96px;}
+.pdfc-kicker{font-size:9.5px;letter-spacing:2.6px;text-transform:uppercase;color:var(--soft);margin-bottom:6px;}
+.pdfc-h1{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:66px;line-height:1;letter-spacing:-.5px;}
+.pdfc-title.sm .pdfc-h1{font-size:50px;}
+.pdfc-stats{height:66px;flex-shrink:0;display:flex;align-items:center;padding:0 40px;border-bottom:1px solid var(--line);}
+.pdfc-stats-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;width:150px;flex-shrink:0;line-height:1.45;}
+.pdfc-stat{flex:1;text-align:center;border-left:1px solid var(--line);}
+.pdfc-stat b{display:block;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:28px;line-height:1;margin-bottom:3px;}
+.pdfc-stat span{font-size:8.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--soft);}
+.pdfc-stat.ok b,.pdfc-stat.ok span{color:var(--ok);}
+.pdfc-dow-row{height:28px;flex-shrink:0;display:grid;grid-template-columns:repeat(7,1fr);padding:0 24px;align-items:center;}
+.pdfc-dow{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding-left:8px;}
+.pdfc-dow.we{color:var(--soft);}
+.pdfc-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);padding:0 24px;min-height:0;}
+.pdfc-cell{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:7px 7px 7px 8px;display:flex;flex-direction:column;gap:3px;overflow:hidden;min-height:0;}
+.pdfc-cell:nth-child(7n+1){border-left:none;}
+.pdfc-cell.day-green{background:#ECEEDD;}
+.pdfc-cell.day-red{background:#F3E1D9;}
+.pdfc-num{font-family:'Instrument Serif',Georgia,serif;font-size:17px;line-height:1;margin-bottom:1px;flex-shrink:0;}
+.pdfc-cell.other .pdfc-num{color:var(--line);}
+.pdfc-thumb{width:100%;display:block;flex-shrink:0;border-radius:2px;}
+.pdfc-pp{font-size:8.5px;line-height:1.35;white-space:nowrap;overflow:hidden;flex-shrink:0;}
+.pdfc-pp b{font-weight:600;font-size:7px;letter-spacing:.8px;margin-right:4px;color:var(--soft);}
+.pdfc-pp i{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:4px;vertical-align:1px;}
+.pdfc-pp.fl-green i{background:var(--ok);}
+.pdfc-pp.fl-red i{background:var(--bad);}
+.pdfc-more{font-size:7.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--soft);flex-shrink:0;}
+.pdfc-foot{height:34px;flex-shrink:0;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 40px;font-size:8px;letter-spacing:1.4px;text-transform:uppercase;color:var(--soft);}
+.pdfc-legend{display:flex;gap:16px;align-items:center;}
+.pdfc-legend b{color:var(--ink);font-weight:600;margin-right:4px;}
+.pdfc-legend i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:0;}
+.pdfc-list{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);min-height:0;}
+.pdfc-item{display:flex;gap:18px;padding:18px 24px 18px 40px;overflow:hidden;min-height:0;border-bottom:1px solid var(--line);}
+.pdfc-item.r{border-left:1px solid var(--line);padding:18px 40px 18px 24px;}
+.pdfc-item.last{border-bottom:none;}
+.pdfc-cimg{width:168px;height:168px;flex-shrink:0;display:block;border-radius:2px;}
+.pdfc-cph{width:168px;height:168px;flex-shrink:0;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',Georgia,serif;font-size:24px;color:var(--soft);}
 .pdfc-cbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;overflow:hidden;}
-.pdfc-cdate{font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#8A877E;}
-.pdfc-chips{display:flex;flex-wrap:wrap;gap:4px;}
-.pdfc-chip{font-size:8.5px;font-weight:600;padding:2px 7px;border-radius:20px;}
-.pdfc-chip.st{background:#F7F6F3;color:#6B6862;}
-.pdfc-ctitle{font-size:13px;font-weight:600;line-height:1.3;}
-.pdfc-cnotes{font-size:9.5px;line-height:1.5;color:#4A4744;overflow:hidden;flex:1;min-height:0;position:relative;}
-.pdfc-cnotes::after{content:'';position:absolute;left:0;right:0;bottom:0;height:20px;background:linear-gradient(rgba(255,255,255,0),#fff);}
-.pdfc-cflag{font-size:9px;font-weight:600;padding:4px 7px;border-radius:6px;flex-shrink:0;}
-.pdfc-cflag.green{background:#E8F5EE;color:#1A7A4A;}
-.pdfc-cflag.red{background:#FDE8ED;color:#C0392B;}
-.pdfc-empty{flex:1;display:flex;align-items:center;justify-content:center;color:#B5B2AA;font-size:13px;}
+.pdfc-cno{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;}
+.pdfc-cno span{color:var(--soft);margin-left:8px;}
+.pdfc-ctitle{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:23px;line-height:1.05;}
+.pdfc-cmeta{font-size:8px;letter-spacing:1.4px;text-transform:uppercase;color:var(--soft);}
+.pdfc-cnotes{font-size:9.5px;line-height:1.55;color:#5A3A33;overflow:hidden;flex:1;min-height:0;position:relative;}
+.pdfc-cnotes::after{content:'';position:absolute;left:0;right:0;bottom:0;height:20px;background:linear-gradient(rgba(245,242,233,0),#F5F2E9);}
+.pdfc-cflag{font-size:9px;line-height:1.4;flex-shrink:0;}
+.pdfc-cflag i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:0;}
+.pdfc-cflag.green{color:var(--ok);} .pdfc-cflag.green i{background:var(--ok);}
+.pdfc-cflag.red{color:var(--bad);} .pdfc-cflag.red i{background:var(--bad);}
 
 /* ── POST PREVIEW (profile post view) ── */
 .post-view{max-width:440px;padding:0;gap:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;}
@@ -2944,6 +2949,19 @@ function calPdfLibs(){
   const load=src=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Nepavyko įkelti PDF bibliotekos'));document.head.appendChild(s);});
   return calPdfLibsP||(calPdfLibsP=Promise.all(CAL_PDF_LIBS.map(load)).catch(e=>{calPdfLibsP=null;throw e;}));
 }
+// Antraščių šriftas PDF'ui — įkeliamas tik generuojant, kad nelėtintų programos
+async function calPdfFont(){
+  if(!document.getElementById('calPdfFontLink')){
+    const l=document.createElement('link');l.id='calPdfFontLink';l.rel='stylesheet';
+    l.href='https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap';
+    document.head.appendChild(l);
+    await new Promise(res=>{l.onload=res;l.onerror=res;});
+  }
+  try{await document.fonts.load('400 66px "Instrument Serif"','Įrašai Lapkritis');}catch(e){}
+}
+// „🎬 Reels" → „Reels": PDF'e etiketės be emoji, kad liktų švarios
+function calPdfPlain(s){return String(s||'').replace(/^[^\p{L}\p{N}]+/u,'').trim();}
+const CAL_PDF_ABBR={ig:'IG',tiktok:'TT',fb:'FB',youtube:'YT',linkedin:'LI',other:'KITA'};
 // Nuotrauka parsiunčiama kaip blob, kad drobė nebūtų „užteršta" (CORS) ir PDF galėtų būti sugeneruotas
 async function calPdfLoadImg(url){
   try{
@@ -2969,7 +2987,7 @@ async function calDownloadPdf(){
   btn.disabled=true;btn.textContent='Ruošiamas PDF…';
   let host=null;
   try{
-    await calPdfLibs();
+    await Promise.all([calPdfLibs(),calPdfFont()]);
     // Mėnuo: rodomas mėnesio vaizde, o savaitės vaizde — tos savaitės mėnuo
     const y=calView==='month'?calYear:calWeekAnchor.getFullYear();
     const m=calView==='month'?calMonth:calWeekAnchor.getMonth();
@@ -2985,7 +3003,7 @@ async function calDownloadPdf(){
     const days=[];for(let d=new Date(start);days.length<42;d.setDate(d.getDate()+1))days.push(new Date(d));
     while(days.slice(-7).every(d=>d.getMonth()!==m))days.splice(-7);
     const R=days.length/7;
-    const rowH=(623-5*(R-1))/R, cellIn=rowH-14, thumbH=R>5?30:42, thumbW=131;
+    const rowH=554/R, cellIn=rowH-15, thumbH=R>5?28:40, thumbW=138;
 
     const byDay={};
     plans.forEach(p=>{(byDay[p.date]=byDay[p.date]||[]).push(p);});
@@ -2997,7 +3015,7 @@ async function calDownloadPdf(){
     const imgs={};
     await Promise.all(urls.map(async u=>{
       const im=await calPdfLoadImg(u);
-      if(im){imgs[u]={thumb:calPdfCrop(im,thumbW,thumbH),square:calPdfCrop(im,176,176)};URL.revokeObjectURL(im.src);}
+      if(im){imgs[u]={thumb:calPdfCrop(im,thumbW,thumbH),square:calPdfCrop(im,168,168)};URL.revokeObjectURL(im.src);}
     }));
 
     const client=currentClient?currentClient.name:'';
@@ -3006,11 +3024,13 @@ async function calDownloadPdf(){
     const filtered=allPlats.some(p=>!calActiveF.has(p));
     const usedPlats=allPlats.filter(p=>plans.some(x=>x.platform===p));
     const published=allGroups.filter(g=>g.first.status==='paskelbta').length;
-    const kicker=['Turinio planas',client,filtered?usedPlats.map(p=>CAL_PLAT_L[p]).join(', '):''].filter(Boolean).map(escHtml).join(' · ');
-    const legend=`<div class="pdfc-legend">${usedPlats.map(p=>`<span><i class="d-${p}"></i>${CAL_PLAT_L[p]}</span>`).join('')}</div>`;
+    const hasGreen=allGroups.some(g=>g.first.flag==='green'),hasRed=allGroups.some(g=>g.first.flag==='red');
+    const kicker=['Turinio planas',client,filtered?usedPlats.map(p=>CAL_PLAT_L[p]).join(', '):''].filter(Boolean).map(escHtml).join(' — ');
+    const legend=`<div class="pdfc-legend">${usedPlats.map(p=>`<span><b>${CAL_PDF_ABBR[p]}</b>${CAL_PLAT_L[p]}</span>`).join('')}${hasGreen?`<span><i style="background:var(--ok)"></i>Paskelbta, viskas gerai</span>`:''}${hasRed?`<span><i style="background:var(--bad)"></i>Neįvyko</span>`:''}</div>`;
     const listPages=Math.ceil(allGroups.length/6);
     const totalPages=1+listPages;
     const foot=n=>`<div class="pdfc-foot">${legend}<div>Sugeneruota ${calFmt(new Date())} · ${n} / ${totalPages}</div></div>`;
+    const abbr=g=>g.plats.map(pl=>CAL_PDF_ABBR[pl]).join(' · ');
 
     // 1 puslapis — mėnesio tinklelis
     const cells=days.map(d=>{
@@ -3019,15 +3039,15 @@ async function calDownloadPdf(){
       const gs=dayGroups[ds]||[];
       const imgG=gs.find(g=>g.img&&imgs[g.img]);
       const flags=[...new Set(gs.map(g=>g.first.flag).filter(Boolean))];
-      let avail=cellIn-13-(imgG?thumbH+3:0);
-      const ENTRY=18,MORE=14;
+      const avail=cellIn-21-(imgG?thumbH+3:0);
+      const ENTRY=15,MORE=13;
       let show=gs.length;
       if(gs.length*ENTRY-3>avail)show=Math.max(0,Math.floor((avail-MORE)/ENTRY));
       const entries=gs.slice(0,show).map(g=>{
-        const p=g.first,cls=p.flag==='green'?'fl-green':p.flag==='red'?'fl-red':'c-'+p.platform;
-        return`<div class="pdfc-pp ${cls}">${g.plats.map(pl=>`<i class="d-${pl}"></i>`).join('')}<span>${escHtml(calPdfCut(p.title||CAL_TYPE_L[p.content_type]||'',34))}</span></div>`;
+        const p=g.first;
+        return`<div class="pdfc-pp${p.flag?' fl-'+p.flag:''}">${p.flag?'<i></i>':''}<b>${abbr(g)}</b>${escHtml(calPdfCut(p.title||calPdfPlain(CAL_TYPE_L[p.content_type]),40))}</div>`;
       }).join('');
-      const more=gs.length>show?`<div class="pdfc-more">+${gs.length-show} daugiau</div>`:'';
+      const more=gs.length>show?`<div class="pdfc-more">+ dar ${gs.length-show}</div>`:'';
       return`<div class="pdfc-cell${flags.length===1?' day-'+flags[0]:''}">
         <div class="pdfc-num">${d.getDate()}</div>
         ${imgG?`<img class="pdfc-thumb" style="height:${thumbH}px" src="${imgs[imgG.img].thumb}">`:''}
@@ -3035,46 +3055,45 @@ async function calDownloadPdf(){
       </div>`;
     }).join('');
     const stats=`<div class="pdfc-stats">
+      <div class="pdfc-stats-label">Šį mėnesį<br>suplanuota</div>
       <div class="pdfc-stat"><b>${allGroups.length}</b><span>Įrašų</span></div>
-      ${usedPlats.map(p=>`<div class="pdfc-stat"><b>${plans.filter(x=>x.platform===p).length}</b><span>${CAL_PLAT_E[p]} ${CAL_PLAT_L[p]}</span></div>`).join('')}
-      ${published?`<div class="pdfc-stat ok"><b>${published}</b><span>Paskelbta</span></div>`:''}
+      ${usedPlats.map(p=>`<div class="pdfc-stat"><b>${plans.filter(x=>x.platform===p).length}</b><span>${CAL_PLAT_L[p]}</span></div>`).join('')}
+      <div class="pdfc-stat ok"><b>${published}</b><span>Paskelbta</span></div>
     </div>`;
     let html=`<div class="pdfc-page">
-      <div class="pdfc-head">
-        <div><div class="pdfc-kicker">${kicker}</div><div class="pdfc-month">${monthName} <span>${y}</span></div></div>
-        ${stats}
-      </div>
-      <div class="pdfc-grid" style="grid-template-rows:14px repeat(${R},1fr)">
-        ${CAL_PDF_DOW.map((n,i)=>`<div class="pdfc-dow${i>4?' we':''}">${n}</div>`).join('')}
-        ${cells}
-      </div>
+      <div class="pdfc-title"><div class="pdfc-kicker">${kicker}</div><div class="pdfc-h1">${monthName} ${y}</div></div>
+      ${stats}
+      <div class="pdfc-dow-row">${CAL_PDF_DOW.map((n,i)=>`<div class="pdfc-dow${i>4?' we':''}">${n}</div>`).join('')}</div>
+      <div class="pdfc-grid" style="grid-template-rows:repeat(${R},1fr)">${cells}</div>
       ${foot(1)}
     </div>`;
 
-    // Tolesni puslapiai — po 6 įrašų korteles su vizualu ir tekstu
+    // Tolesni puslapiai — po 6 įrašus: vizualas, data, platformos, tekstas
     for(let pg=0;pg<listPages;pg++){
-      const cards=allGroups.slice(pg*6,pg*6+6).map(g=>{
-        const p=g.first;
+      const chunk=allGroups.slice(pg*6,pg*6+6);
+      const lastRow=Math.ceil(chunk.length/2)===3?4:-1; // paskutinė eilutė be apatinės linijos (ją atstoja poraštė)
+      const items=chunk.map((g,i)=>{
+        const p=g.first,no=pg*6+i+1;
         const date=new Date(p.date+'T12:00:00').toLocaleDateString('lt-LT',{weekday:'long',month:'long',day:'numeric'});
-        const img=g.img&&imgs[g.img]?`<img class="pdfc-cimg" src="${imgs[g.img].square}">`:`<div class="pdfc-cph">${(CAL_TYPE_L[p.content_type]||'📌').split(' ')[0]}</div>`;
-        const chips=g.plats.map(pl=>`<span class="pdfc-chip c-${pl}">${CAL_PLAT_E[pl]} ${CAL_PLAT_L[pl]}</span>`).join('')
-          +`<span class="pdfc-chip st">${escHtml(CAL_TYPE_L[p.content_type]||'')}</span>`
-          +`<span class="pdfc-chip st">${escHtml(CAL_ST_L[p.status]||'')}</span>`;
+        const type=calPdfPlain(CAL_TYPE_L[p.content_type]);
+        const img=g.img&&imgs[g.img]?`<img class="pdfc-cimg" src="${imgs[g.img].square}">`:`<div class="pdfc-cph">${escHtml(type||'Įrašas')}</div>`;
+        const meta=[g.plats.map(pl=>CAL_PLAT_L[pl]).join(' · '),type,calPdfPlain(CAL_ST_L[p.status])].filter(Boolean).map(escHtml).join(' — ');
         const notes=p.notes?escHtml(calPdfCut(String(p.notes).replace(/\n{3,}/g,'\n\n').trim(),560)).replace(/\n/g,'<br>'):'';
-        const flag=p.flag?`<div class="pdfc-cflag ${p.flag}">${p.flag==='green'?'✅ Paskelbta – viskas ok':'⚠️ Neįvyko'}${p.flag_note?': '+escHtml(calPdfCut(p.flag_note,90)):''}</div>`:'';
-        return`<div class="pdfc-card${p.flag?' fl-'+p.flag:''}">${img}
+        const flag=p.flag?`<div class="pdfc-cflag ${p.flag}"><i></i>${p.flag==='green'?'Paskelbta, viskas gerai':'Neįvyko'}${p.flag_note?' — '+escHtml(calPdfCut(p.flag_note,90)):''}</div>`:'';
+        const cls=(i%2?' r':'')+(lastRow>=0&&i>=lastRow?' last':'');
+        return`<div class="pdfc-item${cls}">${img}
           <div class="pdfc-cbody">
-            <div class="pdfc-cdate">${escHtml(date)}</div>
-            <div class="pdfc-chips">${chips}</div>
-            <div class="pdfc-ctitle">${escHtml(calPdfCut(p.title||'(be pavadinimo)',90))}</div>
+            <div class="pdfc-cno">(${String(no).padStart(2,'0')})<span>${escHtml(date)}</span></div>
+            <div class="pdfc-ctitle">${escHtml(calPdfCut(p.title||'Be pavadinimo',80))}</div>
+            <div class="pdfc-cmeta">${meta}</div>
             ${notes?`<div class="pdfc-cnotes">${notes}</div>`:''}
             ${flag}
           </div>
         </div>`;
       }).join('');
       html+=`<div class="pdfc-page">
-        <div class="pdfc-head"><div><div class="pdfc-kicker">${kicker}</div><div class="pdfc-month sm">Įrašai · ${monthName} <span>${y}</span></div></div></div>
-        <div class="pdfc-list">${cards}</div>
+        <div class="pdfc-title sm"><div class="pdfc-kicker">${kicker}</div><div class="pdfc-h1">Įrašai · ${monthName}</div></div>
+        <div class="pdfc-list">${items}</div>
         ${foot(pg+2)}
       </div>`;
     }
