@@ -1171,6 +1171,7 @@ function clCalNav(d){
 function clCalGoToday(){const n=new Date();clCalYear=n.getFullYear();clCalMonth=n.getMonth();clWeekAnchor=new Date(n);clCalLoad();}
 
 async function clCalLoad(){
+  if(!currentClient)return;
   let from,to;
   if(clCalView==='month'){
     document.getElementById('clMonthLabel').textContent=`${CL_MONTHS[clCalMonth]} ${clCalYear}`;
@@ -1184,7 +1185,8 @@ async function clCalLoad(){
       :`${m1} ${mon.getDate()} – ${m2} ${sun.getDate()}, ${sun.getFullYear()}`;
     from=clFmt(mon);to=clFmt(sun);
   }
-  const{data,error}=await sb.from('content_plans').select('*').gte('date',from).lte('date',to).order('date').order('created_at');
+  // tik šio kliento įrašai — kiti klientai niekada nematomi
+  const{data,error}=await sb.from('content_plans').select('*').eq('client_id',currentClient.id).gte('date',from).lte('date',to).order('date').order('created_at');
   if(error){console.error(error);return;}
   clPlans=data||[];
   if(clCalView==='month')clRenderCalGrid();else clRenderWeekView();

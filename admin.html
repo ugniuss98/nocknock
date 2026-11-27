@@ -1563,6 +1563,7 @@ function onClientChange(){
   updateClientLinkBar();
   document.getElementById('headerClientName').textContent=currentClient?currentClient.name:'Pasirink klientą';
   if(currentClient){document.getElementById('noClientMsg').style.display='none';loadTasks();loadRequests();}
+  if(currentTab!=='journal')setTab(currentTab);
   else{tasks=[];document.getElementById('daysList').innerHTML='';document.getElementById('requestsArea').innerHTML='';document.getElementById('noClientMsg').style.display='flex';updateStats();}
 }
 function updateClientLinkBar(){
@@ -2600,6 +2601,11 @@ function calNav(d){
 }
 function calGoToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();calWeekAnchor=new Date(n);calLoad();}
 
+function calShowLoadError(error){
+  const m=String(error.message||'');
+  if(/client_id/.test(m))showToast('Kalendoriui reikia atnaujinti duomenų bazę: Supabase → SQL Editor paleisk setup.sql 10 dalį (client_id).',9000);
+  else showToast('Klaida: '+m);
+}
 async function calLoad(){
   let from,to;
   if(calView==='month'){
@@ -2614,8 +2620,15 @@ async function calLoad(){
       :`${m1} ${mon.getDate()} – ${m2} ${sun.getDate()}, ${sun.getFullYear()}`;
     from=calFmt(mon);to=calFmt(sun);
   }
-  const{data,error}=await sb.from('content_plans').select('*,calendar_comments(count)').gte('date',from).lte('date',to).order('date').order('created_at');
-  if(error){showToast('Klaida: '+error.message);return;}
+  if(!currentClient){
+    calPlans=[];calLoaded=true;
+    if(calView==='month'){calRenderCal();calRenderWeek();}else calRenderWeekView();
+    showToast('Pasirink klientą Žurnalo skiltyje');return;
+  }
+  const cid=currentClient.id;
+  const{data,error}=await sb.from('content_plans').select('*,calendar_comments(count)').eq('client_id',cid).gte('date',from).lte('date',to).order('date').order('created_at');
+  if(!currentClient||currentClient.id!==cid)return; // klientas pasikeitė kol kraunama
+  if(error){calShowLoadError(error);return;}
   calPlans=data||[];
   calLoaded=true;
   if(calView==='month'){calRenderCal();calRenderWeek();}
@@ -2927,10 +2940,11 @@ async function calUploadImg(){
 async function calSavePost(){
   const date=document.getElementById('calMDate').value;
   if(!date){showToast('Pasirink datą!');return;}
+  if(!currentClient){showToast('Pasirink klientą Žurnalo skiltyje');return;}
   const saveBtn=document.querySelector('#calPostModal .btn-confirm');
   if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Saugoma...';}
   const image_url=await calUploadImg();
-  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null,flag:calCurFlag||null,flag_note:calCurFlag?(document.getElementById('calMFlagNote').value.trim()||null):null};
+  const base={date,content_type:document.getElementById('calMType').value,title:document.getElementById('calMTitle').value.trim()||null,notes:document.getElementById('calMNotes').value.trim()||null,status:calCurStatus,image_url:image_url||null,client_id:currentClient.id,flag:calCurFlag||null,flag_note:calCurFlag?(document.getElementById('calMFlagNote').value.trim()||null):null};
   const id=document.getElementById('calMId').value;
   let error;
   if(id&&calEditingGroup&&calEditingGroup.length){
@@ -3017,7 +3031,8 @@ async function calDownloadPdf(){
     // Mėnuo: rodomas mėnesio vaizde, o savaitės vaizde — tos savaitės mėnuo
     const y=calView==='month'?calYear:calWeekAnchor.getFullYear();
     const m=calView==='month'?calMonth:calWeekAnchor.getMonth();
-    const{data,error}=await sb.from('content_plans').select('*')
+    if(!currentClient)throw new Error('pasirink klientą Žurnalo skiltyje');
+    const{data,error}=await sb.from('content_plans').select('*').eq('client_id',currentClient.id)
       .gte('date',calFmt(new Date(y,m,1))).lte('date',calFmt(new Date(y,m+1,0)))
       .order('date').order('created_at');
     if(error)throw new Error(error.message);

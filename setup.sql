@@ -111,6 +111,12 @@ CREATE TABLE IF NOT EXISTS monthly_reports (
 ALTER TABLE content_plans ADD COLUMN IF NOT EXISTS flag TEXT;
 ALTER TABLE content_plans ADD COLUMN IF NOT EXISTS flag_note TEXT;
 
+-- 10. Turinio kalendorius atskirai kiekvienam klientui
+ALTER TABLE content_plans ADD COLUMN IF NOT EXISTS client_id UUID REFERENCES clients(id) ON DELETE SET NULL;
+-- Iki šiol kalendorių naudojo tik FEROSTICKER — esami įrašai priskiriami jam
+UPDATE content_plans SET client_id = (SELECT id FROM clients WHERE slug = 'ferosticker') WHERE client_id IS NULL;
+CREATE INDEX IF NOT EXISTS content_plans_client_date_idx ON content_plans (client_id, date);
+
 -- ============================================================
 -- RLS politikos
 -- ============================================================
