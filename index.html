@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Darbo Žurnalas</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --bg:#F7F6F3;--surface:#FFF;--border:#E8E5DF;--border-strong:#D0CCC3;
-    --text:#1A1916;--text-muted:#8A877E;--text-faint:#B5B2AA;
-    --accent:#2D5BE3;--accent-light:#EEF2FD;
-    --green:#1A7A4A;--green-light:#E8F5EE;
-    --orange:#C4590A;--orange-light:#FEF0E6;
-    --gray:#6B6862;--gray-light:#F2F1EE;
-    --red:#C0392B;--red-light:#FDE8ED;
+    --bg:#F3EFE5;--surface:#FAF7F0;--border:#E4D6CC;--border-strong:#CDB3A8;
+    --text:#5A2117;--text-muted:#94675B;--text-faint:#BC9E94;
+    --accent:#6E2A1F;--accent-light:#EFE3DB;
+    --green:#4E6B45;--green-light:#E7EADB;
+    --orange:#A8612A;--orange-light:#F4E5D5;
+    --gray:#7D6A63;--gray-light:#ECE5D9;
+    --red:#B23A2A;--red-light:#F4DED6;
     --radius:10px;--radius-lg:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -92,10 +92,10 @@
   .task-note{font-size:12px;color:var(--text-muted);margin-bottom:4px;line-height:1.4;}
   .task-tags{display:flex;flex-wrap:wrap;gap:4px;}
   .tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
-  .tag-ig{background:#EDE8FD;color:#4A3AAA;}.tag-ugc{background:#E6F5EE;color:#1A5C38;}
-  .tag-youtube{background:#FFE8E8;color:#CC0000;}.tag-tiktok{background:#E8E8E8;color:#161616;}
-  .tag-meta{background:#E8F0FD;color:#1A4098;}.tag-design{background:#FEF3E7;color:#9C4A10;}
-  .tag-extra{background:#FDE8ED;color:#9C1A36;}.tag-other{background:var(--gray-light);color:var(--gray);}
+  .tag-ig{background:#F1E2E6;color:#8A3F5E;}.tag-ugc{background:#E7EADB;color:#3F5A38;}
+  .tag-youtube{background:#F4E0D6;color:#B5532E;}.tag-tiktok{background:#E6DED6;color:#2F2420;}
+  .tag-meta{background:#E2E7EC;color:#3D5A80;}.tag-design{background:#F4E7D8;color:#8A4E22;}
+  .tag-extra{background:#F4DED6;color:#8C2A2F;}.tag-other{background:var(--gray-light);color:var(--gray);}
   .task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
   .task-price{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;}
   .status-tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
@@ -127,14 +127,14 @@
   .ugc-table th{text-align:left;padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);background:var(--bg);border-bottom:1px solid var(--border);white-space:nowrap;}
   .ugc-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
   .ugc-table tbody tr:last-child td{border-bottom:none;}
-  .ugc-table tbody tr:hover td{background:#FAFAF8;}
+  .ugc-table tbody tr:hover td{background:#F6F1E7;}
   .ugc-creator{font-weight:600;font-size:12px;}
   .ugc-platforms{display:flex;flex-direction:column;gap:2px;}
   .ugc-plat{font-size:11px;display:flex;align-items:center;gap:4px;white-space:nowrap;}
   .ugc-followers{font-size:10px;color:var(--text-faint);font-family:'DM Mono',monospace;}
   .ugc-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;}
   .vs-laukiama{background:var(--gray-light);color:var(--gray);}
-  .vs-filmuojama{background:#FEF0E6;color:#9C4A10;}
+  .vs-filmuojama{background:#F4E5D5;color:#8A4E22;}
   .vs-atsiusta{background:var(--accent-light);color:var(--accent);}
   .vs-paviešinta{background:var(--green-light);color:var(--green);}
   .ugc-received-yes{color:var(--green);font-weight:600;}
@@ -149,7 +149,7 @@
   .ugc-platform-row{display:flex;gap:6px;align-items:center;}
   .ugc-platform-row select{flex:0 0 110px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 11px;color:var(--text);outline:none;appearance:none;-webkit-appearance:none;}
   .ugc-platform-row input{flex:1;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:8px 11px;color:var(--text);outline:none;}
-  .ugc-platform-row input:focus,.ugc-platform-row select:focus{border-color:var(--accent);background:white;}
+  .ugc-platform-row input:focus,.ugc-platform-row select:focus{border-color:var(--accent);background:var(--surface);}
   .ugc-platform-row button{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:16px;line-height:1;padding:0 2px;}
   .ugc-platform-row button:hover{color:var(--red);}
   .ugc-empty{text-align:center;padding:40px;color:var(--text-faint);font-size:13px;}
@@ -162,7 +162,7 @@
 
   /* NEW REQUEST FLOATING BUTTON */
   .req-fab{position:fixed;bottom:28px;right:28px;background:var(--accent);color:white;border:none;border-radius:50px;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(45,91,227,.35);display:flex;align-items:center;gap:7px;transition:all .2s;z-index:50;}
-  .req-fab:hover{background:#1E45C4;transform:translateY(-1px);box-shadow:0 6px 24px rgba(45,91,227,.4);}
+  .req-fab:hover{background:#5A2117;transform:translateY(-1px);box-shadow:0 6px 24px rgba(45,91,227,.4);}
   .req-fab svg{width:15px;height:15px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
 
   /* MODALS */
@@ -175,7 +175,7 @@
   .modal-sub{font-size:13px;color:var(--text-muted);margin-top:-6px;}
   .m-label{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:4px;}
   .m-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;color:var(--text);outline:none;transition:border-color .15s;}
-  .m-input:focus{border-color:var(--accent);background:white;}
+  .m-input:focus{border-color:var(--accent);background:var(--surface);}
   textarea.m-input{resize:vertical;min-height:80px;}
   .modal-actions{display:flex;gap:8px;margin-top:4px;}
   .btn-cancel{flex:1;background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius);padding:10px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
@@ -212,7 +212,7 @@
   @media print{
     .header,.top-bar,.req-fab,.modal-overlay,.footer,.my-requests{display:none!important;}
     .print-header{display:block!important;}
-    body{background:white;}
+    body{background:var(--surface);}
     .main{padding:0;max-width:100%;}
     .day-card{break-inside:avoid;border:1px solid #ddd!important;margin-bottom:10px;}
     .tasks-body.hidden{display:block!important;}
@@ -262,10 +262,10 @@
 .cl-entry.fl-green{background:var(--green-light);color:var(--green);}
 .cl-entry.fl-red{background:var(--red-light);color:var(--red);}
 .cl-flag-note{font-size:9px;line-height:1.35;padding:2px 5px;border-radius:4px;word-break:break-word;}
-.cl-flag-note.fn-green{background:#EFFAF3;color:var(--green);}
-.cl-flag-note.fn-red{background:#FDF0F2;color:var(--red);}
-.cl-cell.day-green{background:#FBFEFC;border-color:#BFE5CE;}
-.cl-cell.day-red{background:#FFFBFB;border-color:#F3BEC5;}
+.cl-flag-note.fn-green{background:#EDF0E3;color:var(--green);}
+.cl-flag-note.fn-red{background:#F6E6DF;color:var(--red);}
+.cl-cell.day-green{background:#F4F3E8;border-color:#C4CFB4;}
+.cl-cell.day-red{background:#F7ECE5;border-color:#E3B9AD;}
 .clp-flag{display:none;font-size:13px;font-weight:600;padding:9px 12px;border-radius:10px;line-height:1.45;margin-bottom:10px;}
 .clp-flag.on-green{display:block;background:var(--green-light);color:var(--green);}
 .clp-flag.on-red{display:block;background:var(--red-light);color:var(--red);}
@@ -296,7 +296,7 @@
 .clp-plats{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px;}
 .clp-plat-chip{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
 .clp-meta{font-size:11px;color:var(--text-muted);}
-.clp-img{background:#141414;max-height:420px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.clp-img{background:#2A1E1B;max-height:420px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .clp-img img{width:100%;max-height:420px;object-fit:contain;display:block;}
 .clp-img.hidden{display:none;}
 .clp-body{padding:16px;}
@@ -307,9 +307,9 @@
 .clp-approve-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:9px;}
 .clp-approve-btns{display:flex;gap:8px;}
 .clp-btn-yes,.clp-btn-no{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:10px;border-radius:var(--radius);cursor:pointer;transition:all .15s;border:1.5px solid;}
-.clp-btn-yes{background:var(--green-light);border-color:#A8DFC0;color:var(--green);}
+.clp-btn-yes{background:var(--green-light);border-color:#B9C6A9;color:var(--green);}
 .clp-btn-yes:hover,.clp-btn-yes.on{background:var(--green);border-color:var(--green);color:white;}
-.clp-btn-no{background:var(--red-light);border-color:#F5A8B0;color:var(--red);}
+.clp-btn-no{background:var(--red-light);border-color:#E3B3A8;color:var(--red);}
 .clp-btn-no:hover,.clp-btn-no.on{background:var(--red);border-color:var(--red);color:white;}
 .clp-approve-state{font-size:12px;color:var(--text-muted);margin-top:8px;min-height:16px;}
 .cl-close-btn{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-faint);padding:0 2px;flex-shrink:0;line-height:1;}
@@ -322,7 +322,7 @@
 .cl-comments-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:10px;}
 .cl-comments-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
 .cl-comment{display:flex;gap:9px;align-items:flex-start;}
-.cl-comment-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-light);border:1.5px solid #C5D4FA;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.cl-comment-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-light);border:1.5px solid #D9C0B4;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;}
 .cl-comment-body{flex:1;background:var(--bg);border-radius:8px;padding:8px 11px;}
 .cl-comment-who{font-size:11px;font-weight:600;margin-bottom:2px;}
 .cl-comment-txt{font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;}
@@ -330,17 +330,17 @@
 .cl-no-comments{font-size:13px;color:var(--text-faint);padding:4px 0 8px;}
 .cl-comment-form{display:flex;flex-direction:column;gap:7px;}
 .cl-comment-input{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.5;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px;color:var(--text);outline:none;resize:vertical;min-height:72px;transition:border-color .15s;}
-.cl-comment-input:focus{border-color:var(--accent);background:white;}
+.cl-comment-input:focus{border-color:var(--accent);background:var(--surface);}
 .cl-comment-send{align-self:flex-end;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;}
 .cl-comment-send:hover{opacity:.85;}
 .cl-comment-send svg{width:12px;height:12px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .cl-comment-send:disabled{opacity:.45;cursor:default;}
 /* Platform colors (shared with calendar cells) */
-.c-ig{background:#EDE8FD;color:#4A3AAA;}.d-ig{background:#4A3AAA;}
-.c-tiktok{background:#E8E8E8;color:#161616;}.d-tiktok{background:#161616;}
-.c-fb{background:#E8F0FD;color:#1A4098;}.d-fb{background:#1A4098;}
-.c-youtube{background:#FFE8E8;color:#CC0000;}.d-youtube{background:#CC0000;}
-.c-linkedin{background:#E8F4FD;color:#0A66C2;}.d-linkedin{background:#0A66C2;}
+.c-ig{background:#F1E2E6;color:#8A3F5E;}.d-ig{background:#8A3F5E;}
+.c-tiktok{background:#E6DED6;color:#2F2420;}.d-tiktok{background:#2F2420;}
+.c-fb{background:#E2E7EC;color:#3D5A80;}.d-fb{background:#3D5A80;}
+.c-youtube{background:#F4E0D6;color:#B5532E;}.d-youtube{background:#B5532E;}
+.c-linkedin{background:#E0E9E8;color:#3F6F78;}.d-linkedin{background:#3F6F78;}
 .c-other{background:var(--gray-light);color:var(--gray);}.d-other{background:var(--gray);}
 
 /* ── MOBILE (kalendoriaus taisyklės — po visų .cl-* stilių, kad persvertų) ── */
@@ -356,6 +356,23 @@
   .cl-detail-panel{margin:12px;}
   .clp-img,.clp-img img{max-height:300px;}
 }
+
+/* ══ ŽURNALO STILIUS — kreminis popierius, bordo rašalas, serifinės antraštės, plonos linijos ══ */
+:root{--serif:'Instrument Serif',Georgia,serif;--radius:5px;--radius-lg:8px;}
+::selection{background:#E9D6CC;}
+.logo,.login-logo{border-radius:50%;}
+.modal{box-shadow:0 24px 70px rgba(90,33,23,.18);}
+.modal-overlay{background:rgba(58,24,16,.28);}
+.app-title,.modal-title,.clp-title,.cl-month-lbl,.page-h,.day-name,.stat-val{font-family:var(--serif);font-weight:400;letter-spacing:0;}
+.app-title{font-size:22px;line-height:1;}
+.modal-title{font-size:26px;line-height:1.1;}
+.clp-title{font-size:24px;line-height:1.15;}
+.cl-month-lbl{font-size:26px;line-height:1;}
+.page-h{font-size:30px;line-height:1;}
+.day-name{font-size:20px;}
+.stat-val{font-size:28px;line-height:1;}
+.cl-cell-num,.cl-wk-hd-num{font-family:var(--serif);font-weight:400;font-size:17px;}
+.m-label,.stat-label,.cl-comments-title,.clp-approve-label{text-transform:uppercase;letter-spacing:1.4px;font-size:10px;font-weight:500;}
 </style>
 </head>
 <body>
@@ -364,14 +381,14 @@
   <div class="h-left">
     <div class="logo"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
     <div>
-      <div style="font-size:14px;font-weight:600;letter-spacing:-.3px">Darbo žurnalas</div>
+      <div class="app-title">Darbo žurnalas</div>
       <div style="font-size:11px;color:var(--text-muted);margin-top:1px" id="clientNameSub">Kraunama...</div>
     </div>
   </div>
   <div id="hRight" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:5px"><div class="live-dot"></div><span class="live-label">Realiu laiku</span></div>
     <div id="weekNav" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <select id="periodSelect" onchange="onPeriodChange(this.value)" style="font-size:12px;padding:6px 26px 6px 10px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;outline:none;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A877E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center;">
+      <select id="periodSelect" onchange="onPeriodChange(this.value)" style="font-size:12px;padding:6px 26px 6px 10px;border-radius:var(--radius);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;outline:none;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394675B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 7px center;">
         <option value="today">Šiandien</option>
         <option value="yesterday">Vakar</option>
         <option value="week" selected>Ši savaitė</option>
@@ -433,7 +450,7 @@
 <div id="ugcTab" style="display:none">
   <div class="ugc-wrapper">
     <div class="ugc-toolbar">
-      <span style="font-size:13px;font-weight:600">UGC Siuntos</span>
+      <span class="page-h">UGC Siuntos</span>
       <button class="ugc-add-btn" onclick="openUgcModal()">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti įrašą
       </button>
