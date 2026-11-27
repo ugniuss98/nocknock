@@ -117,6 +117,9 @@ ALTER TABLE content_plans ADD COLUMN IF NOT EXISTS client_id UUID REFERENCES cli
 UPDATE content_plans SET client_id = (SELECT id FROM clients WHERE slug = 'ferosticker') WHERE client_id IS NULL;
 CREATE INDEX IF NOT EXISTS content_plans_client_date_idx ON content_plans (client_id, date);
 
+-- 11. Leisti naujas kalendoriaus platformas (pvz. X). Jei apribojimo nėra — nieko nedaro.
+ALTER TABLE content_plans DROP CONSTRAINT IF EXISTS content_plans_platform_check;
+
 -- ============================================================
 -- RLS politikos
 -- ============================================================

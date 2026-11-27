@@ -64,6 +64,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .fp.sel.fp-ig{background:#8A3F5E;}.fp.sel.fp-tiktok{background:#2F2420;}
 .fp.sel.fp-fb{background:#3D5A80;}.fp.sel.fp-youtube{background:#B5532E;}
 .fp.sel.fp-linkedin{background:#3F6F78;}.fp.sel.fp-other{background:var(--gray);}
+.fp.sel.fp-x{background:#3A3836;}
 .f-sep{width:1px;height:18px;background:var(--border-strong);flex-shrink:0;}
 .add-btn{margin-left:auto;background:var(--text);color:white;border:none;border-radius:var(--radius);padding:7px 15px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s;white-space:nowrap;}
 .add-btn:hover{opacity:.85;}
@@ -103,6 +104,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .c-fb{background:#E2E7EC;color:#3D5A80;}.d-fb{background:#3D5A80;}
 .c-youtube{background:#F4E0D6;color:#B5532E;}.d-youtube{background:#B5532E;}
 .c-linkedin{background:#E0E9E8;color:#3F6F78;}.d-linkedin{background:#3F6F78;}
+.c-x{background:#E5E3DF;color:#3A3836;}.d-x{background:#3A3836;}
 .c-other{background:var(--gray-light);color:var(--gray);}.d-other{background:var(--gray);}
 
 /* WEEK SIDEBAR */
@@ -144,6 +146,7 @@ label{font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;fon
 .m-pill.sel.mp-fb{background:#E2E7EC;color:#3D5A80;border-color:#BCC9D6;}
 .m-pill.sel.mp-youtube{background:#F4E0D6;color:#B5532E;border-color:#E2BBA9;}
 .m-pill.sel.mp-linkedin{background:#E0E9E8;color:#3F6F78;border-color:#B7CBCB;}
+.m-pill.sel.mp-x{background:#E5E3DF;color:#3A3836;border-color:#C9C5BE;}
 .m-pill.sel.mp-other{background:var(--gray-light);color:var(--gray);border-color:var(--border-strong);}
 .m-pill.sel.ms-planuojama{background:var(--gray-light);color:var(--gray);border-color:var(--border-strong);}
 .m-pill.sel.ms-ruosiama{background:var(--orange-light);color:var(--orange);border-color:#E2C3A0;}
@@ -214,6 +217,7 @@ label:not([class]),.l-label,.f-label,.ws-title{text-transform:uppercase;letter-s
     <button class="fp sel fp-fb"       data-p="fb"       onclick="toggleF('fb')">📘 Facebook</button>
     <button class="fp sel fp-youtube"  data-p="youtube"  onclick="toggleF('youtube')">▶ YouTube</button>
     <button class="fp sel fp-linkedin" data-p="linkedin" onclick="toggleF('linkedin')">💼 LinkedIn</button>
+    <button class="fp sel fp-x"        data-p="x"        onclick="toggleF('x')">𝕏 X</button>
     <button class="fp sel fp-other"    data-p="other"    onclick="toggleF('other')">🔗 Kita</button>
     <div class="f-sep"></div>
     <button class="fp" onclick="toggleAllF()" style="border-color:var(--border)">Visos / Jokios</button>
@@ -260,6 +264,7 @@ label:not([class]),.l-label,.f-label,.ws-title{text-transform:uppercase;letter-s
         <button class="m-pill mp-fb"       data-pl="fb"       onclick="selPlat('fb')">📘 Facebook</button>
         <button class="m-pill mp-youtube"  data-pl="youtube"  onclick="selPlat('youtube')">▶ YouTube</button>
         <button class="m-pill mp-linkedin" data-pl="linkedin" onclick="selPlat('linkedin')">💼 LinkedIn</button>
+        <button class="m-pill mp-x"        data-pl="x"        onclick="selPlat('x')">𝕏 X</button>
         <button class="m-pill mp-other"    data-pl="other"    onclick="selPlat('other')">🔗 Kita</button>
       </div>
     </div>
@@ -318,13 +323,13 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 let year=new Date().getFullYear(),month=new Date().getMonth();
 let plans=[];
-let activeF=new Set(['ig','tiktok','fb','youtube','linkedin','other']);
+let activeF=new Set(['ig','tiktok','fb','youtube','linkedin','x','other']);
 let editingId=null,curPlat='ig',curStatus='planuojama';
 
 const MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
 const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
-const PLAT_L={ig:'Instagram',tiktok:'TikTok',fb:'Facebook',youtube:'YouTube',linkedin:'LinkedIn',other:'Kita'};
-const PLAT_E={ig:'📷',tiktok:'🎵',fb:'📘',youtube:'▶',linkedin:'💼',other:'🔗'};
+const PLAT_L={ig:'Instagram',tiktok:'TikTok',fb:'Facebook',youtube:'YouTube',linkedin:'LinkedIn',x:'X',other:'Kita'};
+const PLAT_E={ig:'📷',tiktok:'🎵',fb:'📘',youtube:'▶',linkedin:'💼',x:'𝕏',other:'🔗'};
 const TYPE_L={reels:'🎬 Reels',post:'🖼 Post',carousel:'🎠 Karuselė',story:'📱 Story',ugc:'📦 UGC',live:'🔴 Live',other:'📌 Kita'};
 const ST_E={planuojama:'📋',ruosiama:'✏️',paruosta:'✅',paskelbta:'🚀'};
 
@@ -430,7 +435,7 @@ function toggleF(p){
   renderCal();renderWeek();
 }
 function toggleAllF(){
-  const all=['ig','tiktok','fb','youtube','linkedin','other'];
+  const all=['ig','tiktok','fb','youtube','linkedin','x','other'];
   if(activeF.size===all.length){activeF.clear();document.querySelectorAll('.fp[data-p]').forEach(b=>b.classList.remove('sel'));}
   else{all.forEach(p=>{activeF.add(p);document.querySelector(`.fp[data-p="${p}"]`).classList.add('sel');});}
   renderCal();renderWeek();

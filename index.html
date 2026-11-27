@@ -94,7 +94,8 @@
   .tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
   .tag-ig{background:#F1E2E6;color:#8A3F5E;}.tag-ugc{background:#E7EADB;color:#3F5A38;}
   .tag-youtube{background:#F4E0D6;color:#B5532E;}.tag-tiktok{background:#E6DED6;color:#2F2420;}
-  .tag-meta{background:#E2E7EC;color:#3D5A80;}.tag-design{background:#F4E7D8;color:#8A4E22;}
+  .tag-meta{background:#E8E3EE;color:#5B4A7A;}.tag-facebook{background:#E2E7EC;color:#3D5A80;}
+  .tag-x{background:#E5E3DF;color:#3A3836;}.tag-linkedin{background:#E0E9E8;color:#3F6F78;}.tag-design{background:#F4E7D8;color:#8A4E22;}
   .tag-extra{background:#F4DED6;color:#8C2A2F;}.tag-other{background:var(--gray-light);color:var(--gray);}
   .task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
   .task-price{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;}
@@ -341,6 +342,7 @@
 .c-fb{background:#E2E7EC;color:#3D5A80;}.d-fb{background:#3D5A80;}
 .c-youtube{background:#F4E0D6;color:#B5532E;}.d-youtube{background:#B5532E;}
 .c-linkedin{background:#E0E9E8;color:#3F6F78;}.d-linkedin{background:#3F6F78;}
+.c-x{background:#E5E3DF;color:#3A3836;}.d-x{background:#3A3836;}
 .c-other{background:var(--gray-light);color:var(--gray);}.d-other{background:var(--gray);}
 
 /* ── MOBILE (kalendoriaus taisyklės — po visų .cl-* stilių, kad persvertų) ── */
@@ -416,7 +418,7 @@
     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Žurnalas
   </button>
   <button class="c-tab-btn" id="ctab-ugc" onclick="setClientTab('ugc')">
-    <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>UGC Siuntos
+    <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>UGC
   </button>
   <button class="c-tab-btn" id="ctab-calendar" onclick="setClientTab('calendar')">
     <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Turinio planas
@@ -450,7 +452,7 @@
 <div id="ugcTab" style="display:none">
   <div class="ugc-wrapper">
     <div class="ugc-toolbar">
-      <span class="page-h">UGC Siuntos</span>
+      <span class="page-h">UGC</span>
       <button class="ugc-add-btn" onclick="openUgcModal()">
         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pridėti įrašą
       </button>
@@ -602,7 +604,11 @@
     <div>
       <div class="m-label">Kategorija</div>
       <select class="m-input" id="rCat">
-        <option value="ig">Instagram + Facebook</option>
+        <option value="instagram">Instagram</option>
+        <option value="facebook">Facebook</option>
+        <option value="x">X</option>
+        <option value="linkedin">LinkedIn</option>
+        <option value="ig" hidden>Instagram + Facebook</option>
         <option value="ugc">UGC</option>
         <option value="youtube">YouTube</option>
         <option value="tiktok">TikTok</option>
@@ -669,8 +675,8 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
 const DAYS=['Pirmadienis','Antradienis','Trečiadienis','Ketvirtadienis','Penktadienis','Šeštadienis','Sekmadienis'];
-const CAT_NAME={ig:'Instagram + Facebook',ugc:'UGC',youtube:'YouTube',tiktok:'TikTok',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi darbai',other:'Kita'};
-const CAT_CLASS={ig:'tag-ig',ugc:'tag-ugc',youtube:'tag-youtube',tiktok:'tag-tiktok',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
+const CAT_NAME={instagram:'Instagram',facebook:'Facebook',x:'X',linkedin:'LinkedIn',ig:'Instagram + Facebook',ugc:'UGC',youtube:'YouTube',tiktok:'TikTok',meta:'Meta Ads',design:'Dizainas',extra:'Papildomi darbai',other:'Kita'};
+const CAT_CLASS={instagram:'tag-ig',facebook:'tag-facebook',x:'tag-x',linkedin:'tag-linkedin',ig:'tag-ig',ugc:'tag-ugc',youtube:'tag-youtube',tiktok:'tag-tiktok',meta:'tag-meta',design:'tag-design',extra:'tag-extra',other:'tag-other'};
 const STATUS_LABELS={done:'✅ Atlikta',progress:'🔄 Vykdoma',wait:'⏳ Laukia'};
 const STATUS_CLASS={done:'status-done',progress:'status-progress',wait:'status-wait'};
 
@@ -995,7 +1001,7 @@ function openReqModal(){
   document.getElementById('rTitle').value='';
   document.getElementById('rNotes').value='';
   document.getElementById('rDeadline').value='';
-  document.getElementById('rCat').value='ig';
+  document.getElementById('rCat').value='instagram';
   document.getElementById('reqModalTitle').textContent='Nauja užklausa agentūrai';
   document.getElementById('reqModalSub').textContent='Aprašyk ką reikia padaryti — mes susisieksime';
   document.getElementById('reqSubmitLabel').textContent='Siųsti užklausą';
@@ -1139,10 +1145,10 @@ let clPlans=[],clActivePlanId=null,clActiveIds=[];
 let clCalView='month',clWeekAnchor=new Date();
 
 const CL_MONTHS=['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis','Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'];
-const CL_PLAT_L={ig:'📷 Instagram',tiktok:'🎵 TikTok',fb:'📘 Facebook',youtube:'▶ YouTube',linkedin:'💼 LinkedIn',other:'🔗 Kita'};
+const CL_PLAT_L={ig:'📷 Instagram',tiktok:'🎵 TikTok',fb:'📘 Facebook',youtube:'▶ YouTube',linkedin:'💼 LinkedIn',x:'𝕏 X',other:'🔗 Kita'};
 const CL_TYPE_L={reels:'🎬 Reels',post:'🖼 Post',carousel:'🎠 Karuselė',story:'📱 Story',ugc:'📦 UGC',live:'🔴 Live',other:'📌 Kita'};
-const CL_PLAT_CLS={ig:'c-ig',tiktok:'c-tiktok',fb:'c-fb',youtube:'c-youtube',linkedin:'c-linkedin',other:'c-other'};
-const CL_DOT_CLS={ig:'d-ig',tiktok:'d-tiktok',fb:'d-fb',youtube:'d-youtube',linkedin:'d-linkedin',other:'d-other'};
+const CL_PLAT_CLS={ig:'c-ig',tiktok:'c-tiktok',fb:'c-fb',youtube:'c-youtube',linkedin:'c-linkedin',x:'c-x',other:'c-other'};
+const CL_DOT_CLS={ig:'d-ig',tiktok:'d-tiktok',fb:'d-fb',youtube:'d-youtube',linkedin:'d-linkedin',x:'d-x',other:'d-other'};
 
 function clFmt(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function clEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
