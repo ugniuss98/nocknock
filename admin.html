@@ -474,7 +474,7 @@ select.ugc-st-sel{grid-area:st;width:100%;font-size:12px;font-weight:600;padding
 .cal-month-lbl{font-size:14px;font-weight:600;min-width:160px;text-align:center;letter-spacing:-.3px;}
 .cal-today-btn{font-size:12px;font-weight:500;background:none;border:1px solid var(--border-strong);border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--text-muted);transition:all .15s;}
 .cal-today-btn:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
-.cal-page-layout{display:grid;grid-template-columns:1fr 260px;height:calc(100vh - 125px);}
+.cal-page-layout{display:grid;grid-template-columns:1fr 318px;height:calc(100vh - 125px);}
 .cal-main-area{padding:14px 16px;overflow-y:auto;}
 .cal-week-side{background:var(--surface);border-left:1px solid var(--border);padding:16px;overflow-y:auto;}
 .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;}
@@ -567,8 +567,6 @@ select.ugc-st-sel{grid-area:st;width:100%;font-size:12px;font-weight:600;padding
 .cal-vt-btn.active{background:var(--text);color:white;}
 .cal-pp .dots{display:flex;gap:2px;flex-shrink:0;align-items:center;}
 /* ── WEEK VIEW ── */
-.cal-page-layout.wk-mode{grid-template-columns:1fr;}
-.cal-page-layout.wk-mode .cal-week-side{display:none;}
 .cal-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:stretch;}
 .cal-wk-col{background:var(--surface);border:1px solid var(--border);border-radius:12px;min-height:calc(100vh - 220px);padding:9px 8px;display:flex;flex-direction:column;gap:7px;cursor:pointer;transition:border-color .15s;}
 .cal-wk-col:hover{border-color:var(--border-strong);}
@@ -646,6 +644,41 @@ select.ugc-st-sel{grid-area:st;width:100%;font-size:12px;font-weight:600;padding
 .cal-notice code{display:block;margin-top:5px;font-family:'DM Mono',monospace;font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:6px 8px;white-space:pre-wrap;word-break:break-all;}
 .cal-notice-txt{flex:1;min-width:240px;}
 .cal-notice button{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:7px 12px;border-radius:var(--radius);border:none;background:var(--text);color:#fff;cursor:pointer;white-space:nowrap;}
+
+/* ── FEED PERŽIŪRA: Instagram profilio tinklelis telefono rėmelyje ── */
+.cal-side-tabs{display:flex;gap:16px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.cal-side-tab{background:none;border:none;padding:0 0 8px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-faint);cursor:pointer;}
+.cal-side-tab:hover{color:var(--text-muted);}
+.cal-side-tab.active{color:var(--text);box-shadow:inset 0 -1.5px 0 var(--text);}
+.feed-phone{max-width:340px;margin:0 auto;border:1px solid var(--border-strong);border-radius:30px;padding:12px 0 0;background:var(--surface);overflow:hidden;box-shadow:0 10px 30px rgba(90,33,23,.07);}
+.feed-status{display:flex;justify-content:space-between;padding:0 22px 8px;font-size:9.5px;font-weight:600;}
+.feed-top{display:flex;justify-content:space-between;align-items:center;padding:0 14px 8px;}
+.feed-handle{font-size:12.5px;font-weight:600;}
+.feed-top svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-left:12px;}
+.feed-prof{display:flex;align-items:center;gap:14px;padding:2px 14px 8px;}
+.feed-ava{width:56px;height:56px;border-radius:50%;border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:var(--serif,Georgia,serif);font-size:26px;flex-shrink:0;background:var(--bg);}
+.feed-stats{display:flex;flex:1;justify-content:space-around;text-align:center;}
+.feed-stats b{display:block;font-size:13px;font-weight:600;line-height:1.2;}
+.feed-stats span{font-size:9px;color:var(--text-muted);}
+.feed-bio{padding:0 14px 10px;font-size:10.5px;line-height:1.4;color:var(--text-muted);}
+.feed-bio b{display:block;font-size:11px;color:var(--text);font-weight:600;}
+.feed-icons{display:flex;justify-content:space-around;border-top:1px solid var(--border);padding:7px 0;}
+.feed-icons svg{width:15px;height:15px;stroke:var(--text-faint);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.feed-icons span:first-child{box-shadow:inset 0 -1.5px 0 var(--text);padding:0 18px 6px;margin-bottom:-7px;}
+.feed-icons span:first-child svg{stroke:var(--text);}
+.feed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;}
+.feed-tile{position:relative;aspect-ratio:3/4;background:var(--bg);overflow:hidden;cursor:pointer;transition:opacity .15s;}
+.feed-tile:hover{opacity:.82;}
+.feed-tile img{width:100%;height:100%;object-fit:cover;display:block;}
+.feed-ph{position:absolute;inset:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;text-align:center;font-size:8.5px;line-height:1.3;color:var(--text-muted);border:1px dashed var(--border-strong);}
+.feed-ph b{font-family:var(--serif,Georgia,serif);font-weight:400;font-size:13px;color:var(--text-faint);}
+.feed-date{position:absolute;top:4px;left:5px;font-size:8.5px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55);}
+.feed-tile.noimg .feed-date,.feed-tile.noimg .feed-kind{color:var(--text-muted);text-shadow:none;}
+.feed-kind{position:absolute;top:4px;right:5px;font-size:9px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55);}
+.feed-flag{position:absolute;bottom:5px;left:5px;width:7px;height:7px;border-radius:50%;border:1.5px solid #fff;}
+.feed-flag.green{background:var(--green);} .feed-flag.red{background:var(--red);}
+.feed-empty{padding:34px 16px;text-align:center;font-size:11px;line-height:1.5;color:var(--text-faint);}
+.feed-note{font-size:10px;color:var(--text-faint);margin-top:10px;line-height:1.45;}
 
 /* ── POST PREVIEW (profile post view) ── */
 .post-view{max-width:440px;padding:0;gap:0;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;}
@@ -1078,8 +1111,15 @@ label:not([class]),.l-label,.sec-title,.f-label,.stat-label,.cal-ws-title{text-t
       </div>
     </div>
     <aside class="cal-week-side">
-      <div class="cal-ws-title">Šios savaitės planas</div>
-      <div id="calWeekList"></div>
+      <div class="cal-side-tabs">
+        <button class="cal-side-tab active" id="calSideTab-feed" onclick="calSetSide('feed')">Feed peržiūra</button>
+        <button class="cal-side-tab" id="calSideTab-week" onclick="calSetSide('week')">Šios savaitės planas</button>
+      </div>
+      <div id="calSide-feed">
+        <div id="calFeed"></div>
+        <div class="feed-note">Instagram įrašai, naujausi viršuje — taip, kaip jie išsidėstys profilyje. Paspausk įrašą, kad atidarytum.</div>
+      </div>
+      <div id="calSide-week" style="display:none"><div id="calWeekList"></div></div>
     </aside>
   </div>
 </div>
@@ -2658,6 +2698,64 @@ function calShowLoadError(error){
   if(/client_id/.test(m))showToast('Kalendoriui reikia atnaujinti duomenų bazę: Supabase → SQL Editor paleisk setup.sql 10 dalį (client_id).',9000);
   else showToast('Klaida: '+m);
 }
+// ── FEED PERŽIŪRA ──
+// Naujausi pasirinkto kliento Instagram įrašai (nepriklausomai nuo rodomo mėnesio), išdėstyti kaip profilio tinklelis
+let calSide='feed',calFeed=[];
+function calSetSide(v){
+  calSide=v;
+  ['feed','week'].forEach(k=>{
+    document.getElementById('calSideTab-'+k).classList.toggle('active',k===v);
+    document.getElementById('calSide-'+k).style.display=k===v?'':'none';
+  });
+}
+// Feed rodo kelių mėnesių įrašus — jei įrašas ne rodomame laikotarpyje, kalendorius peršoka į jo mėnesį
+async function calFeedOpen(id,date){
+  if(!calPlans.some(p=>String(p.id)===String(id))){
+    const d=new Date(date+'T12:00:00');
+    calYear=d.getFullYear();calMonth=d.getMonth();calWeekAnchor=d;
+    await calLoad();
+  }
+  calOpenView(id);
+}
+async function calLoadFeed(){
+  if(!currentClient){calFeed=[];calRenderFeed();return;}
+  const cid=currentClient.id;
+  const run=f=>{let q=sb.from('content_plans').select('id,date,title,image_url,content_type,status,flag,client_id').eq('platform','ig');if(f)q=q.or(f);return q.order('date',{ascending:false}).order('created_at',{ascending:false}).limit(30);};
+  let r=await run(`client_id.eq.${cid},client_id.is.null`);
+  if(r.error&&/client_id/.test(r.error.message||''))r=await run(null);
+  if(!currentClient||currentClient.id!==cid)return;
+  calFeed=r.data||[];
+  calRenderFeed();
+}
+function calRenderFeed(){
+  const box=document.getElementById('calFeed');if(!box)return;
+  const c=currentClient;
+  const today=calFmt(new Date());
+  const planned=calFeed.filter(p=>p.date>=today&&p.status!=='paskelbta').length;
+  const published=calFeed.filter(p=>p.status==='paskelbta').length;
+  const KIND={carousel:'⧉',reels:'▶',story:'◌',live:'●'};
+  const tiles=calFeed.map(p=>{
+    const d=new Date(p.date+'T12:00:00'),dl=`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
+    const kind=KIND[p.content_type]?`<span class="feed-kind">${KIND[p.content_type]}</span>`:'';
+    const flag=p.flag?`<span class="feed-flag ${p.flag}"></span>`:'';
+    const body=p.image_url
+      ?`<img src="${escHtml(p.image_url)}" alt="" loading="lazy">`
+      :`<div class="feed-ph"><b>Vizualo nėra</b>${escHtml((p.title||'').slice(0,40))}</div>`;
+    return`<div class="feed-tile${p.image_url?'':' noimg'}" onclick="calFeedOpen(${p.id},'${p.date}')" title="${escHtml(p.title||'')}">${body}<span class="feed-date">${dl}</span>${kind}${flag}</div>`;
+  }).join('');
+  const icon=d=>`<svg viewBox="0 0 24 24">${d}</svg>`;
+  box.innerHTML=`<div class="feed-phone">
+    <div class="feed-status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="feed-top"><span class="feed-handle">${escHtml(c?c.slug||c.name:'—')}</span><span>${icon('<rect x="3" y="3" width="18" height="18" rx="5"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>')}${icon('<line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>')}</span></div>
+    <div class="feed-prof">
+      <div class="feed-ava">${escHtml(((c&&c.name)||'?').trim()[0].toUpperCase())}</div>
+      <div class="feed-stats"><div><b>${calFeed.length}</b><span>įrašai</span></div><div><b>${planned}</b><span>suplanuota</span></div><div><b>${published}</b><span>paskelbta</span></div></div>
+    </div>
+    <div class="feed-bio"><b>${escHtml(c?c.name:'')}</b>Feed peržiūra</div>
+    <div class="feed-icons"><span>${icon('<rect x="3" y="3" width="18" height="18"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/>')}</span><span>${icon('<rect x="3" y="3" width="18" height="18" rx="3"/><polygon points="10 8 16 12 10 16 10 8"/>')}</span><span>${icon('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>')}</span></div>
+    ${tiles?`<div class="feed-grid">${tiles}</div>`:'<div class="feed-empty">Dar nėra Instagram įrašų.<br>Sukurk įrašą kalendoriuje su Instagram platforma ir vizualu — jis atsiras čia.</div>'}
+  </div>`;
+}
 async function calLoad(){
   let from,to;
   if(calView==='month'){
@@ -2684,8 +2782,10 @@ async function calLoad(){
   calPlans=data||[];
   calLoaded=true;
   calRenderNotice();
-  if(calView==='month'){calRenderCal();calRenderWeek();}
+  if(calView==='month')calRenderCal();
   else calRenderWeekView();
+  calRenderWeek();
+  calLoadFeed();
 }
 
 function calGetDays(){
